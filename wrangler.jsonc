@@ -1,0 +1,32 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  // ⚠️ If you already have a Worker for this site in the Cloudflare dashboard,
+  // set "name" to match it EXACTLY before running `wrangler deploy` — otherwise
+  // this will create a brand new Worker and you'll need to re-attach the
+  // custom domain / routes to it instead of the old one.
+  "name": "vacuum-bag-landing",
+  "main": "src/worker.js",
+  "compatibility_date": "2025-09-19",
+
+  // Static assets (formerly the Pages "build output directory").
+  // Only files under ./public are served publicly.
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS"
+  },
+
+  // KV namespace for pageview/lead analytics (shared by all /api/* routes
+  // in src/worker.js). Create it first:
+  //   wrangler kv namespace create ANALYTICS_KV
+  // then paste the returned id below.
+  "kv_namespaces": [
+    {
+      "binding": "ANALYTICS_KV",
+      "id": "1caf87388ed24dc49da2a8548cdfc00a"
+    }
+  ]
+
+  // STATS_SECRET is intentionally NOT set here — secrets must never be
+  // committed to source control. Set it with:
+  //   wrangler secret put STATS_SECRET
+}

@@ -1,7 +1,13 @@
 # 集尘袋留评落地页 — 部署指南
 
-域名：amazon-feedback.aromelivii.com  
-平台：Cloudflare Pages + Functions + KV
+域名：amazon-feedback.aromelivii.com
+平台：Cloudflare Workers + Static Assets + KV
+
+> ⚠️ 2026 年起 Cloudflare 已停止对 Pages 的新功能投入，统一迁移到「Workers + Static
+> Assets」模型。本项目已从旧的 Pages Functions（`functions/` 目录 + `_redirects`）
+> 迁移为标准 Worker（`src/worker.js` + `wrangler.jsonc`），这样才能在 Dashboard /
+> 配置文件里正常绑定环境变量和 KV —— 纯静态资产（没有 `main` 入口脚本）的 Worker
+> 无法添加变量或 KV 绑定，这正是旧部署方式踩到的坑。
 
 ---
 
@@ -9,65 +15,72 @@
 
 ```
 /
-├── index.html          ← 主落地页（5语言自动检测）
-├── dashboard.html      ← 数据统计面板
-├── _redirects          ← Cloudflare 路由配置
-└── functions/
-    └── api/
-        ├── track.js    ← 浏览统计接口 POST /api/track
-        ├── submit.js   ← 表单提交接口 POST /api/submit
-        └── stats.js    ← 数据读取接口 GET /api/stats
+├── public/              ← 静态资源目录（对应 wrangler.jsonc 里的 assets.directory）
+│   ├── index.html       ← 主落地页（5语言自动检测）
+│   └── dashboard.html   ← 数据统计面板
+├── src/
+│   └── worker.js        ← Worker 入口：路由 /api/* + 静态资源回退 + /dashboard 重写
+└── wrangler.jsonc        ← Worker 配置（assets / KV 绑定都在这里声明）
 ```
+
+`/api/track`、`/api/submit`、`/api/stats`、`/dashboard` 的重写规则全部在
+`src/worker.js` 里实现，不再依赖 `_redirects` 或 Pages Functions 的文件路由约定。
 
 ---
 
 ## 部署步骤
 
-### 1. 上传到 GitHub
+### 0. 安装依赖
 
 ```bash
-git init
-git add .
-git commit -m "init landing page"
-git remote add origin https://github.com/你的账号/vacuum-bag-landing.git
-git push -u origin main
+npm install -g wrangler   # 或用 npx wrangler 代替下面所有 wrangler 命令
+wrangler login
 ```
 
-### 2. Cloudflare Pages 连接仓库
+### 1. 创建 KV 命名空间
 
-1. 登录 Cloudflare Dashboard → Pages → Create a project
-2. Connect to Git → 选择刚创建的仓库
-3. Build settings 全部留空（纯静态 + Functions，不需要构建命令）
-4. 点击 Save and Deploy
-
-### 3. 绑定自定义域名
-
-Pages 部署成功后：
-- Settings → Custom domains → Add domain
-- 输入：`amazon-feedback.aromelivii.com`
-- 按提示在 Cloudflare DNS 添加 CNAME 记录（域名已在 CF 管理则自动完成）
-
-### 4. 创建 KV 命名空间
-
-Cloudflare Dashboard → Workers & Pages → KV：
-
-```
-新建命名空间，名称：ANALYTICS_KV
+```bash
+wrangler kv namespace create ANALYTICS_KV
 ```
 
-然后在 Pages 项目 → Settings → Functions → KV namespace bindings：
+把返回的 `id` 填入 `wrangler.jsonc` 的 `kv_namespaces[0].id`。
 
-| Variable name  | KV namespace  |
-|----------------|---------------|
-| ANALYTICS_KV   | ANALYTICS_KV  |
+### 2. 设置密钥（保护统计面板）
 
-### 5. 设置环境变量
+```bash
+wrangler secret put STATS_SECRET
+```
 
-Pages → Settings → Environment variables → Production：
+按提示输入你要设置的密码（不会写入代码仓库，安全存储在 Cloudflare）。
 
-| 变量名        | 值（自定义）         | 说明                |
-|--------------|---------------------|---------------------|
-| STATS_SECRET | 你设置的任意密码     | 保护统计面板的密钥   |
+### 3. 确认 Worker 名称
+
+**如果你在 Dashboard 里已经有一个部署好的 Worker**，打开
+`wrangler.jsonc`，把 `"name"` 改成和现有 Worker **完全一致**的名字，这样
+`wrangler deploy` 会更新原有 Worker，而不是新建一个（新建的话自定义域名需要
+重新绑定）。
+
+### 4. 部署
+
+```bash
+wrangler deploy
+```
+
+### 5. 绑定自定义域名
+
+Cloudflare Dashboard → Workers & Pages → 选中该 Worker → Settings →
+Domains & Routes → Add Custom Domain：
+
+```
+amazon-feedback.aromelivii.com
+```
+
+### 6. 之后如需修改变量 / KV 绑定
+
+优先直接改 `wrangler.jsonc` 后重新 `wrangler deploy`（推荐，改动可追溯到
+Git 历史）。也可以在 Dashboard → 该 Worker → Settings → Variables and
+Secrets / Bindings 里改——因为现在 Worker 已经有 `main` 入口脚本，这两个
+入口在 Dashboard 上应该会正常显示了。
 
 ---
 
@@ -79,7 +92,7 @@ Pages → Settings → Environment variables → Production：
 https://amazon-feedback.aromelivii.com/dashboard
 ```
 
-输入你设置的 STATS_SECRET 即可查看：
+输入你设置的 `STATS_SECRET` 即可查看：
 - 每日浏览量 / 提交数 / 转化率
 - 各语言访问分布（德/法/意/西/英）
 - 14天每日明细
@@ -116,3 +129,5 @@ https://amazon-feedback.aromelivii.com/dashboard
 - 数据保留：pageview 统计 90 天，leads 记录 180 天
 - 倒计时为前端装饰性计时（每次刷新重置），不影响实际有效期
 - GDPR 声明已内置各语言版本，符合欧盟合规要求
+- `wrangler.jsonc` 已提交到仓库，但 **不含任何密钥**（`STATS_SECRET` 通过
+  `wrangler secret put` 单独存储，不会出现在代码或 Git 历史里）
