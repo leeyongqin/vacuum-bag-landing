@@ -1,0 +1,2 @@
+# Redirect root to index, block direct dashboard access without secret
+/dashboard  /dashboard.html  200
