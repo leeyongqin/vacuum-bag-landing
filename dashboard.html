@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>数据统计面板</title>
+<meta name="robots" content="noindex,nofollow">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif; background: #f5f5f5; color: #1a1a1a; padding: 20px; }
+  h1 { font-size: 20px; font-weight: 600; margin-bottom: 20px; color: #111; }
+  .login-box { max-width: 360px; margin: 80px auto; background: white; border-radius: 12px; padding: 28px; border: 1px solid #e5e5e5; }
+  .login-box h2 { font-size: 18px; margin-bottom: 16px; }
+  input[type=text], input[type=password] { width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; margin-bottom: 12px; }
+  .btn { width: 100%; padding: 11px; background: #1a2e4a; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; }
+  .btn:hover { background: #0f1d30; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; margin-bottom: 24px; }
+  .stat-card { background: white; border-radius: 10px; padding: 18px; border: 1px solid #e5e5e5; }
+  .stat-label { font-size: 11px; color: #888; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 6px; }
+  .stat-val { font-size: 32px; font-weight: 300; color: #1a2e4a; }
+  .stat-sub { font-size: 12px; color: #aaa; margin-top: 4px; }
+  table { width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; border: 1px solid #e5e5e5; }
+  thead { background: #1a2e4a; color: white; }
+  th { padding: 10px 14px; font-size: 12px; font-weight: 600; text-align: left; letter-spacing: 0.3px; }
+  td { padding: 10px 14px; font-size: 13px; border-bottom: 1px solid #f0f0f0; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #fafafa; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; }
+  .badge-green { background: #e8f5ee; color: #2d7a4f; }
+  .badge-blue { background: #e8f0fc; color: #1d3a8a; }
+  .section-title { font-size: 14px; font-weight: 600; margin: 20px 0 10px; color: #333; }
+  .lang-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+  .lang-pill { padding: 5px 12px; background: white; border: 1px solid #e5e5e5; border-radius: 20px; font-size: 12px; }
+  .error-msg { color: #c0392b; font-size: 13px; margin-top: 8px; }
+  .refresh-btn { float: right; padding: 6px 14px; background: white; border: 1px solid #ddd; border-radius: 6px; font-size: 12px; cursor: pointer; margin-bottom: 10px; }
+</style>
+</head>
+<body>
+
+<!-- Login screen -->
+<div class="login-box" id="loginBox">
+  <h2>📊 统计面板</h2>
+  <p style="font-size:13px;color:#888;margin-bottom:16px">请输入统计密钥以查看数据</p>
+  <input type="password" id="secretInput" placeholder="stats secret key" onkeydown="if(event.key==='Enter')loadStats()">
+  <button class="btn" onclick="loadStats()">查看数据</button>
+  <div class="error-msg" id="loginErr"></div>
+</div>
+
+<!-- Dashboard -->
+<div id="dashboard" style="display:none; max-width:900px; margin:0 auto;">
+  <button class="refresh-btn" onclick="loadStats(null, true)">↻ 刷新</button>
+  <h1>落地页数据统计</h1>
+
+  <div class="grid" id="totalsGrid"></div>
+
+  <div class="section-title">各语言访问分布（近7天合计）</div>
+  <div class="lang-bar" id="langBar"></div>
+
+  <div class="section-title">每日明细</div>
+  <table>
+    <thead>
+      <tr>
+        <th>日期</th>
+        <th>浏览量 PV</th>
+        <th>提交数</th>
+        <th>转化率</th>
+        <th>获客量</th>
+      </tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+  </table>
+</div>
+
+<script>
+let savedSecret = '';
+
+async function loadStats(secret, refresh) {
+  const s = secret || document.getElementById('secretInput')?.value || savedSecret;
+  if (!s) return;
+  savedSecret = s;
+
+  try {
+    const res = await fetch(`/api/stats?secret=${encodeURIComponent(s)}&days=14`);
+    if (res.status === 401) {
+      document.getElementById('loginErr').textContent = '密钥错误，请重试';
+      return;
+    }
+    const data = await res.json();
+
+    document.getElementById('loginBox').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+
+    const t = data.totals;
+    document.getElementById('totalsGrid').innerHTML = `
+      <div class="stat-card"><div class="stat-label">总浏览量</div><div class="stat-val">${t.pageviews.toLocaleString()}</div><div class="stat-sub">过去14天</div></div>
+      <div class="stat-card"><div class="stat-label">表单提交</div><div class="stat-val">${t.submissions.toLocaleString()}</div><div class="stat-sub">有效信息</div></div>
+      <div class="stat-card"><div class="stat-label">转化率</div><div class="stat-val">${t.conversion_rate}</div><div class="stat-sub">浏览→提交</div></div>
+      <div class="stat-card"><div class="stat-label">获客总量</div><div class="stat-val">${t.leads.toLocaleString()}</div><div class="stat-sub">去重邮箱</div></div>
+    `;
+
+    // Language totals
+    const langTotals = data.daily.reduce((acc, r) => {
+      Object.entries(r.by_lang).forEach(([k,v]) => { acc[k] = (acc[k]||0) + v; });
+      return acc;
+    }, {});
+    const langNames = { de:'🇩🇪 德语', fr:'🇫🇷 法语', it:'🇮🇹 意大利语', es:'🇪🇸 西班牙语', en:'🇬🇧 英语' };
+    const totalPV = Object.values(langTotals).reduce((a,b)=>a+b,0) || 1;
+    document.getElementById('langBar').innerHTML = Object.entries(langTotals)
+      .sort((a,b)=>b[1]-a[1])
+      .map(([k,v]) => `<div class="lang-pill">${langNames[k]||k}: <strong>${v}</strong> (${((v/totalPV)*100).toFixed(0)}%)</div>`)
+      .join('');
+
+    // Daily table
+    document.getElementById('tableBody').innerHTML = [...data.daily].reverse().map(r => `
+      <tr>
+        <td>${r.date}</td>
+        <td>${r.pageviews.toLocaleString()}</td>
+        <td>${r.submissions.toLocaleString()}</td>
+        <td><span class="badge ${parseFloat(r.conversion_rate)>=3?'badge-green':'badge-blue'}">${r.conversion_rate}</span></td>
+        <td>${r.leads_count}</td>
+      </tr>
+    `).join('');
+
+  } catch (err) {
+    document.getElementById('loginErr').textContent = '加载失败，请检查网络';
+  }
+}
+</script>
+</body>
+</html>

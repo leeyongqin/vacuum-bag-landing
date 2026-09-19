@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ihr Gutschein wartet</title>
+<meta name="robots" content="noindex,nofollow">
+<style>
+  :root {
+    --navy: #1a2e4a;
+    --navy-deep: #0f1d30;
+    --gold: #c8a84b;
+    --gold-light: #e8c96a;
+    --cream: #f7f5f0;
+    --cream-dark: #ede9e0;
+    --text: #1a1a1a;
+    --text-muted: #6b6560;
+    --text-light: #9a958f;
+    --border: #ddd9d0;
+    --success: #2d7a4f;
+    --error: #c0392b;
+    --radius: 10px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0;
+  }
+
+  /* Lang switcher */
+  .lang-bar {
+    width: 100%;
+    max-width: 480px;
+    display: flex;
+    gap: 6px;
+    padding: 12px 16px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    background: var(--cream-dark);
+    border-bottom: 1px solid var(--border);
+  }
+  .lang-bar::-webkit-scrollbar { display: none; }
+  .lang-btn {
+    flex-shrink: 0;
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    font-size: 12px;
+    cursor: pointer;
+    background: white;
+    color: var(--text-muted);
+    transition: all 0.15s;
+    font-weight: 500;
+  }
+  .lang-btn.active {
+    background: var(--navy);
+    color: white;
+    border-color: var(--navy);
+  }
+
+  /* Hero */
+  .hero {
+    width: 100%;
+    max-width: 480px;
+    background: var(--navy);
+    padding: 32px 24px 28px;
+    text-align: center;
+    color: white;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    border: 40px solid rgba(200,168,75,0.08);
+  }
+  .hero-eyebrow {
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    font-weight: 500;
+  }
+  .hero-amount {
+    font-size: 72px;
+    font-weight: 300;
+    line-height: 1;
+    margin-bottom: 4px;
+    letter-spacing: -2px;
+    color: white;
+  }
+  .hero-amount sup {
+    font-size: 32px;
+    vertical-align: top;
+    margin-top: 12px;
+    display: inline-block;
+    font-weight: 400;
+    letter-spacing: 0;
+  }
+  .hero-sub {
+    font-size: 14px;
+    color: rgba(255,255,255,0.65);
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+  .timer-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(200,168,75,0.15);
+    border: 1px solid rgba(200,168,75,0.3);
+    border-radius: 30px;
+    padding: 7px 16px;
+    font-size: 13px;
+    color: var(--gold-light);
+  }
+  .timer-val { font-weight: 600; font-variant-numeric: tabular-nums; }
+
+  /* Card */
+  .card {
+    width: 100%;
+    max-width: 480px;
+    background: white;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* Steps */
+  .steps-wrap { padding: 24px; }
+  .section-label {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    color: var(--text-light);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    font-weight: 600;
+  }
+  .step {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--cream-dark);
+  }
+  .step:last-child { border-bottom: none; padding-bottom: 0; }
+  .step-num {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--navy);
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .step-title { font-size: 14px; font-weight: 600; margin-bottom: 3px; color: var(--text); }
+  .step-desc { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+
+  /* Form */
+  .form-wrap { padding: 24px; background: var(--cream); }
+  .f-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+    letter-spacing: 0.3px;
+  }
+  .f-input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 15px;
+    background: white;
+    color: var(--text);
+    transition: border-color 0.15s;
+    margin-bottom: 14px;
+    -webkit-appearance: none;
+  }
+  .f-input:focus { outline: none; border-color: var(--navy); }
+  .f-input.error { border-color: var(--error); }
+  .f-err {
+    font-size: 12px;
+    color: var(--error);
+    margin-top: -10px;
+    margin-bottom: 12px;
+    display: none;
+  }
+  .cta-btn {
+    width: 100%;
+    padding: 15px;
+    background: var(--gold);
+    color: var(--navy-deep);
+    border: none;
+    border-radius: var(--radius);
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 0.2px;
+    transition: background 0.15s, transform 0.1s;
+  }
+  .cta-btn:hover { background: var(--gold-light); }
+  .cta-btn:active { transform: scale(0.99); }
+
+  /* GDPR */
+  .gdpr-text {
+    font-size: 11px;
+    color: var(--text-light);
+    text-align: center;
+    margin-top: 12px;
+    line-height: 1.6;
+    padding: 0 4px;
+  }
+
+  /* Trust bar */
+  .trust-bar {
+    width: 100%;
+    max-width: 480px;
+    display: flex;
+    justify-content: space-around;
+    padding: 14px 16px;
+    background: white;
+    border-bottom: 1px solid var(--border);
+  }
+  .trust-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+  }
+  .trust-icon { font-size: 18px; }
+  .trust-label { font-size: 10px; color: var(--text-muted); font-weight: 500; text-align: center; }
+
+  /* Success */
+  .success-wrap {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 24px 32px;
+    text-align: center;
+    background: white;
+    width: 100%;
+  }
+  .success-check {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    background: #e8f5ee;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 28px;
+  }
+  .success-title { font-size: 22px; font-weight: 600; margin-bottom: 8px; }
+  .success-sub { font-size: 14px; color: var(--text-muted); line-height: 1.7; margin-bottom: 24px; }
+  .review-guide {
+    width: 100%;
+    background: var(--cream);
+    border-radius: var(--radius);
+    padding: 16px;
+    text-align: left;
+  }
+  .guide-title { font-size: 12px; font-weight: 700; color: var(--text-muted); letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 10px; }
+  .guide-step {
+    font-size: 13px;
+    color: var(--text);
+    padding: 7px 0;
+    border-bottom: 1px solid var(--border);
+    line-height: 1.5;
+  }
+  .guide-step:last-child { border-bottom: none; padding-bottom: 0; }
+
+  /* Footer */
+  .footer {
+    width: 100%;
+    max-width: 480px;
+    padding: 16px;
+    text-align: center;
+    font-size: 10px;
+    color: var(--text-light);
+    line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+
+<div class="lang-bar" id="langBar"></div>
+
+<div class="hero">
+  <div class="hero-eyebrow" id="heroEyebrow">Exklusiver Vorteil</div>
+  <div class="hero-amount" id="heroAmount"><sup>€</sup>6</div>
+  <div class="hero-sub" id="heroSub">Amazon-Gutschein für Ihre ehrliche Bewertung</div>
+  <div class="timer-pill">
+    <span id="timerLabel">Angebot gültig noch</span>
+    <span class="timer-val" id="timerVal">47:59</span>
+  </div>
+</div>
+
+<div class="card" id="mainCard">
+  <div class="steps-wrap">
+    <div class="section-label" id="stepsLabel">So erhalten Sie Ihren Gutschein</div>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div>
+        <div class="step-title" id="s1t">Formular ausfüllen</div>
+        <div class="step-desc" id="s1d">Nur E-Mail-Adresse und letzte 4 Ziffern Ihrer Bestellnummer</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div>
+        <div class="step-title" id="s2t">Erfahrung auf Amazon teilen</div>
+        <div class="step-desc" id="s2d">Ihre ehrliche Meinung reicht — keine 5-Sterne-Pflicht</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div>
+        <div class="step-title" id="s3t">Gutschein erhalten</div>
+        <div class="step-desc" id="s3d">Innerhalb 24 Stunden per E-Mail, unbegrenzt gültig</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-wrap" id="formWrap">
+    <label class="f-label" id="emailLabel">E-MAIL-ADRESSE</label>
+    <input class="f-input" type="email" id="emailInput" placeholder="name@beispiel.de" autocomplete="email">
+    <div class="f-err" id="emailErr">Bitte gültige E-Mail-Adresse eingeben</div>
+
+    <label class="f-label" id="orderLabel">LETZTE 4 ZIFFERN DER BESTELLNUMMER</label>
+    <input class="f-input" type="text" id="orderInput" placeholder="z. B. 5678" maxlength="4" inputmode="numeric" autocomplete="off">
+    <div class="f-err" id="orderErr">Bitte 4 Ziffern eingeben</div>
+
+    <button class="cta-btn" id="ctaBtn" onclick="handleSubmit()">
+      <span id="ctaText">Jetzt €6 Gutschein sichern →</span>
+    </button>
+
+    <p class="gdpr-text" id="gdprText">
+      Ihre Daten werden ausschließlich zur Gutscheinabwicklung verwendet und gemäß DSGVO verarbeitet. Keine Weitergabe an Dritte.
+    </p>
+  </div>
+
+  <!-- Success state (hidden initially) -->
+  <div class="success-wrap" id="successWrap">
+    <div class="success-check">✓</div>
+    <div class="success-title" id="okTitle">Vielen Dank!</div>
+    <div class="success-sub" id="okSub">
+      Ihr Gutschein ist reserviert. Bitte teilen Sie jetzt Ihre Erfahrung auf Amazon — Sie erhalten den Code innerhalb von 24 Stunden per E-Mail.
+    </div>
+    <div class="review-guide">
+      <div class="guide-title" id="guideTitle">So hinterlassen Sie eine Bewertung</div>
+      <div class="guide-step" id="g1">① Amazon.de öffnen → Meine Bestellungen</div>
+      <div class="guide-step" id="g2">② Ihr Produkt suchen → „Rezension schreiben"</div>
+      <div class="guide-step" id="g3">③ Ehrliche Erfahrung beschreiben — fertig</div>
+    </div>
+  </div>
+</div>
+
+<div class="trust-bar">
+  <div class="trust-item">
+    <div class="trust-icon">🔒</div>
+    <div class="trust-label" id="t1">DSGVO-konform</div>
+  </div>
+  <div class="trust-item">
+    <div class="trust-icon">👥</div>
+    <div class="trust-label" id="t2">1.200+ Teilnehmer</div>
+  </div>
+  <div class="trust-item">
+    <div class="trust-icon">✅</div>
+    <div class="trust-label" id="t3">100% ausgezahlt</div>
+  </div>
+</div>
+
+<div class="footer" id="footerText">
+  Diese Aktion steht in keiner Verbindung mit Amazon.com, Inc. oder seinen Tochtergesellschaften.
+</div>
+
+<script>
+// ─── Language data ────────────────────────────────────────────────
+const L = {
+  de:{flag:'🇩🇪',label:'DE',currency:'€',amount:'6',
+    eyebrow:'Exklusiver Vorteil',
+    sub:'Amazon-Gutschein für Ihre ehrliche Bewertung',
+    timerLabel:'Angebot gültig noch',
+    stepsLabel:'So erhalten Sie Ihren Gutschein',
+    s1t:'Formular ausfüllen',s1d:'Nur E-Mail und letzte 4 Ziffern Ihrer Bestellnummer',
+    s2t:'Erfahrung auf Amazon teilen',s2d:'Ihre ehrliche Meinung reicht — keine 5-Sterne-Pflicht',
+    s3t:'Gutschein erhalten',s3d:'Innerhalb 24 Stunden per E-Mail, unbegrenzt gültig',
+    emailLabel:'E-MAIL-ADRESSE',emailPh:'name@beispiel.de',
+    orderLabel:'LETZTE 4 ZIFFERN DER BESTELLNUMMER',orderPh:'z. B. 5678',
+    ctaText:'Jetzt €6 Gutschein sichern →',
+    gdpr:'Ihre Daten werden ausschließlich zur Gutscheinabwicklung verwendet und gemäß DSGVO verarbeitet. Keine Weitergabe an Dritte.',
+    emailErr:'Bitte gültige E-Mail-Adresse eingeben',
+    orderErr:'Bitte 4 Ziffern eingeben',
+    okTitle:'Vielen Dank!',
+    okSub:'Ihr Gutschein ist reserviert. Bitte teilen Sie jetzt Ihre Erfahrung auf Amazon — Sie erhalten den Code innerhalb von 24 Stunden per E-Mail.',
+    guideTitle:'So hinterlassen Sie eine Bewertung',
+    g1:'① Amazon.de öffnen → Meine Bestellungen',
+    g2:'② Ihr Produkt suchen → „Rezension schreiben"',
+    g3:'③ Ehrliche Erfahrung beschreiben — fertig',
+    t1:'DSGVO-konform',t2:'1.200+ Teilnehmer',t3:'100% ausgezahlt',
+    footer:'Diese Aktion steht in keiner Verbindung mit Amazon.com, Inc. oder seinen Tochtergesellschaften.'},
+
+  fr:{flag:'🇫🇷',label:'FR',currency:'€',amount:'6',
+    eyebrow:'Avantage exclusif',
+    sub:'Bon Amazon pour votre avis honnête',
+    timerLabel:'Offre valable encore',
+    stepsLabel:'Comment obtenir votre bon',
+    s1t:'Remplir le formulaire',s1d:'Juste votre e-mail et les 4 derniers chiffres de votre commande',
+    s2t:'Partager votre avis sur Amazon',s2d:'Votre avis honnête suffit — pas d\'obligation de mettre 5 étoiles',
+    s3t:'Recevoir le bon',s3d:'Sous 24 h par e-mail, sans date d\'expiration',
+    emailLabel:'ADRESSE E-MAIL',emailPh:'nom@exemple.fr',
+    orderLabel:'4 DERNIERS CHIFFRES DU N° DE COMMANDE',orderPh:'ex. 5678',
+    ctaText:'Obtenir mon bon de 6 € →',
+    gdpr:'Vos données sont utilisées uniquement pour l\'envoi du bon et traitées conformément au RGPD. Aucun partage avec des tiers.',
+    emailErr:'Veuillez saisir une adresse e-mail valide',
+    orderErr:'Veuillez saisir 4 chiffres',
+    okTitle:'Merci beaucoup !',
+    okSub:'Votre bon est réservé. Partagez maintenant votre avis sur Amazon — vous recevrez le code dans les 24 heures par e-mail.',
+    guideTitle:'Comment laisser un avis',
+    g1:'① Ouvrir Amazon.fr → Mes commandes',
+    g2:'② Trouver le produit → « Donner mon avis »',
+    g3:'③ Partager votre expérience honnête — terminé',
+    t1:'Conforme RGPD',t2:'1 200+ participants',t3:'100% versé',
+    footer:'Cette offre n\'est pas affiliée à Amazon.com, Inc. ou ses filiales.'},
+
+  it:{flag:'🇮🇹',label:'IT',currency:'€',amount:'6',
+    eyebrow:'Vantaggio esclusivo',
+    sub:'Buono Amazon per la tua opinione onesta',
+    timerLabel:'Offerta valida ancora',
+    stepsLabel:'Come ricevere il tuo buono',
+    s1t:'Compila il modulo',s1d:'Solo e-mail e ultime 4 cifre del numero d\'ordine',
+    s2t:'Condividi la tua esperienza su Amazon',s2d:'La tua opinione onesta è sufficiente — non serve dare 5 stelle',
+    s3t:'Ricevi il buono',s3d:'Entro 24 ore via e-mail, validità illimitata',
+    emailLabel:'INDIRIZZO E-MAIL',emailPh:'nome@esempio.it',
+    orderLabel:'ULTIME 4 CIFRE DEL NUMERO D\'ORDINE',orderPh:'es. 5678',
+    ctaText:'Ottieni il mio buono da 6 € →',
+    gdpr:'I tuoi dati vengono utilizzati solo per l\'invio del buono e trattati in conformità con il GDPR. Nessuna condivisione con terzi.',
+    emailErr:'Inserisci un indirizzo e-mail valido',
+    orderErr:'Inserisci 4 cifre',
+    okTitle:'Grazie mille!',
+    okSub:'Il tuo buono è riservato. Condividi ora la tua esperienza su Amazon — riceverai il codice entro 24 ore via e-mail.',
+    guideTitle:'Come lasciare una recensione',
+    g1:'① Apri Amazon.it → I miei ordini',
+    g2:'② Trova il prodotto → «Scrivi una recensione»',
+    g3:'③ Condividi la tua esperienza onesta — fatto',
+    t1:'Conforme GDPR',t2:'1.200+ partecipanti',t3:'100% erogato',
+    footer:'Questa offerta non è affiliata ad Amazon.com, Inc. o alle sue filiali.'},
+
+  es:{flag:'🇪🇸',label:'ES',currency:'€',amount:'6',
+    eyebrow:'Ventaja exclusiva',
+    sub:'Vale Amazon por tu opinión honesta',
+    timerLabel:'Oferta válida aún',
+    stepsLabel:'Cómo obtener tu vale',
+    s1t:'Rellena el formulario',s1d:'Solo tu e-mail y los últimos 4 dígitos de tu pedido',
+    s2t:'Comparte tu experiencia en Amazon',s2d:'Tu opinión honesta es suficiente — no se requieren 5 estrellas',
+    s3t:'Recibe el vale',s3d:'En 24 h por e-mail, sin fecha de caducidad',
+    emailLabel:'DIRECCIÓN DE E-MAIL',emailPh:'nombre@ejemplo.es',
+    orderLabel:'ÚLTIMOS 4 DÍGITOS DEL N.º DE PEDIDO',orderPh:'ej. 5678',
+    ctaText:'Conseguir mi vale de 6 € →',
+    gdpr:'Tus datos se usan exclusivamente para enviar el vale y se tratan conforme al RGPD. No se comparten con terceros.',
+    emailErr:'Introduce una dirección de e-mail válida',
+    orderErr:'Introduce 4 dígitos',
+    okTitle:'¡Muchas gracias!',
+    okSub:'Tu vale está reservado. Comparte ahora tu experiencia en Amazon — recibirás el código en 24 horas por e-mail.',
+    guideTitle:'Cómo dejar una reseña',
+    g1:'① Abrir Amazon.es → Mis pedidos',
+    g2:'② Encontrar el producto → «Escribir una reseña»',
+    g3:'③ Compartir tu experiencia honesta — listo',
+    t1:'Conforme RGPD',t2:'1.200+ participantes',t3:'100% pagado',
+    footer:'Esta oferta no está afiliada a Amazon.com, Inc. ni a sus filiales.'},
+
+  en:{flag:'🇬🇧',label:'EN',currency:'£',amount:'5',
+    eyebrow:'Exclusive benefit',
+    sub:'Amazon voucher for your honest review',
+    timerLabel:'Offer valid for',
+    stepsLabel:'How to claim your voucher',
+    s1t:'Fill in the form',s1d:'Just your email and the last 4 digits of your order number',
+    s2t:'Share your experience on Amazon',s2d:'Your honest opinion is all we need — no 5-star requirement',
+    s3t:'Receive your voucher',s3d:'Within 24 hours by email, no expiry date',
+    emailLabel:'EMAIL ADDRESS',emailPh:'name@example.co.uk',
+    orderLabel:'LAST 4 DIGITS OF YOUR ORDER NUMBER',orderPh:'e.g. 5678',
+    ctaText:'Claim my £5 voucher →',
+    gdpr:'Your data is used solely to send the voucher and processed in accordance with GDPR. Never shared with third parties.',
+    emailErr:'Please enter a valid email address',
+    orderErr:'Please enter 4 digits',
+    okTitle:'Thank you!',
+    okSub:'Your voucher is reserved. Please share your experience on Amazon now — you\'ll receive the code within 24 hours by email.',
+    guideTitle:'How to leave a review',
+    g1:'① Open Amazon.co.uk → Your Orders',
+    g2:'② Find the product → "Write a product review"',
+    g3:'③ Share your honest experience — done',
+    t1:'GDPR compliant',t2:'1,200+ claimed',t3:'100% paid out',
+    footer:'This offer is not affiliated with Amazon.com, Inc. or its subsidiaries.'}
+};
+
+// ─── Detect language from browser ────────────────────────────────
+function detectLang() {
+  const nav = navigator.language || navigator.languages?.[0] || 'de';
+  const code = nav.split('-')[0].toLowerCase();
+  return L[code] ? code : 'de';
+}
+
+let cur = detectLang();
+
+// ─── Apply language ───────────────────────────────────────────────
+function applyLang(k) {
+  cur = k;
+  const l = L[k];
+  document.documentElement.lang = k;
+
+  // Hero
+  document.getElementById('heroEyebrow').textContent = l.eyebrow;
+  const amountEl = document.getElementById('heroAmount');
+  amountEl.innerHTML = k === 'en'
+    ? `<sup>${l.currency}</sup>${l.amount}`
+    : `<sup>${l.currency}</sup>${l.amount}`;
+  document.getElementById('heroSub').textContent = l.sub;
+  document.getElementById('timerLabel').textContent = l.timerLabel;
+
+  // Steps
+  document.getElementById('stepsLabel').textContent = l.stepsLabel;
+  document.getElementById('s1t').textContent = l.s1t;
+  document.getElementById('s1d').textContent = l.s1d;
+  document.getElementById('s2t').textContent = l.s2t;
+  document.getElementById('s2d').textContent = l.s2d;
+  document.getElementById('s3t').textContent = l.s3t;
+  document.getElementById('s3d').textContent = l.s3d;
+
+  // Form
+  document.getElementById('emailLabel').textContent = l.emailLabel;
+  document.getElementById('emailInput').placeholder = l.emailPh;
+  document.getElementById('orderLabel').textContent = l.orderLabel;
+  document.getElementById('orderInput').placeholder = l.orderPh;
+  document.getElementById('ctaText').textContent = l.ctaText;
+  document.getElementById('gdprText').textContent = l.gdpr;
+  document.getElementById('emailErr').textContent = l.emailErr;
+  document.getElementById('orderErr').textContent = l.orderErr;
+
+  // Success
+  document.getElementById('okTitle').textContent = l.okTitle;
+  document.getElementById('okSub').textContent = l.okSub;
+  document.getElementById('guideTitle').textContent = l.guideTitle;
+  document.getElementById('g1').textContent = l.g1;
+  document.getElementById('g2').textContent = l.g2;
+  document.getElementById('g3').textContent = l.g3;
+
+  // Trust
+  document.getElementById('t1').textContent = l.t1;
+  document.getElementById('t2').textContent = l.t2;
+  document.getElementById('t3').textContent = l.t3;
+  document.getElementById('footerText').textContent = l.footer;
+
+  buildLangBar();
+}
+
+function buildLangBar() {
+  const bar = document.getElementById('langBar');
+  bar.innerHTML = '';
+  Object.keys(L).forEach(k => {
+    const btn = document.createElement('button');
+    btn.className = 'lang-btn' + (k === cur ? ' active' : '');
+    btn.textContent = L[k].flag + ' ' + L[k].label;
+    btn.onclick = () => applyLang(k);
+    bar.appendChild(btn);
+  });
+}
+
+// ─── Timer ────────────────────────────────────────────────────────
+let secs = 47 * 60 + 59;
+function tick() {
+  secs--;
+  if (secs < 0) secs = 0;
+  const m = Math.floor(secs / 60), s = secs % 60;
+  document.getElementById('timerVal').textContent =
+    (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+  if (secs > 0) setTimeout(tick, 1000);
+}
+setTimeout(tick, 1000);
+
+// ─── Form submit ──────────────────────────────────────────────────
+function handleSubmit() {
+  const email = document.getElementById('emailInput').value.trim();
+  const order = document.getElementById('orderInput').value.trim();
+  const l = L[cur];
+  let ok = true;
+
+  document.getElementById('emailErr').style.display = 'none';
+  document.getElementById('orderErr').style.display = 'none';
+  document.getElementById('emailInput').classList.remove('error');
+  document.getElementById('orderInput').classList.remove('error');
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    document.getElementById('emailErr').style.display = 'block';
+    document.getElementById('emailInput').classList.add('error');
+    ok = false;
+  }
+  if (!/^\d{4}$/.test(order)) {
+    document.getElementById('orderErr').style.display = 'block';
+    document.getElementById('orderInput').classList.add('error');
+    ok = false;
+  }
+  if (!ok) return;
+
+  // Track submission event
+  trackEvent('submit', { lang: cur, order_suffix: order });
+
+  // POST to Cloudflare Worker endpoint
+  fetch('/api/submit', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, order_suffix: order, lang: cur })
+  }).catch(() => {}); // silently ignore errors
+
+  // Show success
+  document.getElementById('formWrap').style.display = 'none';
+  const sw = document.getElementById('successWrap');
+  sw.style.display = 'flex';
+}
+
+// ─── Analytics helper ─────────────────────────────────────────────
+function trackEvent(name, props) {
+  fetch('/api/track', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ event: name, ...props, ts: Date.now() })
+  }).catch(() => {});
+}
+
+// ─── Input listeners ──────────────────────────────────────────────
+document.getElementById('emailInput').addEventListener('input', () => {
+  document.getElementById('emailErr').style.display = 'none';
+  document.getElementById('emailInput').classList.remove('error');
+});
+document.getElementById('orderInput').addEventListener('input', () => {
+  document.getElementById('orderErr').style.display = 'none';
+  document.getElementById('orderInput').classList.remove('error');
+});
+
+// ─── Init ─────────────────────────────────────────────────────────
+applyLang(cur);
+
+// Track page view on load
+window.addEventListener('load', () => {
+  trackEvent('pageview', { lang: cur, ref: document.referrer });
+});
+</script>
+</body>
+</html>
