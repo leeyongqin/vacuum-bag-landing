@@ -24,9 +24,25 @@
       "binding": "ANALYTICS_KV",
       "id": "1caf87388ed24dc49da2a8548cdfc00a"
     }
-  ]
+  ],
 
-  // STATS_SECRET is intentionally NOT set here — secrets must never be
-  // committed to source control. Set it with:
-  //   wrangler secret put STATS_SECRET
+  // Non-secret configuration. Anything here is world-readable in the repo —
+  // never put credentials in `vars`, use `wrangler secret put` for those.
+  "vars": {
+    // Sender shown on the warranty confirmation email (must be a verified
+    // sender/domain at your email provider).
+    "FROM_EMAIL": "support@aromelivii.com",
+    // Brand name used in the email subject / header.
+    "BRAND_NAME": "AromeLivii",
+    // Comma-separated list of origins allowed to call /api/* from a browser.
+    // Requests from any other origin are rejected with 403.
+    "ALLOWED_ORIGINS": "https://amazon-feedback.aromelivii.com"
+  }
+
+  // Secrets are intentionally NOT set here — they must never be committed to
+  // source control. Set them with:
+  //   wrangler secret put STATS_SECRET       (dashboard password)
+  //   wrangler secret put RESEND_API_KEY     (email delivery; optional —
+  //                                           without it the confirmation
+  //                                           email is skipped and logged)
 }

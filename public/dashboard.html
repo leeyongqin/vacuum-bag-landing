@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="zh">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html lang="zh" data-page-node-id="HwPIuHxWQNoOPZB7fPuo8X">
+<head data-page-node-id="cuvlHPKWvjRJkCtLDW4A6C">
+<meta charset="UTF-8" data-page-node-id="AEBIHKxvTunB8Cz8ddzXZE">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" data-page-node-id="ndHnXDyyaWVxH5WXv68crY">
 <title>数据统计面板</title>
-<meta name="robots" content="noindex,nofollow">
+<meta name="robots" content="noindex,nofollow" data-page-node-id="0rpehKLqTcUQ7ZT6LD0Mdp">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif; background: #f5f5f5; color: #1a1a1a; padding: 20px; }
@@ -35,43 +35,46 @@
   .refresh-btn { float: right; padding: 6px 14px; background: white; border: 1px solid #ddd; border-radius: 6px; font-size: 12px; cursor: pointer; margin-bottom: 10px; }
 </style>
 </head>
-<body>
+<body data-page-node-id="4195CIT1l04uzRgJBbWV61">
 
 <!-- Login screen -->
-<div class="login-box" id="loginBox">
-  <h2>📊 统计面板</h2>
-  <p style="font-size:13px;color:#888;margin-bottom:16px">请输入统计密钥以查看数据</p>
-  <input type="password" id="secretInput" placeholder="stats secret key" onkeydown="if(event.key==='Enter')loadStats()">
-  <button class="btn" onclick="loadStats()">查看数据</button>
-  <div class="error-msg" id="loginErr"></div>
+<div class="login-box" id="loginBox" data-page-node-id="actOmTC5yl9HkzmHdIGisV">
+  <h2 data-page-node-id="kNjCgj5P8ePeJMaVLgVtrB">📊 统计面板</h2>
+  <p style="font-size:13px;color:#888;margin-bottom:16px" data-page-node-id="Y0l7y8D1knlWQpUHK7TsPw">请输入统计密钥以查看数据</p>
+  <input type="password" id="secretInput" placeholder="stats secret key" onkeydown="if(event.key==='Enter')loadStats()" data-page-node-id="LevuNdIBvDCyyyv0E3ybZ0">
+  <button class="btn" onclick="loadStats()" data-page-node-id="kasxLijzHuPI4bFdC00CTJ">查看数据</button>
+  <div class="error-msg" id="loginErr" data-page-node-id="iSk0gp9WO3xyzmKxIUK2wF"></div>
 </div>
 
 <!-- Dashboard -->
-<div id="dashboard" style="display:none; max-width:900px; margin:0 auto;">
-  <button class="refresh-btn" onclick="loadStats(null, true)">↻ 刷新</button>
-  <h1>落地页数据统计</h1>
+<div id="dashboard" style="display:none; max-width:900px; margin:0 auto;" data-page-node-id="nQITQ44WroVoT052uemrTo">
+  <button class="refresh-btn" onclick="loadStats(null, true)" data-page-node-id="8SIeKeGeL0O6MyiQ4sLE55">↻ 刷新</button>
+  <h1 data-page-node-id="caBHlNZ17YT5SkFF0bAHJi">落地页数据统计</h1>
 
-  <div class="grid" id="totalsGrid"></div>
+  <div class="grid" id="totalsGrid" data-page-node-id="cHPTxXQ3Ifi0W30t1CgMCv"></div>
 
-  <div class="section-title">各语言访问分布（近7天合计）</div>
-  <div class="lang-bar" id="langBar"></div>
+  <div class="section-title" id="langSectionTitle" data-page-node-id="lpx6pq8iD0LFCDkEqbUoi9"></div>
+  <div class="lang-bar" id="langBar" data-page-node-id="Hq3EiMj1SbK0ht52ZcicRA"></div>
 
-  <div class="section-title">每日明细</div>
-  <table>
-    <thead>
-      <tr>
-        <th>日期</th>
-        <th>浏览量 PV</th>
-        <th>提交数</th>
-        <th>转化率</th>
-        <th>获客量</th>
+  <div class="section-title" data-page-node-id="ig36v7mlnv7hcWFKahwD8Q">每日明细</div>
+  <table data-page-node-id="UaHHKYxW0nhI02kMrjMTti">
+    <thead data-page-node-id="h3kiljHrnl4MEMtKWiGMc9">
+      <tr data-page-node-id="f7xXZEj1B5YTItgQcIy9hT">
+        <th data-page-node-id="O54nJIBTfO3LlXzVVEoVEB">日期</th>
+        <th data-page-node-id="ABWd33VALQxx6C3M6M8pLT">浏览量 PV</th>
+        <th data-page-node-id="pSnY0AIqHw6pLZomQx3Tug">提交数</th>
+        <th data-page-node-id="3tDwhBj4tiqZK4JV144TJc">转化率</th>
+        <th data-page-node-id="faAyLMfO3f565w8QqedRvE">获客量</th>
       </tr>
     </thead>
-    <tbody id="tableBody"></tbody>
+    <tbody id="tableBody" data-page-node-id="t5i7egJvx3ksQUL09vZ7ke"></tbody>
   </table>
 </div>
 
 <script>
+// Single source of truth for the reporting window — the section titles below
+// render from it, so the UI can never drift from the data it shows.
+const DAYS = 14;
 let savedSecret = '';
 
 async function loadStats(secret, refresh) {
@@ -80,7 +83,9 @@ async function loadStats(secret, refresh) {
   savedSecret = s;
 
   try {
-    const res = await fetch(`/api/stats?secret=${encodeURIComponent(s)}&days=14`);
+    const res = await fetch(`/api/stats?days=${DAYS}`, {
+      headers: { 'X-Stats-Secret': s },
+    });
     if (res.status === 401) {
       document.getElementById('loginErr').textContent = '密钥错误，请重试';
       return;
@@ -92,11 +97,13 @@ async function loadStats(secret, refresh) {
 
     const t = data.totals;
     document.getElementById('totalsGrid').innerHTML = `
-      <div class="stat-card"><div class="stat-label">总浏览量</div><div class="stat-val">${t.pageviews.toLocaleString()}</div><div class="stat-sub">过去14天</div></div>
+      <div class="stat-card"><div class="stat-label">总浏览量</div><div class="stat-val">${t.pageviews.toLocaleString()}</div><div class="stat-sub">过去 ${DAYS} 天</div></div>
       <div class="stat-card"><div class="stat-label">表单提交</div><div class="stat-val">${t.submissions.toLocaleString()}</div><div class="stat-sub">有效信息</div></div>
       <div class="stat-card"><div class="stat-label">转化率</div><div class="stat-val">${t.conversion_rate}</div><div class="stat-sub">浏览→提交</div></div>
-      <div class="stat-card"><div class="stat-label">获客总量</div><div class="stat-val">${t.leads.toLocaleString()}</div><div class="stat-sub">去重邮箱</div></div>
+      <div class="stat-card"><div class="stat-label">获客总量</div><div class="stat-val">${t.leads.toLocaleString()}</div><div class="stat-sub">去重邮箱（累计）</div></div>
     `;
+
+    document.getElementById('langSectionTitle').textContent = `各语言访问分布（近 ${DAYS} 天合计）`;
 
     // Language totals
     const langTotals = data.daily.reduce((acc, r) => {
