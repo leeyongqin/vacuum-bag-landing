@@ -67,23 +67,31 @@ wrangler secret put STATS_SECRET
 
 按提示输入你要设置的密码（不会写入代码仓库，安全存储在 Cloudflare）。
 
-### 2b. 设置确认邮件（可选，但建议配置）
+### 2b. 配置确认邮件
 
-落地页文案承诺「提交后立即收到确认邮件」，发信由 `src/emails.js` +
-`sendConfirmationEmail()`（默认走 [Resend](https://resend.com)）实现。
-**不配置也能正常部署** —— 只是跳过发信并在日志里打一条 warning。
+落地页文案承诺「提交后立即收到确认邮件」，发信由 `src/emails.js`（6 语言模板）+
+`sendConfirmationEmail()` 实现。**不配置也能正常部署** —— 只是跳过发信并在日志里打一条 warning。
 
-```bash
-wrangler secret put RESEND_API_KEY     # 在 Resend 后台创建 API Key
-```
+发信通道按以下顺序自动选择，代码无需改动：
+
+| 优先级 | 通道 | 前置条件 |
+|--------|------|----------|
+| 1 | **Cloudflare Email Service**（`send_email` 绑定，已在 `wrangler.jsonc` 声明） | ① 在 Cloudflare 控制台把 `aromelivii.com` 接入 Email Service；② **Workers 付费版**（免费版只能发给账号内已验证地址，不能发给任意买家） |
+| 2 | Resend REST API | `wrangler secret put RESEND_API_KEY`，并在 Resend 后台验证发件域名 |
+| 3 | 不发送 | 以上都不满足时静默跳过，注册流程不受影响 |
+
+套餐与额度参考：Workers 付费版含每月 3,000 封外发邮件，超出 $0.35 / 1,000 封。
 
 发信人地址与品牌名在 `wrangler.jsonc` 的 `vars` 里：
 
 | 字段 | 说明 |
 |------|------|
-| `FROM_EMAIL` | 发件地址，必须是已在邮件服务商验证过的域名 |
+| `FROM_EMAIL` | 发件地址，必须是已接入/验证过的域名 |
 | `BRAND_NAME` | 邮件主题/页头显示的品牌名 |
 | `ALLOWED_ORIGINS` | 允许调用 `/api/*` 的来源白名单（逗号分隔）。不在名单内的浏览器请求会被 403 拒绝；`localhost` / `127.0.0.1` 始终放行便于本地调试 |
+
+`send_email` 绑定已用 `allowed_sender_addresses` 限制为只能从 `support@aromelivii.com` 发出，
+避免 Worker 被利用后冒充域名下任意地址发信。
 
 > 换邮件服务商只需改 `src/worker.js` 里的 `sendConfirmationEmail()` 一个函数。
 

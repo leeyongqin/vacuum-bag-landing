@@ -15,7 +15,9 @@
  * Bindings required (declared in wrangler.jsonc, not the Dashboard):
  *   ANALYTICS_KV   — KV namespace
  *   STATS_SECRET   — secret, set via `wrangler secret put STATS_SECRET`
- *   RESEND_API_KEY — optional secret; without it confirmation emails are skipped
+ *   EMAIL          — optional `send_email` binding (Cloudflare Email Service);
+ *                    preferred transport for confirmation emails
+ *   RESEND_API_KEY — optional secret; fallback transport when EMAIL is absent
  *   FROM_EMAIL / BRAND_NAME / ALLOWED_ORIGINS — plain vars in wrangler.jsonc
  *
  * NOTE ON COUNTER ACCURACY: KV has no atomic increment, so every counter here
@@ -303,18 +305,22 @@ async function handleSubmit(request, env, ctx) {
 /**
  * Sends the localized warranty confirmation email.
  *
- * Provider: Resend (https://resend.com/docs/api-reference/emails/send-email).
- * Swapping providers means rewriting only this function.
- * When RESEND_API_KEY / FROM_EMAIL are missing the send is skipped and logged
- * so the deployment keeps working before email is configured.
+ * Transport is chosen at runtime, in order of preference:
+ *   1. Cloudflare Email Service via the native `send_email` binding (env.EMAIL)
+ *      — no API key, but requires the Workers Paid plan for arbitrary
+ *      recipients and the sending domain onboarded to Email Service.
+ *   2. Resend REST API (env.RESEND_API_KEY) — works on any plan.
+ *   3. Nothing configured → skip and log, so registration still succeeds.
+ *
+ * A delivery failure must never turn a successful registration into an error
+ * for the buyer, so every branch swallows its error and reports the outcome.
  */
 async function sendConfirmationEmail(env, { email, orderSuffix, lang }) {
-  const apiKey = env.RESEND_API_KEY;
   const from = env.FROM_EMAIL;
   const brandName = env.BRAND_NAME || 'AromeLivii';
 
-  if (!apiKey || !from) {
-    console.warn('Email not configured (RESEND_API_KEY / FROM_EMAIL) — confirmation email skipped');
+  if (!from) {
+    console.warn('FROM_EMAIL not set — confirmation email skipped');
     return { skipped: true };
   }
 
@@ -323,6 +329,30 @@ async function sendConfirmationEmail(env, { email, orderSuffix, lang }) {
     supportEmail: from,
     orderSuffix,
   });
+
+  // ── 1. Cloudflare Email Service (native binding) ────────────────
+  if (env.EMAIL && typeof env.EMAIL.send === 'function') {
+    try {
+      const res = await env.EMAIL.send({
+        to: email,
+        from: { email: from, name: brandName },
+        subject,
+        html,
+        text,
+      });
+      return { ok: true, provider: 'cloudflare', messageId: res && res.messageId };
+    } catch (err) {
+      console.error('Cloudflare Email send failed:', err && err.code, err && err.message);
+      return { ok: false, provider: 'cloudflare' };
+    }
+  }
+
+  // ── 2. Resend (fallback) ────────────────────────────────────────
+  const apiKey = env.RESEND_API_KEY;
+  if (!apiKey) {
+    console.warn('No email transport configured (EMAIL binding / RESEND_API_KEY) — confirmation email skipped');
+    return { skipped: true };
+  }
 
   try {
     const res = await fetch('https://api.resend.com/emails', {
@@ -341,12 +371,12 @@ async function sendConfirmationEmail(env, { email, orderSuffix, lang }) {
     });
     if (!res.ok) {
       console.error('Confirmation email failed:', res.status, await res.text().catch(() => ''));
-      return { ok: false };
+      return { ok: false, provider: 'resend' };
     }
-    return { ok: true };
+    return { ok: true, provider: 'resend' };
   } catch (err) {
     console.error('Confirmation email error:', err);
-    return { ok: false };
+    return { ok: false, provider: 'resend' };
   }
 }
 

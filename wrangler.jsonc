@@ -37,7 +37,19 @@
     // Comma-separated list of origins allowed to call /api/* from a browser.
     // Requests from any other origin are rejected with 403.
     "ALLOWED_ORIGINS": "https://amazon-feedback.aromelivii.com"
-  }
+  },
+
+  // Cloudflare Email Service — native outbound email, no API key needed.
+  // Prerequisites: aromelivii.com onboarded to Email Service, and the Workers
+  // Paid plan (sending to arbitrary recipients is not available on Free).
+  // Sender is restricted to the allowlist below so a compromised Worker
+  // cannot send mail as any other address on the domain.
+  "send_email": [
+    {
+      "name": "EMAIL",
+      "allowed_sender_addresses": ["support@aromelivii.com"]
+    }
+  ]
 
   // Secrets are intentionally NOT set here — they must never be committed to
   // source control. Set them with:
