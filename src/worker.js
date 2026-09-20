@@ -7,26 +7,25 @@
  *
  * Routes handled here:
  *   POST /api/track   — pageview / event analytics (writes to ANALYTICS_KV)
- *   POST /api/submit  — warranty registration (writes to ANALYTICS_KV + email)
+ *   POST /api/submit  — warranty registration (writes to ANALYTICS_KV)
  *   GET  /api/stats   — dashboard data (reads from ANALYTICS_KV, secret-gated)
  *   GET  /dashboard    — rewritten (not redirected) to /dashboard.html
  *   everything else    — served from static assets via env.ASSETS
  *
  * Bindings required (declared in wrangler.jsonc, not the Dashboard):
- *   ANALYTICS_KV   — KV namespace
- *   STATS_SECRET   — secret, set via `wrangler secret put STATS_SECRET`
- *   EMAIL          — optional `send_email` binding (Cloudflare Email Service);
- *                    preferred transport for confirmation emails
- *   RESEND_API_KEY — optional secret; fallback transport when EMAIL is absent
- *   FROM_EMAIL / BRAND_NAME / ALLOWED_ORIGINS — plain vars in wrangler.jsonc
+ *   ANALYTICS_KV    — KV namespace
+ *   STATS_SECRET    — secret, set via `wrangler secret put STATS_SECRET`
+ *   ALLOWED_ORIGINS — plain var in wrangler.jsonc (origin allowlist for /api/*)
+ *
+ * NO OUTBOUND EMAIL: registrations are only persisted to KV. There is no
+ * sending code, no email binding and no mail-provider secret — the seller
+ * exports the lead list from /dashboard and follows up by hand.
  *
  * NOTE ON COUNTER ACCURACY: KV has no atomic increment, so every counter here
  * is a best-effort `get → +1 → put`. Under concurrent traffic counts can drift
  * low. That is acceptable for marketing analytics; use Durable Objects or
  * Analytics Engine if exact numbers ever become a requirement.
  */
-
-import { buildEmail } from './emails.js';
 
 const DEFAULT_ALLOWED_ORIGINS = 'https://amazon-feedback.aromelivii.com';
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -40,15 +39,15 @@ const TTL_STATS = DAY * 90;             // pageview/event counters
 const TTL_LEADS = DAY * 180;            // registration records
 const TTL_LONG = DAY * 365;             // dedupe markers / lifetime totals
 
+const MAX_LEADS_RETURNED = 500;         // cap on the lead list sent to /dashboard
+
 export default {
   /**
    * @param {Request} request
-   * @param {{ ANALYTICS_KV?: KVNamespace, STATS_SECRET?: string, RESEND_API_KEY?: string,
-   *           FROM_EMAIL?: string, BRAND_NAME?: string, ALLOWED_ORIGINS?: string,
-   *           ASSETS: Fetcher }} env
-   * @param {{ waitUntil: (p: Promise<unknown>) => void }} ctx
+   * @param {{ ANALYTICS_KV?: KVNamespace, STATS_SECRET?: string,
+   *           ALLOWED_ORIGINS?: string, ASSETS: Fetcher }} env
    */
-  async fetch(request, env, ctx) {
+  async fetch(request, env) {
     const url = new URL(request.url);
 
     // Reject cross-origin API calls from unknown sites. CORS headers alone
@@ -65,7 +64,7 @@ export default {
 
     if (url.pathname === '/api/submit') {
       if (request.method === 'OPTIONS') return handleOptions(request, env);
-      if (request.method === 'POST') return handleSubmit(request, env, ctx);
+      if (request.method === 'POST') return handleSubmit(request, env);
     }
 
     if (url.pathname === '/api/stats' && request.method === 'GET') {
@@ -208,10 +207,12 @@ async function handleTrack(request, env) {
 
 /**
  * POST /api/submit — validates and stores a warranty registration
- * (email + order suffix + optional marketing consent), then sends the
- * confirmation email the landing page promises.
+ * (email + order suffix + optional marketing consent).
+ *
+ * Persistence only: the lead lands in ANALYTICS_KV and the seller works the
+ * list from /dashboard. No confirmation email is sent.
  */
-async function handleSubmit(request, env, ctx) {
+async function handleSubmit(request, env) {
   let body;
   try {
     body = await request.json();
@@ -290,94 +291,7 @@ async function handleSubmit(request, env, ctx) {
     console.error('Submit KV error:', err);
   }
 
-  // ── 5. Confirmation email ───────────────────────────────────────
-  // Fire-and-forget: a delivery failure must never turn a successful
-  // registration into an error for the buyer.
-  const mail = sendConfirmationEmail(env, {
-    email, orderSuffix: order_suffix, lang,
-  });
-  if (ctx && typeof ctx.waitUntil === 'function') ctx.waitUntil(mail);
-  else await mail;
-
   return json({ ok: true }, 200, request, env);
-}
-
-/**
- * Sends the localized warranty confirmation email.
- *
- * Transport is chosen at runtime, in order of preference:
- *   1. Cloudflare Email Service via the native `send_email` binding (env.EMAIL)
- *      — no API key, but requires the Workers Paid plan for arbitrary
- *      recipients and the sending domain onboarded to Email Service.
- *   2. Resend REST API (env.RESEND_API_KEY) — works on any plan.
- *   3. Nothing configured → skip and log, so registration still succeeds.
- *
- * A delivery failure must never turn a successful registration into an error
- * for the buyer, so every branch swallows its error and reports the outcome.
- */
-async function sendConfirmationEmail(env, { email, orderSuffix, lang }) {
-  const from = env.FROM_EMAIL;
-  const brandName = env.BRAND_NAME || 'AromeLivii';
-
-  if (!from) {
-    console.warn('FROM_EMAIL not set — confirmation email skipped');
-    return { skipped: true };
-  }
-
-  const { subject, html, text } = buildEmail(lang, {
-    brandName,
-    supportEmail: from,
-    orderSuffix,
-  });
-
-  // ── 1. Cloudflare Email Service (native binding) ────────────────
-  if (env.EMAIL && typeof env.EMAIL.send === 'function') {
-    try {
-      const res = await env.EMAIL.send({
-        to: email,
-        from: { email: from, name: brandName },
-        subject,
-        html,
-        text,
-      });
-      return { ok: true, provider: 'cloudflare', messageId: res && res.messageId };
-    } catch (err) {
-      console.error('Cloudflare Email send failed:', err && err.code, err && err.message);
-      return { ok: false, provider: 'cloudflare' };
-    }
-  }
-
-  // ── 2. Resend (fallback) ────────────────────────────────────────
-  const apiKey = env.RESEND_API_KEY;
-  if (!apiKey) {
-    console.warn('No email transport configured (EMAIL binding / RESEND_API_KEY) — confirmation email skipped');
-    return { skipped: true };
-  }
-
-  try {
-    const res = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        from: `${brandName} <${from}>`,
-        to: [email],
-        subject,
-        html,
-        text,
-      }),
-    });
-    if (!res.ok) {
-      console.error('Confirmation email failed:', res.status, await res.text().catch(() => ''));
-      return { ok: false, provider: 'resend' };
-    }
-    return { ok: true, provider: 'resend' };
-  } catch (err) {
-    console.error('Confirmation email error:', err);
-    return { ok: false, provider: 'resend' };
-  }
 }
 
 /**
@@ -427,6 +341,7 @@ async function handleStats(request, env) {
   const LANGS = ['de', 'fr', 'it', 'es', 'nl', 'en'];
 
   const results = [];
+  const leadRows = [];
   for (const day of days) {
     const [pv, sub, leads, ...langVals] = await Promise.all([
       env.ANALYTICS_KV.get(`stats:${day}:pageview`),
@@ -448,7 +363,17 @@ async function handleStats(request, env) {
       by_lang: byLang,
       leads_count: (leads || []).length,
     });
+
+    // Flatten the daily registration lists so the dashboard can show the
+    // actual contacts — this is the list the seller works through by hand.
+    if (Array.isArray(leads)) {
+      for (const l of leads) leadRows.push({ ...l, date: day });
+    }
   }
+
+  // Newest first; cap the payload so a busy period can't bloat the response.
+  leadRows.sort((a, b) => String(b.ts || '').localeCompare(String(a.ts || '')));
+  const leadList = leadRows.slice(0, MAX_LEADS_RETURNED);
 
   // Totals
   const totals = results.reduce((acc, r) => ({
@@ -473,5 +398,7 @@ async function handleStats(request, env) {
         : '0%',
     },
     daily: results,
+    leads: leadList,
+    leads_truncated: leadRows.length > leadList.length,
   }, null, 2), { headers });
 }

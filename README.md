@@ -17,15 +17,17 @@
 /
 ├── public/              ← 静态资源目录（对应 wrangler.jsonc 里的 assets.directory）
 │   ├── index.html       ← 主落地页（6语言自动检测，延保注册流程）
-│   └── dashboard.html   ← 数据统计面板
+│   └── dashboard.html   ← 数据统计面板 + 注册明细表
 ├── src/
-│   ├── worker.js        ← Worker 入口：路由 /api/* + 静态资源回退 + /dashboard 重写
-│   └── emails.js        ← 6 语言延保确认邮件模板
+│   └── worker.js        ← Worker 入口：路由 /api/* + 静态资源回退 + /dashboard 重写
 └── wrangler.jsonc        ← Worker 配置（assets / KV 绑定都在这里声明）
 ```
 
 `/api/track`、`/api/submit`、`/api/stats`、`/dashboard` 的重写规则全部在
 `src/worker.js` 里实现，不再依赖 `_redirects` 或 Pages Functions 的文件路由约定。
+
+> **本项目不发送任何邮件。** 买家注册信息只写入 KV，由卖家从 `/dashboard`
+> 导出后手工跟进。没有发信代码、没有邮件绑定、没有邮件服务商密钥。
 
 ### 上线前必填的 CONFIG
 
@@ -67,33 +69,26 @@ wrangler secret put STATS_SECRET
 
 按提示输入你要设置的密码（不会写入代码仓库，安全存储在 Cloudflare）。
 
-### 2b. 配置确认邮件
+### 2b. 环境变量
 
-落地页文案承诺「提交后立即收到确认邮件」，发信由 `src/emails.js`（6 语言模板）+
-`sendConfirmationEmail()` 实现。**不配置也能正常部署** —— 只是跳过发信并在日志里打一条 warning。
-
-发信通道按以下顺序自动选择，代码无需改动：
-
-| 优先级 | 通道 | 前置条件 |
-|--------|------|----------|
-| 1 | **Cloudflare Email Service**（`send_email` 绑定，已在 `wrangler.jsonc` 声明） | ① 在 Cloudflare 控制台把 `aromelivii.com` 接入 Email Service；② **Workers 付费版**（免费版只能发给账号内已验证地址，不能发给任意买家） |
-| 2 | Resend REST API | `wrangler secret put RESEND_API_KEY`，并在 Resend 后台验证发件域名 |
-| 3 | 不发送 | 以上都不满足时静默跳过，注册流程不受影响 |
-
-套餐与额度参考：Workers 付费版含每月 3,000 封外发邮件，超出 $0.35 / 1,000 封。
-
-发信人地址与品牌名在 `wrangler.jsonc` 的 `vars` 里：
+`wrangler.jsonc` 的 `vars` 里只有一项：
 
 | 字段 | 说明 |
 |------|------|
-| `FROM_EMAIL` | 发件地址，必须是已接入/验证过的域名 |
-| `BRAND_NAME` | 邮件主题/页头显示的品牌名 |
 | `ALLOWED_ORIGINS` | 允许调用 `/api/*` 的来源白名单（逗号分隔）。不在名单内的浏览器请求会被 403 拒绝；`localhost` / `127.0.0.1` 始终放行便于本地调试 |
 
-`send_email` 绑定已用 `allowed_sender_addresses` 限制为只能从 `support@aromelivii.com` 发出，
-避免 Worker 被利用后冒充域名下任意地址发信。
+**无需配置任何邮件相关变量或密钥** —— 本项目不发邮件，注册数据只落 KV。
 
-> 换邮件服务商只需改 `src/worker.js` 里的 `sendConfirmationEmail()` 一个函数。
+### 2c. 注册数据怎么处理
+
+买家提交后，数据写入 KV，不会触发任何自动动作。卖家打开 `/dashboard` 后：
+
+1. 「注册明细」表列出该时间段内全部注册记录（时间 / 邮箱 / 订单后 4 位 / 语言 / 营销是否同意）；
+2. 点右上角「复制 N 个邮箱」可一次性复制全部邮箱，粘到邮件工具里批量跟进；
+3. 表格按时间倒序，最新注册在最上面。
+
+需要拉取更长时间的数据时，把 `public/dashboard.html` 顶部的 `DAYS` 常量改大（后端上限 90 天）。
+
 
 ### 3. 确认 Worker 名称
 
@@ -137,7 +132,8 @@ https://amazon-feedback.aromelivii.com/dashboard
 输入你设置的 `STATS_SECRET` 即可查看：
 - 每日浏览量 / 注册数 / 转化率
 - 各语言访问分布（德/法/意/西/荷/英）
-- 14天每日明细
+- **注册明细**（邮箱 / 订单后 4 位 / 语言 / 营销同意，可一键复制全部邮箱）
+- 14 天每日明细
 
 ---
 
@@ -146,8 +142,8 @@ https://amazon-feedback.aromelivii.com/dashboard
 | 接口 | 方法 | 说明 |
 |------|------|------|
 | /api/track | POST | 记录浏览事件 |
-| /api/submit | POST | 保存表单提交（按 IP 限流 5 次/小时，并发送确认邮件） |
-| /api/stats | GET | 读取统计数据，`days` 取值 1–90（默认 14） |
+| /api/submit | POST | 保存表单提交（按 IP 限流 5 次/小时，**仅落库不发信**） |
+| /api/stats | GET | 读取统计数据与注册明细，`days` 取值 1–90（默认 14） |
 
 鉴权方式：优先使用请求头，`?secret=` 仅为兼容旧书签而保留（**已废弃** ——
 query string 会进入访问日志）：
@@ -164,7 +160,10 @@ curl -H "Authorization: Bearer $STATS_SECRET" "https://amazon-feedback.aromelivi
 
 ## 获取注册列表
 
-使用 Cloudflare KV API 或在 Dashboard 里直接查看 KV 存储：
+两种方式：
+
+1. **推荐** —— 打开 `/dashboard`，用「注册明细」表查看，或点「复制 N 个邮箱」批量导出。
+2. 直接用 Cloudflare KV API 或在 Dashboard 里查看 KV 存储：
 
 - Key 格式 `leads:YYYY-MM-DD` → 当日所有注册的 JSON 数组
 - Key 格式 `lead:YYYY-MM-DD:email` → 单条记录（含 `marketing_consent` 营销同意标记）
@@ -179,6 +178,9 @@ curl -H "Authorization: Bearer $STATS_SECRET" "https://amazon-feedback.aromelivi
 - 数据保留：pageview 统计 90 天，注册记录 180 天，去重标记/累计获客 1 年
 - 面板统一按 **14 天** 口径展示（`public/dashboard.html` 顶部的 `DAYS` 常量是唯一来源，
   标题由它渲染，不会再出现文案与数据不一致）
-- GDPR 声明已内置各语言版本；营销邮件需要买家勾选同意（前端已带 opt-in 复选框）
-- `wrangler.jsonc` 已提交到仓库，但 **不含任何密钥**（`STATS_SECRET`、
-  `RESEND_API_KEY` 均通过 `wrangler secret put` 单独存储，不会出现在代码或 Git 历史里）
+- **不发信**：注册成功页显示的折扣码与说明均由前端即时渲染，不依赖邮件；
+  后续联系买家由卖家手工完成
+- GDPR 声明已内置各语言版本；营销联系需要买家勾选同意（前端已带 opt-in 复选框），
+  面板「营销同意」列可直接筛出这批人
+- `wrangler.jsonc` 已提交到仓库，但 **不含任何密钥**（`STATS_SECRET` 通过
+  `wrangler secret put` 单独存储，不会出现在代码或 Git 历史里）

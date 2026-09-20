@@ -29,32 +29,16 @@
   // Non-secret configuration. Anything here is world-readable in the repo —
   // never put credentials in `vars`, use `wrangler secret put` for those.
   "vars": {
-    // Sender shown on the warranty confirmation email (must be a verified
-    // sender/domain at your email provider).
-    "FROM_EMAIL": "support@aromelivii.com",
-    // Brand name used in the email subject / header.
-    "BRAND_NAME": "AromeLivii",
     // Comma-separated list of origins allowed to call /api/* from a browser.
     // Requests from any other origin are rejected with 403.
     "ALLOWED_ORIGINS": "https://amazon-feedback.aromelivii.com"
-  },
+  }
 
-  // Cloudflare Email Service — native outbound email, no API key needed.
-  // Prerequisites: aromelivii.com onboarded to Email Service, and the Workers
-  // Paid plan (sending to arbitrary recipients is not available on Free).
-  // Sender is restricted to the allowlist below so a compromised Worker
-  // cannot send mail as any other address on the domain.
-  "send_email": [
-    {
-      "name": "EMAIL",
-      "allowed_sender_addresses": ["support@aromelivii.com"]
-    }
-  ]
-
+  // No `send_email` binding: this project deliberately does NOT send email.
+  // Registrations are only written to ANALYTICS_KV and worked through by hand
+  // from /dashboard.
+  //
   // Secrets are intentionally NOT set here — they must never be committed to
   // source control. Set them with:
-  //   wrangler secret put STATS_SECRET       (dashboard password)
-  //   wrangler secret put RESEND_API_KEY     (email delivery; optional —
-  //                                           without it the confirmation
-  //                                           email is skipped and logged)
+  //   wrangler secret put STATS_SECRET   (dashboard password)
 }
