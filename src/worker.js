@@ -219,7 +219,7 @@ async function handleStats(request, env) {
     days.push(d.toISOString().slice(0, 10));
   }
 
-  const LANGS = ['de', 'fr', 'it', 'es', 'nl', 'pl', 'se', 'en'];
+  const LANGS = ['de', 'fr', 'it', 'es', 'nl', 'en'];
 
   const results = [];
   for (const day of days) {

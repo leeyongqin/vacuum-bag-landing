@@ -16,7 +16,7 @@
 ```
 /
 ├── public/              ← 静态资源目录（对应 wrangler.jsonc 里的 assets.directory）
-│   ├── index.html       ← 主落地页（8语言自动检测，延保注册流程）
+│   ├── index.html       ← 主落地页（6语言自动检测，延保注册流程）
 │   └── dashboard.html   ← 数据统计面板
 ├── src/
 │   └── worker.js        ← Worker 入口：路由 /api/* + 静态资源回退 + /dashboard 重写
@@ -107,7 +107,7 @@ https://amazon-feedback.aromelivii.com/dashboard
 
 输入你设置的 `STATS_SECRET` 即可查看：
 - 每日浏览量 / 注册数 / 转化率
-- 各语言访问分布（德/法/意/西/荷/波/瑞/英）
+- 各语言访问分布（德/法/意/西/荷/英）
 - 14天每日明细
 
 ---

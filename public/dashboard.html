@@ -103,7 +103,7 @@ async function loadStats(secret, refresh) {
       Object.entries(r.by_lang).forEach(([k,v]) => { acc[k] = (acc[k]||0) + v; });
       return acc;
     }, {});
-    const langNames = { de:'🇩🇪 德语', fr:'🇫🇷 法语', it:'🇮🇹 意大利语', es:'🇪🇸 西班牙语', nl:'🇳🇱 荷兰语', pl:'🇵🇱 波兰语', se:'🇸🇪 瑞典语', en:'🇬🇧 英语' };
+    const langNames = { de:'🇩🇪 德语', fr:'🇫🇷 法语', it:'🇮🇹 意大利语', es:'🇪🇸 西班牙语', nl:'🇳🇱 荷兰语', en:'🇬🇧 英语' };
     const totalPV = Object.values(langTotals).reduce((a,b)=>a+b,0) || 1;
     document.getElementById('langBar').innerHTML = Object.entries(langTotals)
       .sort((a,b)=>b[1]-a[1])
