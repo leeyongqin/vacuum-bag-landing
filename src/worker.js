@@ -7,7 +7,7 @@
  *
  * Routes handled here:
  *   POST /api/track   — pageview / event analytics (writes to ANALYTICS_KV)
- *   POST /api/submit  — lead form submission (writes to ANALYTICS_KV)
+ *   POST /api/submit  — warranty registration (writes to ANALYTICS_KV)
  *   GET  /api/stats   — dashboard data (reads from ANALYTICS_KV, secret-gated)
  *   GET  /dashboard    — rewritten (not redirected) to /dashboard.html
  *   everything else    — served from static assets via env.ASSETS
@@ -120,7 +120,8 @@ async function handleTrack(request, env) {
 }
 
 /**
- * POST /api/submit — validates and stores a lead (email + order suffix).
+ * POST /api/submit — validates and stores a warranty registration
+ * (email + order suffix + optional marketing consent).
  */
 async function handleSubmit(request, env) {
   let body;
@@ -130,7 +131,7 @@ async function handleSubmit(request, env) {
     return new Response(JSON.stringify({ ok: false, error: 'Invalid JSON' }), { status: 400, headers: CORS_HEADERS });
   }
 
-  const { email, order_suffix, lang = 'unknown' } = body;
+  const { email, order_suffix, lang = 'unknown', marketing_consent = false } = body;
 
   // Basic server-side validation
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -149,25 +150,30 @@ async function handleSubmit(request, env) {
   const ts = now.toISOString();
 
   try {
-    // ── 1. Store individual lead ──────────────────────────────────
+    // ── 1. Store individual registration ──────────────────────────
     // Key: "lead:YYYY-MM-DD:email" (deduplicates by day+email)
     const leadKey = `lead:${day}:${email.toLowerCase()}`;
     const existing = await env.ANALYTICS_KV.get(leadKey, { type: 'json' });
     if (!existing) {
       await env.ANALYTICS_KV.put(leadKey, JSON.stringify({
-        email, order_suffix, lang, ts, status: 'pending',
+        email, order_suffix, lang, ts,
+        marketing_consent: Boolean(marketing_consent),
+        status: 'registered',
       }), {
         expirationTtl: 60 * 60 * 24 * 180, // keep 6 months
       });
     }
 
-    // ── 2. Add to daily leads list ────────────────────────────────
+    // ── 2. Add to daily registrations list ────────────────────────
     const listKey = `leads:${day}`;
     const existingList = await env.ANALYTICS_KV.get(listKey, { type: 'json' });
     const list = existingList || [];
     // Avoid duplicate emails in list
     if (!list.find((l) => l.email === email.toLowerCase())) {
-      list.push({ email: email.toLowerCase(), order_suffix, lang, ts });
+      list.push({
+        email: email.toLowerCase(), order_suffix, lang, ts,
+        marketing_consent: Boolean(marketing_consent),
+      });
       await env.ANALYTICS_KV.put(listKey, JSON.stringify(list), {
         expirationTtl: 60 * 60 * 24 * 180,
       });
@@ -213,34 +219,28 @@ async function handleStats(request, env) {
     days.push(d.toISOString().slice(0, 10));
   }
 
+  const LANGS = ['de', 'fr', 'it', 'es', 'nl', 'pl', 'se', 'en'];
+
   const results = [];
   for (const day of days) {
-    const [pv, sub, pvDE, pvFR, pvIT, pvES, pvEN, leads] = await Promise.all([
+    const [pv, sub, leads, ...langVals] = await Promise.all([
       env.ANALYTICS_KV.get(`stats:${day}:pageview`),
       env.ANALYTICS_KV.get(`stats:${day}:submit`),
-      env.ANALYTICS_KV.get(`stats:${day}:pageview:de`),
-      env.ANALYTICS_KV.get(`stats:${day}:pageview:fr`),
-      env.ANALYTICS_KV.get(`stats:${day}:pageview:it`),
-      env.ANALYTICS_KV.get(`stats:${day}:pageview:es`),
-      env.ANALYTICS_KV.get(`stats:${day}:pageview:en`),
       env.ANALYTICS_KV.get(`leads:${day}`, { type: 'json' }),
+      ...LANGS.map((lang) => env.ANALYTICS_KV.get(`stats:${day}:pageview:${lang}`)),
     ]);
 
     const pageviews = parseInt(pv || '0', 10);
     const submissions = parseInt(sub || '0', 10);
+    const byLang = {};
+    LANGS.forEach((lang, i) => { byLang[lang] = parseInt(langVals[i] || '0', 10); });
 
     results.push({
       date: day,
       pageviews,
       submissions,
       conversion_rate: pageviews > 0 ? ((submissions / pageviews) * 100).toFixed(1) + '%' : '0%',
-      by_lang: {
-        de: parseInt(pvDE || '0', 10),
-        fr: parseInt(pvFR || '0', 10),
-        it: parseInt(pvIT || '0', 10),
-        es: parseInt(pvES || '0', 10),
-        en: parseInt(pvEN || '0', 10),
-      },
+      by_lang: byLang,
       leads_count: (leads || []).length,
     });
   }

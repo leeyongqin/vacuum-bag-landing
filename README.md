@@ -1,4 +1,4 @@
-# 集尘袋留评落地页 — 部署指南
+# 集尘袋客户转化落地页（延保注册 + 复购引导）— 部署指南
 
 域名：amazon-feedback.aromelivii.com
 平台：Cloudflare Workers + Static Assets + KV
@@ -16,7 +16,7 @@
 ```
 /
 ├── public/              ← 静态资源目录（对应 wrangler.jsonc 里的 assets.directory）
-│   ├── index.html       ← 主落地页（5语言自动检测）
+│   ├── index.html       ← 主落地页（8语言自动检测，延保注册流程）
 │   └── dashboard.html   ← 数据统计面板
 ├── src/
 │   └── worker.js        ← Worker 入口：路由 /api/* + 静态资源回退 + /dashboard 重写
@@ -25,6 +25,19 @@
 
 `/api/track`、`/api/submit`、`/api/stats`、`/dashboard` 的重写规则全部在
 `src/worker.js` 里实现，不再依赖 `_redirects` 或 Pages Functions 的文件路由约定。
+
+### 上线前必填的 CONFIG
+
+`public/index.html` 顶部有一个 `CONFIG` 对象，把占位值改掉再部署：
+
+| 字段 | 说明 |
+|------|------|
+| `brandName` | 品牌名，显示在页首和页脚 |
+| `supportEmail` | 客服邮箱，显示在页脚 |
+| `asins` | 产品 ASIN 数组。恰好 1 个时「写评价」直达评论页；多个时退到「我的订单」页，避免买家评错 listing |
+| `promoCode` | 在 Amazon Seller Central 创建的促销 Claim Code（复购折扣码）；**留空则隐藏折扣码模块** |
+| `promoDiscount` | 折扣显示文案，如 `10 %` |
+| `imprintUrl` | Impressum 链接（德国站建议提供），留空则不显示 |
 
 ---
 
@@ -93,8 +106,8 @@ https://amazon-feedback.aromelivii.com/dashboard
 ```
 
 输入你设置的 `STATS_SECRET` 即可查看：
-- 每日浏览量 / 提交数 / 转化率
-- 各语言访问分布（德/法/意/西/英）
+- 每日浏览量 / 注册数 / 转化率
+- 各语言访问分布（德/法/意/西/荷/波/瑞/英）
 - 14天每日明细
 
 ---
@@ -109,25 +122,17 @@ https://amazon-feedback.aromelivii.com/dashboard
 
 ---
 
-## 获取提交的邮件列表
+## 获取注册列表
 
 使用 Cloudflare KV API 或在 Dashboard 里直接查看 KV 存储：
 
-- Key 格式 `leads:YYYY-MM-DD` → 当日所有提交的 JSON 数组
-- Key 格式 `lead:YYYY-MM-DD:email` → 单条记录（含状态）
-
-可将 status 字段改为 `sent` 来标记已发放礼品卡：
-```json
-{ "email": "xx@xx.de", "order_suffix": "5678", "lang": "de", "ts": "...", "status": "sent" }
-```
-
----
+- Key 格式 `leads:YYYY-MM-DD` → 当日所有注册的 JSON 数组
+- Key 格式 `lead:YYYY-MM-DD:email` → 单条记录（含 `marketing_consent` 营销同意标记）
 
 ## 注意事项
 
 - KV 免费套餐：每天 10 万次读/写，足够日均数千访问
-- 数据保留：pageview 统计 90 天，leads 记录 180 天
-- 倒计时为前端装饰性计时（每次刷新重置），不影响实际有效期
-- GDPR 声明已内置各语言版本，符合欧盟合规要求
+- 数据保留：pageview 统计 90 天，注册记录 180 天
+- GDPR 声明已内置各语言版本；营销邮件需要买家勾选同意（前端已带 opt-in 复选框）
 - `wrangler.jsonc` 已提交到仓库，但 **不含任何密钥**（`STATS_SECRET` 通过
   `wrangler secret put` 单独存储，不会出现在代码或 Git 历史里）

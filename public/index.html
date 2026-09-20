@@ -3,8 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ihr Gutschein wartet</title>
+<title>Produkt registrieren — Garantie aktivieren</title>
 <meta name="robots" content="noindex,nofollow">
+<meta name="description" content="Registrieren Sie Ihr Produkt und aktivieren Sie 12 Monate kostenlose Garantieverlängerung.">
+<meta property="og:title" content="Produkt registrieren — Garantie aktivieren">
+<meta property="og:description" content="12 Monate kostenlose Garantieverlängerung für Ihre Staubsaugerbeutel aktivieren.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231a2e4a'/%3E%3Cpath d='M32 12l16 6v12c0 10-6.8 18.4-16 22-9.2-3.6-16-12-16-22V18l16-6z' fill='none' stroke='%23c8a84b' stroke-width='4'/%3E%3Cpath d='M24 32l6 6 12-12' fill='none' stroke='%23c8a84b' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <style>
   :root {
     --navy: #1a2e4a;
@@ -32,7 +37,6 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 0;
   }
 
   /* Lang switcher */
@@ -60,18 +64,14 @@
     transition: all 0.15s;
     font-weight: 500;
   }
-  .lang-btn.active {
-    background: var(--navy);
-    color: white;
-    border-color: var(--navy);
-  }
+  .lang-btn.active { background: var(--navy); color: white; border-color: var(--navy); }
 
   /* Hero */
   .hero {
     width: 100%;
     max-width: 480px;
     background: var(--navy);
-    padding: 32px 24px 28px;
+    padding: 26px 24px 30px;
     text-align: center;
     color: white;
     position: relative;
@@ -85,48 +85,44 @@
     border-radius: 50%;
     border: 40px solid rgba(200,168,75,0.08);
   }
-  .hero-eyebrow {
-    font-size: 11px;
-    letter-spacing: 2px;
-    color: var(--gold);
+  .brand-row { position: relative; margin-bottom: 22px; }
+  .brand-name {
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: 3px;
     text-transform: uppercase;
-    margin-bottom: 12px;
-    font-weight: 500;
-  }
-  .hero-amount {
-    font-size: 72px;
-    font-weight: 300;
-    line-height: 1;
-    margin-bottom: 4px;
-    letter-spacing: -2px;
     color: white;
   }
-  .hero-amount sup {
-    font-size: 32px;
-    vertical-align: top;
-    margin-top: 12px;
-    display: inline-block;
-    font-weight: 400;
-    letter-spacing: 0;
+  .brand-sub {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-top: 3px;
+    font-weight: 500;
   }
+  .shield-icon {
+    width: 56px; height: 56px;
+    margin: 0 auto 14px;
+    position: relative;
+  }
+  .hero-title {
+    font-size: 26px;
+    font-weight: 600;
+    line-height: 1.25;
+    margin-bottom: 10px;
+    position: relative;
+    letter-spacing: -0.3px;
+  }
+  .hero-title em { font-style: normal; color: var(--gold-light); }
   .hero-sub {
-    font-size: 14px;
-    color: rgba(255,255,255,0.65);
-    margin-bottom: 20px;
-    line-height: 1.5;
+    font-size: 13.5px;
+    color: rgba(255,255,255,0.7);
+    line-height: 1.6;
+    position: relative;
+    max-width: 340px;
+    margin: 0 auto;
   }
-  .timer-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: rgba(200,168,75,0.15);
-    border: 1px solid rgba(200,168,75,0.3);
-    border-radius: 30px;
-    padding: 7px 16px;
-    font-size: 13px;
-    color: var(--gold-light);
-  }
-  .timer-val { font-weight: 600; font-variant-numeric: tabular-nums; }
 
   /* Card */
   .card {
@@ -136,21 +132,44 @@
     border-bottom: 1px solid var(--border);
   }
 
-  /* Steps */
-  .steps-wrap { padding: 24px; }
+  /* Value list */
+  .value-wrap { padding: 22px 24px 6px; }
   .section-label {
     font-size: 10px;
     letter-spacing: 1.5px;
     color: var(--text-light);
     text-transform: uppercase;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
     font-weight: 600;
   }
+  .value-item {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 9px 0;
+    font-size: 13.5px;
+    color: var(--text);
+    line-height: 1.5;
+  }
+  .value-check {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: #e8f5ee;
+    color: var(--success);
+    font-size: 11px;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* Steps */
+  .steps-wrap { padding: 18px 24px 24px; }
   .step {
     display: flex;
     gap: 14px;
     align-items: flex-start;
-    padding: 12px 0;
+    padding: 10px 0;
     border-bottom: 1px solid var(--cream-dark);
   }
   .step:last-child { border-bottom: none; padding-bottom: 0; }
@@ -199,6 +218,21 @@
     margin-bottom: 12px;
     display: none;
   }
+  .optin-row {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    margin-bottom: 16px;
+    cursor: pointer;
+  }
+  .optin-row input {
+    width: 18px; height: 18px;
+    margin-top: 1px;
+    accent-color: var(--navy);
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+  .optin-text { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
   .cta-btn {
     width: 100%;
     padding: 15px;
@@ -210,10 +244,19 @@
     font-weight: 700;
     cursor: pointer;
     letter-spacing: 0.2px;
-    transition: background 0.15s, transform 0.1s;
+    transition: background 0.15s, transform 0.1s, opacity 0.15s;
   }
   .cta-btn:hover { background: var(--gold-light); }
   .cta-btn:active { transform: scale(0.99); }
+  .cta-btn:disabled { opacity: 0.55; cursor: default; transform: none; }
+  .submit-err {
+    display: none;
+    font-size: 13px;
+    color: var(--error);
+    text-align: center;
+    margin-top: 12px;
+    font-weight: 500;
+  }
 
   /* GDPR */
   .gdpr-text {
@@ -225,6 +268,155 @@
     padding: 0 4px;
   }
 
+  /* Success */
+  .success-wrap {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    padding: 34px 24px 30px;
+    text-align: center;
+    background: white;
+    width: 100%;
+  }
+  .success-check {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    background: #e8f5ee;
+    color: var(--success);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 18px;
+    font-size: 28px;
+    font-weight: 700;
+  }
+  .success-title { font-size: 22px; font-weight: 600; margin-bottom: 8px; }
+  .success-sub { font-size: 14px; color: var(--text-muted); line-height: 1.7; margin-bottom: 24px; max-width: 340px; }
+
+  /* Promo code */
+  .promo-box {
+    width: 100%;
+    background: var(--navy);
+    border-radius: var(--radius);
+    padding: 18px 16px;
+    margin-bottom: 14px;
+    color: white;
+  }
+  .promo-label {
+    font-size: 10px;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .promo-row { display: flex; gap: 8px; justify-content: center; align-items: stretch; }
+  .promo-code {
+    flex: 1;
+    background: rgba(255,255,255,0.1);
+    border: 1.5px dashed rgba(200,168,75,0.6);
+    border-radius: 8px;
+    padding: 11px 12px;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--gold-light);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .copy-btn {
+    padding: 0 16px;
+    background: var(--gold);
+    color: var(--navy-deep);
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .copy-btn:hover { background: var(--gold-light); }
+  .promo-note { font-size: 11.5px; color: rgba(255,255,255,0.6); margin-top: 10px; line-height: 1.5; }
+
+  /* Reorder */
+  .reorder-box {
+    width: 100%;
+    background: var(--cream);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 14px;
+    text-align: left;
+  }
+  .reorder-title { font-size: 14px; font-weight: 700; margin-bottom: 5px; }
+  .reorder-note { font-size: 12.5px; color: var(--text-muted); line-height: 1.55; margin-bottom: 12px; }
+  .buy-btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background: var(--navy);
+    color: white;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+    transition: background 0.15s;
+  }
+  .buy-btn:hover { background: var(--navy-deep); }
+
+  /* Review */
+  .review-box {
+    width: 100%;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    text-align: left;
+  }
+  .review-title { font-size: 14px; font-weight: 700; margin-bottom: 5px; }
+  .review-note { font-size: 12.5px; color: var(--text-muted); line-height: 1.55; margin-bottom: 12px; }
+  .review-btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background: white;
+    color: var(--navy);
+    border: 1.5px solid var(--navy);
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+    transition: background 0.15s;
+    margin-bottom: 12px;
+  }
+  .review-btn:hover { background: var(--cream); }
+  .guide-title { font-size: 11px; font-weight: 700; color: var(--text-light); letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 6px; }
+  .guide-step { font-size: 12.5px; color: var(--text-muted); padding: 5px 0; line-height: 1.5; border-bottom: 1px solid var(--cream-dark); }
+  .guide-step:last-child { border-bottom: none; padding-bottom: 0; }
+
+  /* Tips */
+  .tips-card {
+    width: 100%;
+    max-width: 480px;
+    background: white;
+    border-bottom: 1px solid var(--border);
+    padding: 20px 24px 22px;
+  }
+  .tip {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    font-size: 12.5px;
+    color: var(--text-muted);
+    line-height: 1.55;
+    padding: 7px 0;
+  }
+  .tip-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+    flex-shrink: 0;
+    margin-top: 7px;
+  }
+  .tip a { color: var(--navy); }
+
   /* Trust bar */
   .trust-bar {
     width: 100%;
@@ -235,51 +427,9 @@
     background: white;
     border-bottom: 1px solid var(--border);
   }
-  .trust-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 3px;
-  }
+  .trust-item { display: flex; flex-direction: column; align-items: center; gap: 3px; }
   .trust-icon { font-size: 18px; }
   .trust-label { font-size: 10px; color: var(--text-muted); font-weight: 500; text-align: center; }
-
-  /* Success */
-  .success-wrap {
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    padding: 40px 24px 32px;
-    text-align: center;
-    background: white;
-    width: 100%;
-  }
-  .success-check {
-    width: 64px; height: 64px;
-    border-radius: 50%;
-    background: #e8f5ee;
-    display: flex; align-items: center; justify-content: center;
-    margin: 0 auto 20px;
-    font-size: 28px;
-  }
-  .success-title { font-size: 22px; font-weight: 600; margin-bottom: 8px; }
-  .success-sub { font-size: 14px; color: var(--text-muted); line-height: 1.7; margin-bottom: 24px; }
-  .review-guide {
-    width: 100%;
-    background: var(--cream);
-    border-radius: var(--radius);
-    padding: 16px;
-    text-align: left;
-  }
-  .guide-title { font-size: 12px; font-weight: 700; color: var(--text-muted); letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 10px; }
-  .guide-step {
-    font-size: 13px;
-    color: var(--text);
-    padding: 7px 0;
-    border-bottom: 1px solid var(--border);
-    line-height: 1.5;
-  }
-  .guide-step:last-child { border-bottom: none; padding-bottom: 0; }
 
   /* Footer */
   .footer {
@@ -289,8 +439,9 @@
     text-align: center;
     font-size: 10px;
     color: var(--text-light);
-    line-height: 1.6;
+    line-height: 1.7;
   }
+  .footer a { color: var(--text-muted); }
 </style>
 </head>
 <body>
@@ -298,218 +449,495 @@
 <div class="lang-bar" id="langBar"></div>
 
 <div class="hero">
-  <div class="hero-eyebrow" id="heroEyebrow">Exklusiver Vorteil</div>
-  <div class="hero-amount" id="heroAmount"><sup>€</sup>6</div>
-  <div class="hero-sub" id="heroSub">Amazon-Gutschein für Ihre ehrliche Bewertung</div>
-  <div class="timer-pill">
-    <span id="timerLabel">Angebot gültig noch</span>
-    <span class="timer-val" id="timerVal">47:59</span>
+  <div class="brand-row">
+    <div class="brand-name" id="brandName">YourBrand</div>
+    <div class="brand-sub" id="brandSub">Staubsaugerbeutel</div>
   </div>
+  <div class="shield-icon">
+    <svg viewBox="0 0 64 64" width="56" height="56">
+      <path d="M32 6l20 7.5V32c0 12.5-8.5 23-20 27.5C20.5 55 12 44.5 12 32V13.5L32 6z" fill="none" stroke="#c8a84b" stroke-width="3"/>
+      <path d="M22 32l7 7 13-13" fill="none" stroke="#e8c96a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+  <div class="hero-title" id="heroTitle"></div>
+  <div class="hero-sub" id="heroSub"></div>
 </div>
 
 <div class="card" id="mainCard">
+  <div class="value-wrap">
+    <div class="section-label" id="valueLabel"></div>
+    <div class="value-item"><div class="value-check">✓</div><div id="v1"></div></div>
+    <div class="value-item"><div class="value-check">✓</div><div id="v2"></div></div>
+    <div class="value-item"><div class="value-check">✓</div><div id="v3"></div></div>
+  </div>
+
   <div class="steps-wrap">
-    <div class="section-label" id="stepsLabel">So erhalten Sie Ihren Gutschein</div>
+    <div class="section-label" id="stepsLabel"></div>
     <div class="step">
       <div class="step-num">1</div>
       <div>
-        <div class="step-title" id="s1t">Formular ausfüllen</div>
-        <div class="step-desc" id="s1d">Nur E-Mail-Adresse und letzte 4 Ziffern Ihrer Bestellnummer</div>
+        <div class="step-title" id="s1t"></div>
+        <div class="step-desc" id="s1d"></div>
       </div>
     </div>
     <div class="step">
       <div class="step-num">2</div>
       <div>
-        <div class="step-title" id="s2t">Erfahrung auf Amazon teilen</div>
-        <div class="step-desc" id="s2d">Ihre ehrliche Meinung reicht — keine 5-Sterne-Pflicht</div>
+        <div class="step-title" id="s2t"></div>
+        <div class="step-desc" id="s2d"></div>
       </div>
     </div>
     <div class="step">
       <div class="step-num">3</div>
       <div>
-        <div class="step-title" id="s3t">Gutschein erhalten</div>
-        <div class="step-desc" id="s3d">Innerhalb 24 Stunden per E-Mail, unbegrenzt gültig</div>
+        <div class="step-title" id="s3t"></div>
+        <div class="step-desc" id="s3d"></div>
       </div>
     </div>
   </div>
 
   <div class="form-wrap" id="formWrap">
-    <label class="f-label" id="emailLabel">E-MAIL-ADRESSE</label>
-    <input class="f-input" type="email" id="emailInput" placeholder="name@beispiel.de" autocomplete="email">
-    <div class="f-err" id="emailErr">Bitte gültige E-Mail-Adresse eingeben</div>
+    <label class="f-label" id="emailLabel" for="emailInput"></label>
+    <input class="f-input" type="email" id="emailInput" autocomplete="email">
+    <div class="f-err" id="emailErr"></div>
 
-    <label class="f-label" id="orderLabel">LETZTE 4 ZIFFERN DER BESTELLNUMMER</label>
-    <input class="f-input" type="text" id="orderInput" placeholder="z. B. 5678" maxlength="4" inputmode="numeric" autocomplete="off">
-    <div class="f-err" id="orderErr">Bitte 4 Ziffern eingeben</div>
+    <label class="f-label" id="orderLabel" for="orderInput"></label>
+    <input class="f-input" type="text" id="orderInput" maxlength="4" inputmode="numeric" autocomplete="off">
+    <div class="f-err" id="orderErr"></div>
+
+    <label class="optin-row" for="optinInput">
+      <input type="checkbox" id="optinInput">
+      <span class="optin-text" id="optinText"></span>
+    </label>
 
     <button class="cta-btn" id="ctaBtn" onclick="handleSubmit()">
-      <span id="ctaText">Jetzt €6 Gutschein sichern →</span>
+      <span id="ctaText"></span>
     </button>
+    <div class="submit-err" id="submitErr"></div>
 
-    <p class="gdpr-text" id="gdprText">
-      Ihre Daten werden ausschließlich zur Gutscheinabwicklung verwendet und gemäß DSGVO verarbeitet. Keine Weitergabe an Dritte.
-    </p>
+    <p class="gdpr-text" id="gdprText"></p>
   </div>
 
   <!-- Success state (hidden initially) -->
   <div class="success-wrap" id="successWrap">
     <div class="success-check">✓</div>
-    <div class="success-title" id="okTitle">Vielen Dank!</div>
-    <div class="success-sub" id="okSub">
-      Ihr Gutschein ist reserviert. Bitte teilen Sie jetzt Ihre Erfahrung auf Amazon — Sie erhalten den Code innerhalb von 24 Stunden per E-Mail.
+    <div class="success-title" id="okTitle"></div>
+    <div class="success-sub" id="okSub"></div>
+
+    <div class="promo-box" id="promoBox">
+      <div class="promo-label" id="promoLabel"></div>
+      <div class="promo-row">
+        <div class="promo-code" id="promoCode"></div>
+        <button class="copy-btn" id="copyBtn" onclick="copyCode()"></button>
+      </div>
+      <div class="promo-note" id="promoNote"></div>
     </div>
-    <div class="review-guide">
-      <div class="guide-title" id="guideTitle">So hinterlassen Sie eine Bewertung</div>
-      <div class="guide-step" id="g1">① Amazon.de öffnen → Meine Bestellungen</div>
-      <div class="guide-step" id="g2">② Ihr Produkt suchen → „Rezension schreiben"</div>
-      <div class="guide-step" id="g3">③ Ehrliche Erfahrung beschreiben — fertig</div>
+
+    <div class="reorder-box">
+      <div class="reorder-title" id="reorderTitle"></div>
+      <div class="reorder-note" id="reorderNote"></div>
+      <a class="buy-btn" id="buyBtn" href="#" target="_blank" rel="noopener-sponsored"></a>
+    </div>
+
+    <div class="review-box">
+      <div class="review-title" id="reviewTitle"></div>
+      <div class="review-note" id="reviewNote"></div>
+      <a class="review-btn" id="reviewBtn" href="#" target="_blank" rel="noopener"></a>
+      <div class="guide-title" id="guideTitle"></div>
+      <div class="guide-step" id="g1"></div>
+      <div class="guide-step" id="g2"></div>
+      <div class="guide-step" id="g3"></div>
     </div>
   </div>
+</div>
+
+<div class="tips-card">
+  <div class="section-label" id="tipsLabel"></div>
+  <div class="tip"><div class="tip-dot"></div><div id="tip1"></div></div>
+  <div class="tip"><div class="tip-dot"></div><div id="tip2"></div></div>
+  <div class="tip"><div class="tip-dot"></div><div id="tip3"></div></div>
 </div>
 
 <div class="trust-bar">
   <div class="trust-item">
     <div class="trust-icon">🔒</div>
-    <div class="trust-label" id="t1">DSGVO-konform</div>
+    <div class="trust-label" id="t1"></div>
   </div>
   <div class="trust-item">
-    <div class="trust-icon">👥</div>
-    <div class="trust-label" id="t2">1.200+ Teilnehmer</div>
+    <div class="trust-icon">🛡️</div>
+    <div class="trust-label" id="t2"></div>
   </div>
   <div class="trust-item">
-    <div class="trust-icon">✅</div>
-    <div class="trust-label" id="t3">100% ausgezahlt</div>
+    <div class="trust-icon">✉️</div>
+    <div class="trust-label" id="t3"></div>
   </div>
 </div>
 
-<div class="footer" id="footerText">
-  Diese Aktion steht in keiner Verbindung mit Amazon.com, Inc. oder seinen Tochtergesellschaften.
-</div>
+<div class="footer" id="footerText"></div>
 
 <script>
-// ─── Language data ────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════
+// CONFIG — fill these in before going live.
+// ═══════════════════════════════════════════════════════════════════
+const CONFIG = {
+  brandName: 'AromeLivii',
+  supportEmail: 'support@aromelivii.com',
+  // 产品 ASIN 列表。恰好 1 个时「写评价」按钮直达评论页；多个时退到
+  // 「我的订单」页，避免买家评错 listing。
+  asins: ['B09HR63433', 'B0CWLCFXFQ'],
+  promoCode: '',                                // ← 在 Seller Central 创建促销后填入 Claim Code；留空则隐藏折扣码模块
+  promoDiscount: '10 %',
+  imprintUrl: '',                               // ← Impressum 链接（德国站建议提供），留空则不显示
+};
+
+// ═══════════════════════════════════════════════════════════════════
+// Language data
+// ═══════════════════════════════════════════════════════════════════
 const L = {
-  de:{flag:'🇩🇪',label:'DE',currency:'€',amount:'6',
-    eyebrow:'Exklusiver Vorteil',
-    sub:'Amazon-Gutschein für Ihre ehrliche Bewertung',
-    timerLabel:'Angebot gültig noch',
-    stepsLabel:'So erhalten Sie Ihren Gutschein',
-    s1t:'Formular ausfüllen',s1d:'Nur E-Mail und letzte 4 Ziffern Ihrer Bestellnummer',
-    s2t:'Erfahrung auf Amazon teilen',s2d:'Ihre ehrliche Meinung reicht — keine 5-Sterne-Pflicht',
-    s3t:'Gutschein erhalten',s3d:'Innerhalb 24 Stunden per E-Mail, unbegrenzt gültig',
+  de:{flag:'🇩🇪',label:'DE',domain:'de',
+    brandSub:'Staubsaugerbeutel',
+    title:'<em>12 Monate</em> Gratis-Garantie&shy;verlängerung',
+    sub:'Danke für Ihren Kauf! Registrieren Sie Ihre Staubsaugerbeutel und aktivieren Sie kostenlos 12 Monate zusätzliche Garantie.',
+    valueLabel:'Das erhalten Sie',
+    v1:'12 Monate zusätzliche Garantie auf Herstellungsfehler',
+    v2:'Kostenloser Ersatz bei Defekt — schnell und unkompliziert',
+    v3:'Exklusiver Rabattcode für Ihre nächste Bestellung',
+    stepsLabel:'So funktioniert es',
+    s1t:'E-Mail & Bestellnummer eintragen',s1d:'E-Mail-Adresse und die letzten 4 Ziffern Ihrer Amazon-Bestellnummer',
+    s2t:'Garantie aktivieren',s2d:'Ein Klick genügt — Sie erhalten sofort eine Bestätigung',
+    s3t:'Rabattcode erhalten',s3d:'Ihr persönlicher Code wird direkt hier angezeigt',
     emailLabel:'E-MAIL-ADRESSE',emailPh:'name@beispiel.de',
     orderLabel:'LETZTE 4 ZIFFERN DER BESTELLNUMMER',orderPh:'z. B. 5678',
-    ctaText:'Jetzt €6 Gutschein sichern →',
-    gdpr:'Ihre Daten werden ausschließlich zur Gutscheinabwicklung verwendet und gemäß DSGVO verarbeitet. Keine Weitergabe an Dritte.',
+    optin:'Ja, ich möchte gelegentlich Angebote und Nachbestell-Erinnerungen per E-Mail erhalten (optional, jederzeit abbestellbar).',
+    cta:'Garantie jetzt aktivieren →',ctaLoading:'Wird aktiviert…',
+    gdpr:'Ihre Daten werden ausschließlich zur Garantieregistrierung verwendet und gemäß DSGVO verarbeitet. Keine Weitergabe an Dritte.',
     emailErr:'Bitte gültige E-Mail-Adresse eingeben',
     orderErr:'Bitte 4 Ziffern eingeben',
-    okTitle:'Vielen Dank!',
-    okSub:'Ihr Gutschein ist reserviert. Bitte teilen Sie jetzt Ihre Erfahrung auf Amazon — Sie erhalten den Code innerhalb von 24 Stunden per E-Mail.',
-    guideTitle:'So hinterlassen Sie eine Bewertung',
-    g1:'① Amazon.de öffnen → Meine Bestellungen',
-    g2:'② Ihr Produkt suchen → „Rezension schreiben"',
-    g3:'③ Ehrliche Erfahrung beschreiben — fertig',
-    t1:'DSGVO-konform',t2:'1.200+ Teilnehmer',t3:'100% ausgezahlt',
-    footer:'Diese Aktion steht in keiner Verbindung mit Amazon.com, Inc. oder seinen Tochtergesellschaften.'},
+    submitErr:'Verbindung fehlgeschlagen. Bitte versuchen Sie es erneut.',
+    okTitle:'Garantie aktiviert!',
+    okSub:'Ihre 12-Monats-Garantieverlängerung ist ab sofort aktiv. Bewahren Sie diese Seite als Nachweis auf.',
+    promoLabel:'IHR RABATTCODE FÜR DIE NÄCHSTE BESTELLUNG',
+    promoNote:'%d Rabatt — beim nächsten Einkauf auf Amazon an der Kasse eingeben.',
+    copy:'Kopieren',copied:'Kopiert ✓',
+    reorderTitle:'Bald neue Beutel nötig?',
+    reorderNote:'Staubsaugerbeutel alle 4–8 Wochen wechseln. Mit dem Amazon-Spar-Abo kommen neue automatisch.',
+    buyBtn:'Auf Amazon nachbestellen',
+    reviewTitle:'Zufrieden mit Ihrem Produkt?',
+    reviewNote:'Eine ehrliche Bewertung hilft anderen Käufern enorm — und einem kleinen Betrieb wie uns. Ganz freiwillig und ohne Gegenleistung.',
+    reviewBtn:'Bewertung auf Amazon schreiben',
+    guideTitle:'So geht es in 30 Sekunden',
+    g1:'① Amazon öffnen → „Meine Bestellungen“',
+    g2:'② Produkt suchen → „Produktbewertung schreiben“',
+    g3:'③ Ehrliche Erfahrung teilen — fertig',
+    tipsLabel:'Gut zu wissen',
+    tip1:'Beutel spätestens wechseln, wenn die Saugleistung nachlässt — auch wenn er noch nicht voll ist.',
+    tip2:'Volle Beutel verschlossen im Restmüll entsorgen.',
+    tip3:'Fragen zu Kompatibilität oder Defekten? Schreiben Sie uns einfach eine E-Mail.',
+    t1:'DSGVO-konform',t2:'12 Mon. Garantie',t3:'Support per E-Mail',
+    footer:'Diese Website steht in keiner Verbindung mit Amazon.com, Inc. oder seinen Tochtergesellschaften.'},
 
-  fr:{flag:'🇫🇷',label:'FR',currency:'€',amount:'6',
-    eyebrow:'Avantage exclusif',
-    sub:'Bon Amazon pour votre avis honnête',
-    timerLabel:'Offre valable encore',
-    stepsLabel:'Comment obtenir votre bon',
-    s1t:'Remplir le formulaire',s1d:'Juste votre e-mail et les 4 derniers chiffres de votre commande',
-    s2t:'Partager votre avis sur Amazon',s2d:'Votre avis honnête suffit — pas d\'obligation de mettre 5 étoiles',
-    s3t:'Recevoir le bon',s3d:'Sous 24 h par e-mail, sans date d\'expiration',
+  fr:{flag:'🇫🇷',label:'FR',domain:'fr',
+    brandSub:'Sacs pour aspirateur',
+    title:'<em>12 mois</em> de garantie supplémentaire offerts',
+    sub:'Merci pour votre achat ! Enregistrez vos sacs d\'aspirateur et activez gratuitement 12 mois de garantie supplémentaire.',
+    valueLabel:'Ce que vous recevez',
+    v1:'12 mois de garantie supplémentaire contre les défauts de fabrication',
+    v2:'Remplacement gratuit en cas de défaut — rapide et sans complication',
+    v3:'Un code de réduction exclusif pour votre prochaine commande',
+    stepsLabel:'Comment ça marche',
+    s1t:'Saisissez vos coordonnées',s1d:'Votre e-mail et les 4 derniers chiffres de votre n° de commande Amazon',
+    s2t:'Activez la garantie',s2d:'Un clic suffit — confirmation immédiate',
+    s3t:'Recevez votre code promo',s3d:'Votre code personnel s\'affiche directement ici',
     emailLabel:'ADRESSE E-MAIL',emailPh:'nom@exemple.fr',
     orderLabel:'4 DERNIERS CHIFFRES DU N° DE COMMANDE',orderPh:'ex. 5678',
-    ctaText:'Obtenir mon bon de 6 € →',
-    gdpr:'Vos données sont utilisées uniquement pour l\'envoi du bon et traitées conformément au RGPD. Aucun partage avec des tiers.',
+    optin:'Oui, je souhaite recevoir occasionnellement des offres et des rappels de réassort par e-mail (facultatif, désinscription à tout moment).',
+    cta:'Activer ma garantie →',ctaLoading:'Activation…',
+    gdpr:'Vos données sont utilisées uniquement pour l\'enregistrement de la garantie et traitées conformément au RGPD. Aucun partage avec des tiers.',
     emailErr:'Veuillez saisir une adresse e-mail valide',
     orderErr:'Veuillez saisir 4 chiffres',
-    okTitle:'Merci beaucoup !',
-    okSub:'Votre bon est réservé. Partagez maintenant votre avis sur Amazon — vous recevrez le code dans les 24 heures par e-mail.',
-    guideTitle:'Comment laisser un avis',
-    g1:'① Ouvrir Amazon.fr → Mes commandes',
+    submitErr:'Échec de la connexion. Veuillez réessayer.',
+    okTitle:'Garantie activée !',
+    okSub:'Votre extension de garantie de 12 mois est active dès maintenant. Conservez cette page comme preuve.',
+    promoLabel:'VOTRE CODE PROMO POUR LA PROCHAINE COMMANDE',
+    promoNote:'%d de réduction — à saisir lors du paiement sur Amazon.',
+    copy:'Copier',copied:'Copié ✓',
+    reorderTitle:'Bientôt besoin de nouveaux sacs ?',
+    reorderNote:'Changez le sac toutes les 4 à 8 semaines. Avec « Économisez en vous abonnant », les rechanges arrivent automatiquement.',
+    buyBtn:'Commander à nouveau sur Amazon',
+    reviewTitle:'Satisfait(e) de votre produit ?',
+    reviewNote:'Un avis honnête aide beaucoup les autres acheteurs — et notre petite entreprise familiale. Totalement facultatif, sans contrepartie.',
+    reviewBtn:'Laisser un avis sur Amazon',
+    guideTitle:'En 30 secondes',
+    g1:'① Ouvrir Amazon → « Vos commandes »',
     g2:'② Trouver le produit → « Donner mon avis »',
-    g3:'③ Partager votre expérience honnête — terminé',
-    t1:'Conforme RGPD',t2:'1 200+ participants',t3:'100% versé',
-    footer:'Cette offre n\'est pas affiliée à Amazon.com, Inc. ou ses filiales.'},
+    g3:'③ Partager votre expérience — terminé',
+    tipsLabel:'Bon à savoir',
+    tip1:'Changez le sac dès que la puissance d\'aspiration diminue — même s\'il n\'est pas plein.',
+    tip2:'Jetez les sacs pleins, bien fermés, avec les déchets résiduels.',
+    tip3:'Une question sur la compatibilité ou un défaut ? Écrivez-nous simplement par e-mail.',
+    t1:'Conforme RGPD',t2:'Garantie 12 mois',t3:'Support par e-mail',
+    footer:'Ce site n\'est pas affilié à Amazon.com, Inc. ou à ses filiales.'},
 
-  it:{flag:'🇮🇹',label:'IT',currency:'€',amount:'6',
-    eyebrow:'Vantaggio esclusivo',
-    sub:'Buono Amazon per la tua opinione onesta',
-    timerLabel:'Offerta valida ancora',
-    stepsLabel:'Come ricevere il tuo buono',
-    s1t:'Compila il modulo',s1d:'Solo e-mail e ultime 4 cifre del numero d\'ordine',
-    s2t:'Condividi la tua esperienza su Amazon',s2d:'La tua opinione onesta è sufficiente — non serve dare 5 stelle',
-    s3t:'Ricevi il buono',s3d:'Entro 24 ore via e-mail, validità illimitata',
+  it:{flag:'🇮🇹',label:'IT',domain:'it',
+    brandSub:'Sacchetti per aspirapolvere',
+    title:'<em>12 mesi</em> di garanzia extra gratis',
+    sub:'Grazie per il tuo acquisto! Registra i tuoi sacchetti per aspirapolvere e attiva gratis 12 mesi di garanzia aggiuntiva.',
+    valueLabel:'Cosa ricevi',
+    v1:'12 mesi di garanzia aggiuntiva sui difetti di fabbricazione',
+    v2:'Sostituzione gratuita in caso di difetto — rapida e senza complicazioni',
+    v3:'Codice sconto esclusivo per il tuo prossimo ordine',
+    stepsLabel:'Come funziona',
+    s1t:'Inserisci i tuoi dati',s1d:'La tua e-mail e le ultime 4 cifre del numero d\'ordine Amazon',
+    s2t:'Attiva la garanzia',s2d:'Basta un clic — conferma immediata',
+    s3t:'Ricevi il codice sconto',s3d:'Il tuo codice personale appare direttamente qui',
     emailLabel:'INDIRIZZO E-MAIL',emailPh:'nome@esempio.it',
     orderLabel:'ULTIME 4 CIFRE DEL NUMERO D\'ORDINE',orderPh:'es. 5678',
-    ctaText:'Ottieni il mio buono da 6 € →',
-    gdpr:'I tuoi dati vengono utilizzati solo per l\'invio del buono e trattati in conformità con il GDPR. Nessuna condivisione con terzi.',
+    optin:'Sì, desidero ricevere occasionalmente offerte e promemoria per il riordino via e-mail (facoltativo, cancellabile in qualsiasi momento).',
+    cta:'Attiva la garanzia →',ctaLoading:'Attivazione…',
+    gdpr:'I tuoi dati vengono utilizzati solo per la registrazione della garanzia e trattati in conformità con il GDPR. Nessuna condivisione con terzi.',
     emailErr:'Inserisci un indirizzo e-mail valido',
     orderErr:'Inserisci 4 cifre',
-    okTitle:'Grazie mille!',
-    okSub:'Il tuo buono è riservato. Condividi ora la tua esperienza su Amazon — riceverai il codice entro 24 ore via e-mail.',
-    guideTitle:'Come lasciare una recensione',
-    g1:'① Apri Amazon.it → I miei ordini',
+    submitErr:'Connessione non riuscita. Riprova.',
+    okTitle:'Garanzia attivata!',
+    okSub:'La tua estensione di garanzia di 12 mesi è attiva fin da subito. Conserva questa pagina come prova.',
+    promoLabel:'IL TUO CODICE SCONTO PER IL PROSSIMO ORDINE',
+    promoNote:'Sconto del %d — inseriscilo al momento del pagamento su Amazon.',
+    copy:'Copia',copied:'Copiato ✓',
+    reorderTitle:'Presto serviranno nuovi sacchetti?',
+    reorderNote:'Cambia il sacchetto ogni 4–8 settimane. Con «Iscriviti e Risparmia» i ricambi arrivano automaticamente.',
+    buyBtn:'Riordina su Amazon',
+    reviewTitle:'Soddisfatto del prodotto?',
+    reviewNote:'Una recensione onesta aiuta tantissimo gli altri acquirenti — e la nostra piccola azienda a conduzione familiare. Del tutto volontaria e senza ricompensa.',
+    reviewBtn:'Scrivi una recensione su Amazon',
+    guideTitle:'In 30 secondi',
+    g1:'① Apri Amazon → «I miei ordini»',
     g2:'② Trova il prodotto → «Scrivi una recensione»',
-    g3:'③ Condividi la tua esperienza onesta — fatto',
-    t1:'Conforme GDPR',t2:'1.200+ partecipanti',t3:'100% erogato',
-    footer:'Questa offerta non è affiliata ad Amazon.com, Inc. o alle sue filiali.'},
+    g3:'③ Condividi la tua esperienza — fatto',
+    tipsLabel:'Buono a sapersi',
+    tip1:'Sostituisci il sacchetto appena cala la potenza di aspirazione — anche se non è pieno.',
+    tip2:'Smaltisci i sacchetti pieni, ben chiusi, nei rifiuti indifferenziati.',
+    tip3:'Domande su compatibilità o difetti? Scrivici semplicemente via e-mail.',
+    t1:'Conforme GDPR',t2:'Garanzia 12 mesi',t3:'Supporto via e-mail',
+    footer:'Questo sito non è affiliato ad Amazon.com, Inc. o alle sue filiali.'},
 
-  es:{flag:'🇪🇸',label:'ES',currency:'€',amount:'6',
-    eyebrow:'Ventaja exclusiva',
-    sub:'Vale Amazon por tu opinión honesta',
-    timerLabel:'Oferta válida aún',
-    stepsLabel:'Cómo obtener tu vale',
-    s1t:'Rellena el formulario',s1d:'Solo tu e-mail y los últimos 4 dígitos de tu pedido',
-    s2t:'Comparte tu experiencia en Amazon',s2d:'Tu opinión honesta es suficiente — no se requieren 5 estrellas',
-    s3t:'Recibe el vale',s3d:'En 24 h por e-mail, sin fecha de caducidad',
+  es:{flag:'🇪🇸',label:'ES',domain:'es',
+    brandSub:'Bolsas para aspiradora',
+    title:'<em>12 meses</em> de garantía adicional gratis',
+    sub:'¡Gracias por tu compra! Registra tus bolsas de aspiradora y activa gratis 12 meses de garantía adicional.',
+    valueLabel:'Lo que recibes',
+    v1:'12 meses de garantía adicional por defectos de fabricación',
+    v2:'Sustitución gratuita en caso de defecto — rápida y sencilla',
+    v3:'Código de descuento exclusivo para tu próximo pedido',
+    stepsLabel:'Cómo funciona',
+    s1t:'Introduce tus datos',s1d:'Tu e-mail y los últimos 4 dígitos de tu pedido de Amazon',
+    s2t:'Activa la garantía',s2d:'Un clic basta — confirmación inmediata',
+    s3t:'Recibe tu código de descuento',s3d:'Tu código personal aparece directamente aquí',
     emailLabel:'DIRECCIÓN DE E-MAIL',emailPh:'nombre@ejemplo.es',
     orderLabel:'ÚLTIMOS 4 DÍGITOS DEL N.º DE PEDIDO',orderPh:'ej. 5678',
-    ctaText:'Conseguir mi vale de 6 € →',
-    gdpr:'Tus datos se usan exclusivamente para enviar el vale y se tratan conforme al RGPD. No se comparten con terceros.',
+    optin:'Sí, deseo recibir ocasionalmente ofertas y recordatorios de reposición por e-mail (opcional, cancelable en cualquier momento).',
+    cta:'Activar mi garantía →',ctaLoading:'Activando…',
+    gdpr:'Tus datos se usan exclusivamente para el registro de la garantía y se tratan conforme al RGPD. No se comparten con terceros.',
     emailErr:'Introduce una dirección de e-mail válida',
     orderErr:'Introduce 4 dígitos',
-    okTitle:'¡Muchas gracias!',
-    okSub:'Tu vale está reservado. Comparte ahora tu experiencia en Amazon — recibirás el código en 24 horas por e-mail.',
-    guideTitle:'Cómo dejar una reseña',
-    g1:'① Abrir Amazon.es → Mis pedidos',
-    g2:'② Encontrar el producto → «Escribir una reseña»',
-    g3:'③ Compartir tu experiencia honesta — listo',
-    t1:'Conforme RGPD',t2:'1.200+ participantes',t3:'100% pagado',
-    footer:'Esta oferta no está afiliada a Amazon.com, Inc. ni a sus filiales.'},
+    submitErr:'Error de conexión. Inténtalo de nuevo.',
+    okTitle:'¡Garantía activada!',
+    okSub:'Tu extensión de garantía de 12 meses está activa desde ya. Guarda esta página como comprobante.',
+    promoLabel:'TU CÓDIGO DE DESCUENTO PARA EL PRÓXIMO PEDIDO',
+    promoNote:'%d de descuento — introdúcelo al pagar en Amazon.',
+    copy:'Copiar',copied:'Copiado ✓',
+    reorderTitle:'¿Pronto necesitarás bolsas nuevas?',
+    reorderNote:'Cambia la bolsa cada 4–8 semanas. Con «Repite y ahorra» los repuestos llegan automáticamente.',
+    buyBtn:'Volver a comprar en Amazon',
+    reviewTitle:'¿Contento con tu producto?',
+    reviewNote:'Una reseña honesta ayuda muchísimo a otros compradores — y a nuestra pequeña empresa familiar. Totalmente voluntaria y sin contraprestación.',
+    reviewBtn:'Escribir una reseña en Amazon',
+    guideTitle:'En 30 segundos',
+    g1:'① Abre Amazon → «Mis pedidos»',
+    g2:'② Busca el producto → «Escribir una opinión»',
+    g3:'③ Comparte tu experiencia — listo',
+    tipsLabel:'Conviene saber',
+    tip1:'Cambia la bolsa en cuanto baje la potencia de succión — aunque no esté llena.',
+    tip2:'Desecha las bolsas llenas, bien cerradas, con la basura residual.',
+    tip3:'¿Dudas sobre compatibilidad o algún defecto? Escríbenos por e-mail.',
+    t1:'Conforme al RGPD',t2:'Garantía 12 meses',t3:'Soporte por e-mail',
+    footer:'Este sitio no está afiliado a Amazon.com, Inc. ni a sus filiales.'},
 
-  en:{flag:'🇬🇧',label:'EN',currency:'£',amount:'5',
-    eyebrow:'Exclusive benefit',
-    sub:'Amazon voucher for your honest review',
-    timerLabel:'Offer valid for',
-    stepsLabel:'How to claim your voucher',
-    s1t:'Fill in the form',s1d:'Just your email and the last 4 digits of your order number',
-    s2t:'Share your experience on Amazon',s2d:'Your honest opinion is all we need — no 5-star requirement',
-    s3t:'Receive your voucher',s3d:'Within 24 hours by email, no expiry date',
-    emailLabel:'EMAIL ADDRESS',emailPh:'name@example.co.uk',
+  nl:{flag:'🇳🇱',label:'NL',domain:'nl',
+    brandSub:'Stofzuigerzakken',
+    title:'<em>12 maanden</em> extra garantie, gratis',
+    sub:'Bedankt voor je aankoop! Registreer je stofzuigerzakken en activeer gratis 12 maanden extra garantie.',
+    valueLabel:'Wat je krijgt',
+    v1:'12 maanden extra garantie op fabricagefouten',
+    v2:'Gratis vervanging bij een defect — snel en zonder gedoe',
+    v3:'Exclusieve kortingscode voor je volgende bestelling',
+    stepsLabel:'Zo werkt het',
+    s1t:'Vul je gegevens in',s1d:'Je e-mailadres en de laatste 4 cijfers van je Amazon-bestelling',
+    s2t:'Activeer de garantie',s2d:'Eén klik is genoeg — direct bevestiging',
+    s3t:'Ontvang je kortingscode',s3d:'Je persoonlijke code verschijnt direct hier',
+    emailLabel:'E-MAILADRES',emailPh:'naam@voorbeeld.nl',
+    orderLabel:'LAATSTE 4 CIJFERS VAN JE BESTELNUMMER',orderPh:'bv. 5678',
+    optin:'Ja, ik wil af en toe aanbiedingen en bijbestelherinneringen per e-mail ontvangen (optioneel, op elk moment afmeldbaar).',
+    cta:'Activeer mijn garantie →',ctaLoading:'Activeren…',
+    gdpr:'Je gegevens worden uitsluitend gebruikt voor de garantieregistratie en verwerkt conform de AVG. Nooit gedeeld met derden.',
+    emailErr:'Vul een geldig e-mailadres in',
+    orderErr:'Vul 4 cijfers in',
+    submitErr:'Verbinding mislukt. Probeer het opnieuw.',
+    okTitle:'Garantie geactiveerd!',
+    okSub:'Je garantieverlenging van 12 maanden is nu actief. Bewaar deze pagina als bewijs.',
+    promoLabel:'JOUW KORTINGSCODE VOOR DE VOLGENDE BESTELLING',
+    promoNote:'%d korting — invoeren bij het afrekenen op Amazon.',
+    copy:'Kopiëren',copied:'Gekopieerd ✓',
+    reorderTitle:'Binnenkort nieuwe zakken nodig?',
+    reorderNote:'Vervang de zak elke 4–8 weken. Met «Meld je aan en bespaar» komen nieuwe automatisch binnen.',
+    buyBtn:'Opnieuw bestellen op Amazon',
+    reviewTitle:'Tevreden over je product?',
+    reviewNote:'Een eerlijke beoordeling helpt andere kopers enorm — en ons kleine familiebedrijf. Helemaal vrijwillig en zonder tegenprestatie.',
+    reviewBtn:'Schrijf een beoordeling op Amazon',
+    guideTitle:'In 30 seconden',
+    g1:'① Open Amazon → «Je bestellingen»',
+    g2:'② Zoek het product → «Beoordeling schrijven»',
+    g3:'③ Deel je eerlijke ervaring — klaar',
+    tipsLabel:'Handig om te weten',
+    tip1:'Vervang de zak zodra het zuigvermogen afneemt — ook als hij nog niet vol is.',
+    tip2:'Gooi volle zakken goed gesloten bij het restafval.',
+    tip3:'Vragen over compatibiliteit of een defect? Mail gewoon even met onze support.',
+    t1:'AVG-conform',t2:'12 mnd. garantie',t3:'Support per e-mail',
+    footer:'Deze website is niet gelieerd aan Amazon.com, Inc. of haar dochterondernemingen.'},
+
+  pl:{flag:'🇵🇱',label:'PL',domain:'pl',
+    brandSub:'Worki do odkurzacza',
+    title:'<em>12 miesięcy</em> dodatkowej gwarancji gratis',
+    sub:'Dziękujemy za zakup! Zarejestruj worki do odkurzacza i aktywuj za darmo 12 miesięcy dodatkowej gwarancji.',
+    valueLabel:'Co otrzymasz',
+    v1:'12 miesięcy dodatkowej gwarancji na wady produkcyjne',
+    v2:'Bezpłatna wymiana w razie wady — szybko i bez komplikacji',
+    v3:'Ekskluzywny kod rabatowy na kolejne zamówienie',
+    stepsLabel:'Jak to działa',
+    s1t:'Podaj swoje dane',s1d:'Adres e-mail i ostatnie 4 cyfry numeru zamówienia Amazon',
+    s2t:'Aktywuj gwarancję',s2d:'Wystarczy jedno kliknięcie — natychmiastowe potwierdzenie',
+    s3t:'Odbierz kod rabatowy',s3d:'Twój osobisty kod pojawi się bezpośrednio tutaj',
+    emailLabel:'ADRES E-MAIL',emailPh:'imie@przyklad.pl',
+    orderLabel:'OSTATNIE 4 CYFRY NUMERU ZAMÓWIENIA',orderPh:'np. 5678',
+    optin:'Tak, chcę od czasu do czasu otrzymywać e-maile z ofertami i przypomnieniami o uzupełnieniu zapasów (opcjonalnie, można zrezygnować w każdej chwili).',
+    cta:'Aktywuj gwarancję →',ctaLoading:'Aktywacja…',
+    gdpr:'Twoje dane są wykorzystywane wyłącznie do rejestracji gwarancji i przetwarzane zgodnie z RODO. Nie udostępniamy ich stronom trzecim.',
+    emailErr:'Podaj poprawny adres e-mail',
+    orderErr:'Podaj 4 cyfry',
+    submitErr:'Połączenie nie powiodło się. Spróbuj ponownie.',
+    okTitle:'Gwarancja aktywowana!',
+    okSub:'Twoje 12-miesięczne przedłużenie gwarancji jest już aktywne. Zachowaj tę stronę jako potwierdzenie.',
+    promoLabel:'TWÓJ KOD RABATOWY NA KOLEJNE ZAMÓWIENIE',
+    promoNote:'Rabat %d — wpisz go podczas płatności na Amazon.',
+    copy:'Kopiuj',copied:'Skopiowano ✓',
+    reorderTitle:'Wkrótce potrzebne nowe worki?',
+    reorderNote:'Wymieniaj worek co 4–8 tygodni. Z opcją «Subskrybuj i oszczędzaj» nowe przyjdą automatycznie.',
+    buyBtn:'Zamów ponownie na Amazon',
+    reviewTitle:'Zadowolony z produktu?',
+    reviewNote:'Szczera opinia ogromnie pomaga innym kupującym — i naszej małej rodzinnej firmie. Całkowicie dobrowolna i bez wynagrodzenia.',
+    reviewBtn:'Napisz opinię na Amazon',
+    guideTitle:'W 30 sekund',
+    g1:'① Otwórz Amazon → «Moje zamówienia»',
+    g2:'② Znajdź produkt → «Napisz opinię»',
+    g3:'③ Podziel się szczerą opinią — gotowe',
+    tipsLabel:'Warto wiedzieć',
+    tip1:'Wymień worek, gdy siła ssania spadnie — nawet jeśli nie jest pełny.',
+    tip2:'Pełne worki wyrzucaj szczelnie zamknięte do odpadów zmieszanych.',
+    tip3:'Pytania o kompatybilność lub wadę? Napisz do nas.',
+    t1:'Zgodność z RODO',t2:'12 mies. gwarancji',t3:'Wsparcie e-mail',
+    footer:'Ta strona nie jest powiązana z Amazon.com, Inc. ani jej spółkami zależnymi.'},
+
+  se:{flag:'🇸🇪',label:'SE',domain:'se',
+    brandSub:'Dammsugarpåsar',
+    title:'<em>12 månader</em> extra garanti — gratis',
+    sub:'Tack för ditt köp! Registrera dina dammsugarpåsar och aktivera 12 månader extra garanti utan kostnad.',
+    valueLabel:'Vad du får',
+    v1:'12 månader extra garanti mot tillverkningsfel',
+    v2:'Gratis ersättning vid defekt — snabbt och enkelt',
+    v3:'Exklusiv rabattkod på din nästa beställning',
+    stepsLabel:'Så fungerar det',
+    s1t:'Fyll i dina uppgifter',s1d:'Din e-postadress och de sista 4 siffrorna i ditt Amazon-ordernummer',
+    s2t:'Aktivera garantin',s2d:'Ett klick räcker — direkt bekräftelse',
+    s3t:'Få din rabattkod',s3d:'Din personliga kod visas direkt här',
+    emailLabel:'E-POSTADRESS',emailPh:'namn@exempel.se',
+    orderLabel:'SISTA 4 SIFFRORNA I ORDERNUMRET',orderPh:'t.ex. 5678',
+    optin:'Ja, jag vill ibland få erbjudanden och påfyllningspåminnelser via e-post (valfritt, kan avslutas när som helst).',
+    cta:'Aktivera min garanti →',ctaLoading:'Aktiverar…',
+    gdpr:'Dina uppgifter används endast för garantiregistreringen och behandlas enligt GDPR. De delas aldrig med tredje part.',
+    emailErr:'Ange en giltig e-postadress',
+    orderErr:'Ange 4 siffror',
+    submitErr:'Anslutningen misslyckades. Försök igen.',
+    okTitle:'Garantin är aktiverad!',
+    okSub:'Din 12 månaders garantiförlängning gäller från och med nu. Spara den här sidan som bevis.',
+    promoLabel:'DIN RABATTKOD TILL NÄSTA BESTÄLLNING',
+    promoNote:'%d rabatt — ange koden i kassan på Amazon.',
+    copy:'Kopiera',copied:'Kopierad ✓',
+    reorderTitle:'Snart dags för nya påsar?',
+    reorderNote:'Byt påsen var 4–8:e vecka. Med «Prenumerera och spara» kommer nya automatiskt.',
+    buyBtn:'Beställ igen på Amazon',
+    reviewTitle:'Nöjd med din produkt?',
+    reviewNote:'En ärlig recension hjälper andra köpare enormt — och vårt lilla familjeföretag. Helt frivilligt och utan ersättning.',
+    reviewBtn:'Skriv en recension på Amazon',
+    guideTitle:'På 30 sekunder',
+    g1:'① Öppna Amazon → «Mina beställningar»',
+    g2:'② Hitta produkten → «Skriv en recension»',
+    g3:'③ Dela din ärliga erfarenhet — klart',
+    tipsLabel:'Bra att veta',
+    tip1:'Byt påsen så snart sugeffekten minskar — även om den inte är full.',
+    tip2:'Släng fulla påsar väl förslutna i restavfallet.',
+    tip3:'Frågor om kompatibilitet eller en defekt? Maila oss gärna.',
+    t1:'GDPR-anpassad',t2:'12 mån. garanti',t3:'Support via e-post',
+    footer:'Denna webbplats är inte kopplad till Amazon.com, Inc. eller dess dotterbolag.'},
+
+  en:{flag:'🇬🇧',label:'EN',domain:'de',
+    brandSub:'Vacuum cleaner bags',
+    title:'<em>12 months</em> of free extended warranty',
+    sub:'Thank you for your purchase! Register your vacuum bags and activate 12 months of extra warranty — free of charge.',
+    valueLabel:'What you get',
+    v1:'12 months of additional warranty against manufacturing defects',
+    v2:'Free replacement in case of a defect — fast and hassle-free',
+    v3:'Exclusive discount code for your next order',
+    stepsLabel:'How it works',
+    s1t:'Enter your details',s1d:'Your email and the last 4 digits of your Amazon order number',
+    s2t:'Activate the warranty',s2d:'One click is enough — instant confirmation',
+    s3t:'Get your discount code',s3d:'Your personal code appears right here',
+    emailLabel:'EMAIL ADDRESS',emailPh:'name@example.com',
     orderLabel:'LAST 4 DIGITS OF YOUR ORDER NUMBER',orderPh:'e.g. 5678',
-    ctaText:'Claim my £5 voucher →',
-    gdpr:'Your data is used solely to send the voucher and processed in accordance with GDPR. Never shared with third parties.',
+    optin:'Yes, I\'d like to occasionally receive offers and restock reminders by email (optional, unsubscribe anytime).',
+    cta:'Activate my warranty →',ctaLoading:'Activating…',
+    gdpr:'Your data is used solely for the warranty registration and processed in accordance with GDPR. Never shared with third parties.',
     emailErr:'Please enter a valid email address',
     orderErr:'Please enter 4 digits',
-    okTitle:'Thank you!',
-    okSub:'Your voucher is reserved. Please share your experience on Amazon now — you\'ll receive the code within 24 hours by email.',
-    guideTitle:'How to leave a review',
-    g1:'① Open Amazon.co.uk → Your Orders',
+    submitErr:'Connection failed. Please try again.',
+    okTitle:'Warranty activated!',
+    okSub:'Your 12-month warranty extension is active as of now. Keep this page as proof.',
+    promoLabel:'YOUR DISCOUNT CODE FOR THE NEXT ORDER',
+    promoNote:'%d off — enter the code at Amazon checkout.',
+    copy:'Copy',copied:'Copied ✓',
+    reorderTitle:'Need new bags soon?',
+    reorderNote:'Replace the bag every 4–8 weeks. With Amazon\'s Subscribe & Save, new bags arrive automatically.',
+    buyBtn:'Reorder on Amazon',
+    reviewTitle:'Happy with your product?',
+    reviewNote:'An honest review helps other buyers enormously — and a small family business like ours. Completely voluntary, with no reward attached.',
+    reviewBtn:'Write a review on Amazon',
+    guideTitle:'In 30 seconds',
+    g1:'① Open Amazon → "Your Orders"',
     g2:'② Find the product → "Write a product review"',
     g3:'③ Share your honest experience — done',
-    t1:'GDPR compliant',t2:'1,200+ claimed',t3:'100% paid out',
-    footer:'This offer is not affiliated with Amazon.com, Inc. or its subsidiaries.'}
+    tipsLabel:'Good to know',
+    tip1:'Replace the bag as soon as suction power drops — even if it\'s not full.',
+    tip2:'Dispose of full bags, tightly closed, with household waste.',
+    tip3:'Questions about compatibility or a defect? Just send us an email.',
+    t1:'GDPR compliant',t2:'12-month warranty',t3:'Email support',
+    footer:'This website is not affiliated with Amazon.com, Inc. or its subsidiaries.'}
 };
 
 // ─── Detect language from browser ────────────────────────────────
 function detectLang() {
   const nav = navigator.language || navigator.languages?.[0] || 'de';
   const code = nav.split('-')[0].toLowerCase();
-  return L[code] ? code : 'de';
+  const map = { sv: 'se' };
+  const mapped = map[code] || code;
+  return L[mapped] ? mapped : 'de';
 }
 
 let cur = detectLang();
@@ -520,47 +948,73 @@ function applyLang(k) {
   const l = L[k];
   document.documentElement.lang = k;
 
+  const set = (id, text) => { document.getElementById(id).textContent = text; };
+
   // Hero
-  document.getElementById('heroEyebrow').textContent = l.eyebrow;
-  const amountEl = document.getElementById('heroAmount');
-  amountEl.innerHTML = k === 'en'
-    ? `<sup>${l.currency}</sup>${l.amount}`
-    : `<sup>${l.currency}</sup>${l.amount}`;
-  document.getElementById('heroSub').textContent = l.sub;
-  document.getElementById('timerLabel').textContent = l.timerLabel;
+  set('brandName', CONFIG.brandName);
+  set('brandSub', l.brandSub);
+  document.getElementById('heroTitle').innerHTML = l.title;
+  set('heroSub', l.sub);
+
+  // Value
+  set('valueLabel', l.valueLabel);
+  set('v1', l.v1);
+  set('v2', l.v2);
+  set('v3', l.v3);
 
   // Steps
-  document.getElementById('stepsLabel').textContent = l.stepsLabel;
-  document.getElementById('s1t').textContent = l.s1t;
-  document.getElementById('s1d').textContent = l.s1d;
-  document.getElementById('s2t').textContent = l.s2t;
-  document.getElementById('s2d').textContent = l.s2d;
-  document.getElementById('s3t').textContent = l.s3t;
-  document.getElementById('s3d').textContent = l.s3d;
+  set('stepsLabel', l.stepsLabel);
+  set('s1t', l.s1t); set('s1d', l.s1d);
+  set('s2t', l.s2t); set('s2d', l.s2d);
+  set('s3t', l.s3t); set('s3d', l.s3d);
 
   // Form
-  document.getElementById('emailLabel').textContent = l.emailLabel;
+  set('emailLabel', l.emailLabel);
   document.getElementById('emailInput').placeholder = l.emailPh;
-  document.getElementById('orderLabel').textContent = l.orderLabel;
+  set('orderLabel', l.orderLabel);
   document.getElementById('orderInput').placeholder = l.orderPh;
-  document.getElementById('ctaText').textContent = l.ctaText;
-  document.getElementById('gdprText').textContent = l.gdpr;
-  document.getElementById('emailErr').textContent = l.emailErr;
-  document.getElementById('orderErr').textContent = l.orderErr;
+  set('optinText', l.optin);
+  set('ctaText', l.cta);
+  set('gdprText', l.gdpr);
+  set('emailErr', l.emailErr);
+  set('orderErr', l.orderErr);
+  set('submitErr', l.submitErr);
 
   // Success
-  document.getElementById('okTitle').textContent = l.okTitle;
-  document.getElementById('okSub').textContent = l.okSub;
-  document.getElementById('guideTitle').textContent = l.guideTitle;
-  document.getElementById('g1').textContent = l.g1;
-  document.getElementById('g2').textContent = l.g2;
-  document.getElementById('g3').textContent = l.g3;
+  set('okTitle', l.okTitle);
+  set('okSub', l.okSub);
+  document.getElementById('promoBox').style.display = CONFIG.promoCode ? '' : 'none';
+  set('promoLabel', l.promoLabel);
+  set('promoCode', CONFIG.promoCode);
+  set('promoNote', l.promoNote.replace('%d', CONFIG.promoDiscount));
+  set('copyBtn', l.copy);
+  set('reorderTitle', l.reorderTitle);
+  set('reorderNote', l.reorderNote);
+  set('buyBtn', l.buyBtn);
+  document.getElementById('buyBtn').href = buyUrl(l);
+  set('reviewTitle', l.reviewTitle);
+  set('reviewNote', l.reviewNote);
+  set('reviewBtn', l.reviewBtn);
+  document.getElementById('reviewBtn').href = reviewUrl(l);
+  set('guideTitle', l.guideTitle);
+  set('g1', l.g1);
+  set('g2', l.g2);
+  set('g3', l.g3);
 
-  // Trust
-  document.getElementById('t1').textContent = l.t1;
-  document.getElementById('t2').textContent = l.t2;
-  document.getElementById('t3').textContent = l.t3;
-  document.getElementById('footerText').textContent = l.footer;
+  // Tips
+  set('tipsLabel', l.tipsLabel);
+  document.getElementById('tip1').textContent = l.tip1;
+  document.getElementById('tip2').textContent = l.tip2;
+  document.getElementById('tip3').textContent = l.tip3;
+
+  // Trust & footer
+  set('t1', l.t1);
+  set('t2', l.t2);
+  set('t3', l.t3);
+  document.getElementById('footerText').innerHTML =
+    CONFIG.brandName + ' · <a href="mailto:' + CONFIG.supportEmail + '">' + CONFIG.supportEmail + '</a><br>' +
+    l.footer +
+    (CONFIG.imprintUrl ? '<br><a href="' + CONFIG.imprintUrl + '" target="_blank" rel="noopener">Impressum / Imprint</a>' : '');
 
   buildLangBar();
 }
@@ -577,27 +1031,51 @@ function buildLangBar() {
   });
 }
 
-// ─── Timer ────────────────────────────────────────────────────────
-let secs = 47 * 60 + 59;
-function tick() {
-  secs--;
-  if (secs < 0) secs = 0;
-  const m = Math.floor(secs / 60), s = secs % 60;
-  document.getElementById('timerVal').textContent =
-    (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
-  if (secs > 0) setTimeout(tick, 1000);
+// ─── Amazon links ─────────────────────────────────────────────────
+function reviewUrl(l) {
+  if (CONFIG.asins.length === 1) {
+    return 'https://www.amazon.' + l.domain + '/review/create-review?asin=' + encodeURIComponent(CONFIG.asins[0]);
+  }
+  // Zero or multiple ASINs: send the buyer to their order history so the
+  // review lands on the listing they actually purchased.
+  return 'https://www.amazon.' + l.domain + '/gp/your-account/order-history';
 }
-setTimeout(tick, 1000);
+
+function buyUrl(l) {
+  return 'https://www.amazon.' + l.domain + '/s?k=' + encodeURIComponent(CONFIG.brandName + ' ' + l.brandSub);
+}
+
+// ─── Copy promo code ──────────────────────────────────────────────
+async function copyCode() {
+  const btn = document.getElementById('copyBtn');
+  const code = CONFIG.promoCode;
+  try {
+    await navigator.clipboard.writeText(code);
+    trackEvent('copy_code', { lang: cur });
+    btn.textContent = L[cur].copied;
+    setTimeout(() => { btn.textContent = L[cur].copy; }, 1500);
+  } catch {
+    // Clipboard API unavailable (older browsers / insecure context):
+    // select the code text so the user can long-press-copy
+    const el = document.getElementById('promoCode');
+    const range = document.createRange();
+    range.selectNodeContents(el);
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
+}
 
 // ─── Form submit ──────────────────────────────────────────────────
-function handleSubmit() {
+async function handleSubmit() {
   const email = document.getElementById('emailInput').value.trim();
   const order = document.getElementById('orderInput').value.trim();
-  const l = L[cur];
+  const marketing = document.getElementById('optinInput').checked;
   let ok = true;
 
   document.getElementById('emailErr').style.display = 'none';
   document.getElementById('orderErr').style.display = 'none';
+  document.getElementById('submitErr').style.display = 'none';
   document.getElementById('emailInput').classList.remove('error');
   document.getElementById('orderInput').classList.remove('error');
 
@@ -613,20 +1091,32 @@ function handleSubmit() {
   }
   if (!ok) return;
 
-  // Track submission event
+  const btn = document.getElementById('ctaBtn');
+  const label = document.getElementById('ctaText');
+  btn.disabled = true;
+  label.textContent = L[cur].ctaLoading;
+
   trackEvent('submit', { lang: cur, order_suffix: order });
 
-  // POST to Cloudflare Worker endpoint
-  fetch('/api/submit', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, order_suffix: order, lang: cur })
-  }).catch(() => {}); // silently ignore errors
+  try {
+    const res = await fetch('/api/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email, order_suffix: order, lang: cur, marketing_consent: marketing,
+      }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || !data.ok) throw new Error('submit rejected');
 
-  // Show success
-  document.getElementById('formWrap').style.display = 'none';
-  const sw = document.getElementById('successWrap');
-  sw.style.display = 'flex';
+    document.getElementById('formWrap').style.display = 'none';
+    document.getElementById('successWrap').style.display = 'flex';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } catch {
+    document.getElementById('submitErr').style.display = 'block';
+    btn.disabled = false;
+    label.textContent = L[cur].cta;
+  }
 }
 
 // ─── Analytics helper ─────────────────────────────────────────────
@@ -651,7 +1141,6 @@ document.getElementById('orderInput').addEventListener('input', () => {
 // ─── Init ─────────────────────────────────────────────────────────
 applyLang(cur);
 
-// Track page view on load
 window.addEventListener('load', () => {
   trackEvent('pageview', { lang: cur, ref: document.referrer });
 });
