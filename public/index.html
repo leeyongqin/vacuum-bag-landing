@@ -2,623 +2,718 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Produkt registrieren — Garantie aktivieren</title>
 <meta name="robots" content="noindex,nofollow">
 <meta name="description" content="Registrieren Sie Ihr Produkt und aktivieren Sie 12 Monate kostenlose Garantieverlängerung.">
 <meta property="og:title" content="Produkt registrieren — Garantie aktivieren">
 <meta property="og:description" content="12 Monate kostenlose Garantieverlängerung für Ihre Staubsaugerbeutel aktivieren.">
 <meta property="og:type" content="website">
+<meta name="theme-color" content="#0f1d30">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231a2e4a'/%3E%3Cpath d='M32 12l16 6v12c0 10-6.8 18.4-16 22-9.2-3.6-16-12-16-22V18l16-6z' fill='none' stroke='%23c8a84b' stroke-width='4'/%3E%3Cpath d='M24 32l6 6 12-12' fill='none' stroke='%23c8a84b' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <style>
-  :root {
-    --navy: #1a2e4a;
-    --navy-deep: #0f1d30;
-    --gold: #c8a84b;
-    --gold-light: #e8c96a;
-    --cream: #f7f5f0;
-    --cream-dark: #ede9e0;
-    --text: #1a1a1a;
-    --text-muted: #6b6560;
-    --text-light: #9a958f;
-    --border: #ddd9d0;
-    --success: #2d7a4f;
-    --error: #c0392b;
-    --radius: 10px;
-  }
+/* ══════════════════════════════════════════════════════════════════
+   设计 token —— 与 design/design-system.html 同源
+   组件只写语义别名（--text-muted / --surface / --border），不直接写色阶
+   ══════════════════════════════════════════════════════════════════ */
+:root{
+  --navy-950:#0a1524; --navy-900:#0f1d30; --navy-800:#152942;
+  --navy-700:#1a2e4a; --navy-600:#27405f; --navy-500:#3b5a7d;
+  --navy-400:#5f7d9e; --navy-300:#93a9c1; --navy-200:#c3d0de;
+  --navy-100:#e3eaf1; --navy-50:#f3f7fa;
+  --gold-800:#6f5716; --gold-700:#8f7220; --gold-600:#ad8d31;
+  --gold-500:#c8a84b; --gold-400:#d9bd6d; --gold-300:#e8c96a;
+  --gold-200:#f1e0ad; --gold-100:#f9f2dc; --gold-50:#fdfbf3;
+  --ink-900:#171614; --ink-800:#2e2b28; --ink-700:#4a4641;
+  --ink-600:#6b6560; --ink-500:#8a837c; --ink-400:#a9a29a;
+  --ink-300:#c9c3ba; --ink-200:#e2ddd3; --ink-100:#f0ece4; --ink-50:#f9f7f3;
+  --bg:#f6f4ef; --surface:#ffffff;
+  --border:#e2ddd3; --border-strong:#cfc8bb;
+  --text:#171614; --text-body:#3d3a36; --text-muted:#6b6560; --text-faint:#8a837c;
+  --success-700:#1f6b43; --success-600:#2d7a4f; --success-100:#e7f4ec;
+  --danger-700:#a5291c; --danger-600:#c0392b; --danger-100:#fdecea;
+  --r-sm:8px; --r-md:12px; --r-lg:16px; --r-xl:22px; --r-full:999px;
+  --sh-sm:0 2px 6px rgba(23,22,20,.07), 0 1px 2px rgba(23,22,20,.04);
+  --sh-md:0 10px 26px -8px rgba(15,29,48,.16), 0 2px 6px rgba(23,22,20,.05);
+  --sh-lg:0 24px 52px -16px rgba(15,29,48,.26);
+  --sh-gold:0 8px 22px -6px rgba(200,168,75,.5);
+  --ease:cubic-bezier(.2,.7,.3,1);
+  --t-fast:120ms; --t-base:180ms; --t-slow:300ms;
+}
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,'PingFang SC','Microsoft YaHei',sans-serif;
+  background:var(--bg);color:var(--text-body);
+  font-size:15px;line-height:1.62;-webkit-font-smoothing:antialiased;
+  display:flex;flex-direction:column;align-items:center;min-height:100vh;
+}
+.page{width:100%;max-width:480px;background:var(--bg);display:flex;flex-direction:column;flex:1;position:relative}
 
-  body {
-    font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
-    background: var(--cream);
-    color: var(--text);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
+/* ── 粘性顶栏 ─────────────────────────────────────────────────── */
+.topbar{
+  position:sticky;top:0;z-index:60;background:rgba(15,29,48,.92);
+  backdrop-filter:saturate(1.6) blur(12px);-webkit-backdrop-filter:saturate(1.6) blur(12px);
+  border-bottom:1px solid rgba(255,255,255,.09);
+}
+/* 上下 padding 从 10 收到 8：lang-trigger 抬到 44px 触摸目标后，
+   顶栏总高仍是 8+44+8 = 60px，不会把表单往下推。 */
+.tb-inner{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 18px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:#fff;min-width:0}
+.brand-mark{flex-shrink:0;display:block}
+.brand-text{display:flex;flex-direction:column;min-width:0}
+.brand-text b{font-size:15px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;line-height:1.2}
+.brand-text i{font-size:9.5px;font-style:normal;font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:var(--gold-400);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
-  /* Lang switcher */
-  .lang-bar {
-    width: 100%;
-    max-width: 480px;
-    display: flex;
-    gap: 6px;
-    padding: 12px 16px;
-    overflow-x: auto;
-    scrollbar-width: none;
-    background: var(--cream-dark);
-    border-bottom: 1px solid var(--border);
-  }
-  .lang-bar::-webkit-scrollbar { display: none; }
-  .lang-btn {
-    flex-shrink: 0;
-    padding: 5px 12px;
-    border-radius: 20px;
-    border: 1px solid var(--border);
-    font-size: 12px;
-    cursor: pointer;
-    background: white;
-    color: var(--text-muted);
-    transition: all 0.15s;
-    font-weight: 500;
-  }
-  .lang-btn.active { background: var(--navy); color: white; border-color: var(--navy); }
+.lang-trigger{
+  display:inline-flex;align-items:center;gap:7px;flex-shrink:0;
+  min-height:44px;padding:0 12px;
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.16);
+  border-radius:var(--r-full);color:#fff;font:inherit;font-size:13px;font-weight:650;
+  cursor:pointer;transition:background var(--t-base) var(--ease),border-color var(--t-base) var(--ease);
+}
+.lang-trigger:hover{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.28)}
+.lang-trigger:focus-visible{outline:2px solid var(--gold-400);outline-offset:2px}
+.lang-trigger .chev{transition:transform var(--t-base) var(--ease);opacity:.7}
+.lang-trigger[aria-expanded="true"] .chev{transform:rotate(180deg)}
 
-  /* Hero */
-  .hero {
-    width: 100%;
-    max-width: 480px;
-    background: var(--navy);
-    padding: 26px 24px 30px;
-    text-align: center;
-    color: white;
-    position: relative;
-    overflow: hidden;
-  }
-  .hero::before {
-    content: '';
-    position: absolute;
-    top: -60px; right: -60px;
-    width: 200px; height: 200px;
-    border-radius: 50%;
-    border: 40px solid rgba(200,168,75,0.08);
-  }
-  .brand-row { position: relative; margin-bottom: 22px; }
-  .brand-name {
-    font-size: 17px;
-    font-weight: 700;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: white;
-  }
-  .brand-sub {
-    font-size: 10px;
-    letter-spacing: 1.5px;
-    color: var(--gold);
-    text-transform: uppercase;
-    margin-top: 3px;
-    font-weight: 500;
-  }
-  .shield-icon {
-    width: 56px; height: 56px;
-    margin: 0 auto 14px;
-    position: relative;
-  }
-  .hero-title {
-    font-size: 26px;
-    font-weight: 600;
-    line-height: 1.25;
-    margin-bottom: 10px;
-    position: relative;
-    letter-spacing: -0.3px;
-  }
-  .hero-title em { font-style: normal; color: var(--gold-light); }
-  .hero-sub {
-    font-size: 13.5px;
-    color: rgba(255,255,255,0.7);
-    line-height: 1.6;
-    position: relative;
-    max-width: 340px;
-    margin: 0 auto;
-  }
+/* ── Hero ─────────────────────────────────────────────────────── */
+.hero{
+  position:relative;overflow:hidden;background:var(--navy-900);
+  /* 上下留白刻意收紧：目标是把主 CTA 顶到 390×844 的首屏内 */
+  padding:24px 24px 74px;text-align:center;color:#fff;
+}
+.hero::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(120% 90% at 88% -10%, rgba(200,168,75,.20) 0%, transparent 58%),
+    radial-gradient(90% 70% at 6% 108%, rgba(59,90,125,.55) 0%, transparent 60%);
+  pointer-events:none;
+}
+.hero-shield{position:relative;margin:0 auto 11px;width:52px;height:52px}
+.hero-title{
+  position:relative;font-size:26px;line-height:1.24;font-weight:600;
+  letter-spacing:-.4px;margin-bottom:10px;max-width:20ch;margin-inline:auto;
+}
+.hero-title em{font-style:normal;color:var(--gold-300)}
+.hero-sub{
+  position:relative;font-size:13.5px;line-height:1.55;color:rgba(255,255,255,.74);
+  max-width:32ch;margin:0 auto 16px;
+}
+.hero-chips{position:relative;display:flex;flex-wrap:wrap;justify-content:center;gap:6px;list-style:none}
+.chip{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:5px 10px;border-radius:var(--r-full);
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);
+  font-size:11px;font-weight:600;color:rgba(255,255,255,.92);white-space:nowrap;
+}
+.chip svg{color:var(--gold-400);flex-shrink:0}
 
-  /* Card */
-  .card {
-    width: 100%;
-    max-width: 480px;
-    background: white;
-    border-bottom: 1px solid var(--border);
-  }
+/* ── 主卡片（上浮压住 hero） ──────────────────────────────────── */
+.stage-wrap{padding:0 16px;margin-top:-64px;position:relative;z-index:10}
+.card{
+  background:var(--surface);border-radius:var(--r-xl);
+  box-shadow:var(--sh-lg);padding:20px 20px 22px;
+}
+.card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px}
+.card-head h2{font-size:19px;line-height:1.28;font-weight:700;letter-spacing:-.2px;color:var(--text)}
+.card-head p{font-size:12.5px;color:var(--text-muted);margin-top:3px}
+.time-pill{
+  display:inline-flex;align-items:center;gap:5px;flex-shrink:0;
+  padding:5px 10px;border-radius:var(--r-full);
+  background:var(--gold-100);color:var(--gold-800);
+  font-size:11px;font-weight:700;letter-spacing:.02em;white-space:nowrap;
+}
 
-  /* Value list */
-  .value-wrap { padding: 22px 24px 6px; }
-  .section-label {
-    font-size: 10px;
-    letter-spacing: 1.5px;
-    color: var(--text-light);
-    text-transform: uppercase;
-    margin-bottom: 14px;
-    font-weight: 600;
-  }
-  .value-item {
-    display: flex;
-    gap: 12px;
-    align-items: flex-start;
-    padding: 9px 0;
-    font-size: 13.5px;
-    color: var(--text);
-    line-height: 1.5;
-  }
-  .value-check {
-    width: 20px; height: 20px;
-    border-radius: 50%;
-    background: #e8f5ee;
-    color: var(--success);
-    font-size: 11px;
-    font-weight: 700;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-    margin-top: 1px;
-  }
+/* ── 表单字段 ─────────────────────────────────────────────────── */
+.field{margin-bottom:13px}
+.field > label{display:block;font-size:13px;font-weight:650;color:var(--text-body);margin-bottom:6px}
+.control{
+  display:flex;align-items:center;gap:10px;
+  min-height:52px;padding:0 14px;
+  background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r-md);
+  transition:border-color var(--t-base) var(--ease),box-shadow var(--t-base) var(--ease);
+}
+.control:focus-within{border-color:var(--navy-700);box-shadow:0 0 0 3px var(--navy-100)}
+.control .lead-icon{flex-shrink:0;color:var(--text-faint);transition:color var(--t-base) var(--ease)}
+.control:focus-within .lead-icon{color:var(--navy-600)}
+.control input{
+  flex:1;min-width:0;border:none;outline:none;background:none;font:inherit;
+  font-size:16px;color:var(--text);padding:14px 0;
+}
+.control input::placeholder{color:var(--text-faint)}
+.control .tail{flex-shrink:0;opacity:0;transition:opacity var(--t-base) var(--ease)}
+.control.is-ok .tail{opacity:1}
+.control.is-ok{border-color:var(--success-600)}
+.control.is-error{border-color:var(--danger-600);box-shadow:0 0 0 3px var(--danger-100)}
+.control.is-error .lead-icon{color:var(--danger-600)}
+.control.is-validating .tail{opacity:1}
 
-  /* Steps */
-  .steps-wrap { padding: 18px 24px 24px; }
-  .step {
-    display: flex;
-    gap: 14px;
-    align-items: flex-start;
-    padding: 10px 0;
-    border-bottom: 1px solid var(--cream-dark);
-  }
-  .step:last-child { border-bottom: none; padding-bottom: 0; }
-  .step-num {
-    width: 28px; height: 28px;
-    border-radius: 50%;
-    background: var(--navy);
-    color: white;
-    font-size: 12px;
-    font-weight: 600;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-    margin-top: 1px;
-  }
-  .step-title { font-size: 14px; font-weight: 600; margin-bottom: 3px; color: var(--text); }
-  .step-desc { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+/* 订单后 4 位：等宽 + 大字距，看起来就是「4 个数字」 */
+#orderInput{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:17px;letter-spacing:.28em;font-weight:600}
+#orderInput::placeholder{letter-spacing:.28em;font-weight:400}
 
-  /* Form */
-  .form-wrap { padding: 24px; background: var(--cream); }
-  .f-label {
-    display: block;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text-muted);
-    margin-bottom: 6px;
-    letter-spacing: 0.3px;
-  }
-  .f-input {
-    width: 100%;
-    padding: 12px 14px;
-    border: 1.5px solid var(--border);
-    border-radius: var(--radius);
-    font-size: 15px;
-    background: white;
-    color: var(--text);
-    transition: border-color 0.15s;
-    margin-bottom: 14px;
-    -webkit-appearance: none;
-  }
-  .f-input:focus { outline: none; border-color: var(--navy); }
-  .f-input.error { border-color: var(--error); }
-  .f-err {
-    font-size: 12px;
-    color: var(--error);
-    margin-top: -10px;
-    margin-bottom: 12px;
-    display: none;
-  }
-  .optin-row {
-    display: flex;
-    gap: 10px;
-    align-items: flex-start;
-    margin-bottom: 16px;
-    cursor: pointer;
-  }
-  .optin-row input {
-    width: 18px; height: 18px;
-    margin-top: 1px;
-    accent-color: var(--navy);
-    flex-shrink: 0;
-    cursor: pointer;
-  }
-  .optin-text { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
-  .cta-btn {
-    width: 100%;
-    padding: 15px;
-    background: var(--gold);
-    color: var(--navy-deep);
-    border: none;
-    border-radius: var(--radius);
-    font-size: 15px;
-    font-weight: 700;
-    cursor: pointer;
-    letter-spacing: 0.2px;
-    transition: background 0.15s, transform 0.1s, opacity 0.15s;
-  }
-  .cta-btn:hover { background: var(--gold-light); }
-  .cta-btn:active { transform: scale(0.99); }
-  .cta-btn:disabled { opacity: 0.55; cursor: default; transform: none; }
-  .submit-err {
-    display: none;
-    font-size: 13px;
-    color: var(--error);
-    text-align: center;
-    margin-top: 12px;
-    font-weight: 500;
-  }
+.err-msg{
+  display:none;align-items:center;gap:5px;margin-top:7px;
+  font-size:12.5px;font-weight:550;color:var(--danger-700);
+}
+.err-msg.show{display:flex}
+.err-msg svg{flex-shrink:0}
 
-  /* GDPR */
-  .gdpr-text {
-    font-size: 11px;
-    color: var(--text-light);
-    text-align: center;
-    margin-top: 12px;
-    line-height: 1.6;
-    padding: 0 4px;
-  }
+/* 订单号帮助（原生折叠，零 JS） */
+.help{background:var(--navy-50);border:1px solid var(--navy-100);border-radius:var(--r-sm);margin-top:8px;overflow:hidden}
+.help summary{
+  list-style:none;cursor:pointer;padding:8px 12px;min-height:44px;
+  display:flex;align-items:center;gap:6px;
+  font-size:12px;font-weight:600;color:var(--navy-700);
+}
+.help summary::-webkit-details-marker{display:none}
+.help summary .caret{margin-left:auto;transition:transform var(--t-base) var(--ease);flex-shrink:0}
+.help[open] summary .caret{transform:rotate(180deg)}
+.help p{padding:0 12px 11px;font-size:12.5px;line-height:1.6;color:var(--text-muted)}
 
-  /* Success */
-  .success-wrap {
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    padding: 34px 24px 30px;
-    text-align: center;
-    background: white;
-    width: 100%;
-  }
-  .success-check {
-    width: 64px; height: 64px;
-    border-radius: 50%;
-    background: #e8f5ee;
-    color: var(--success);
-    display: flex; align-items: center; justify-content: center;
-    margin: 0 auto 18px;
-    font-size: 28px;
-    font-weight: 700;
-  }
-  .success-title { font-size: 22px; font-weight: 600; margin-bottom: 8px; }
-  .success-sub { font-size: 14px; color: var(--text-muted); line-height: 1.7; margin-bottom: 24px; max-width: 340px; }
+/* 营销同意 */
+.optin{display:flex;gap:11px;align-items:flex-start;cursor:pointer;margin:2px 0 15px;padding:2px 0;min-height:44px}
+.optin input{
+  width:20px;height:20px;flex-shrink:0;margin-top:2px;cursor:pointer;
+  accent-color:var(--navy-700);border-radius:5px;
+}
+.optin span{font-size:12.5px;line-height:1.55;color:var(--text-muted)}
+.optin input:focus-visible{outline:2px solid var(--navy-700);outline-offset:2px}
 
-  /* Promo code */
-  .promo-box {
-    width: 100%;
-    background: var(--navy);
-    border-radius: var(--radius);
-    padding: 18px 16px;
-    margin-bottom: 14px;
-    color: white;
-  }
-  .promo-label {
-    font-size: 10px;
-    letter-spacing: 1.2px;
-    text-transform: uppercase;
-    color: var(--gold-light);
-    font-weight: 600;
-    margin-bottom: 10px;
-  }
-  .promo-row { display: flex; gap: 8px; justify-content: center; align-items: stretch; }
-  .promo-code {
-    flex: 1;
-    background: rgba(255,255,255,0.1);
-    border: 1.5px dashed rgba(200,168,75,0.6);
-    border-radius: 8px;
-    padding: 11px 12px;
-    font-size: 18px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    color: var(--gold-light);
-    display: flex; align-items: center; justify-content: center;
-  }
-  .copy-btn {
-    padding: 0 16px;
-    background: var(--gold);
-    color: var(--navy-deep);
-    border: none;
-    border-radius: 8px;
-    font-size: 13px;
-    font-weight: 700;
-    cursor: pointer;
-    white-space: nowrap;
-  }
-  .copy-btn:hover { background: var(--gold-light); }
-  .promo-note { font-size: 11.5px; color: rgba(255,255,255,0.6); margin-top: 10px; line-height: 1.5; }
+/* CTA */
+.cta{
+  width:100%;min-height:54px;display:flex;align-items:center;justify-content:center;gap:9px;
+  background:var(--gold-500);color:var(--navy-900);
+  border:none;border-radius:var(--r-md);
+  font:inherit;font-size:16px;font-weight:700;letter-spacing:.01em;
+  cursor:pointer;box-shadow:var(--sh-gold);
+  transition:background var(--t-base) var(--ease),transform var(--t-fast) var(--ease),box-shadow var(--t-base) var(--ease);
+}
+.cta:hover{background:var(--gold-400)}
+.cta:active{transform:translateY(1px)}
+.cta:focus-visible{outline:2px solid var(--navy-700);outline-offset:3px}
+.cta:disabled{opacity:.62;cursor:not-allowed;box-shadow:none;transform:none}
+.cta .arrow{transition:transform var(--t-base) var(--ease)}
+.cta:hover .arrow{transform:translateX(3px)}
+.cta.is-loading .arrow{display:none}
+.spinner{
+  width:17px;height:17px;border-radius:50%;flex-shrink:0;
+  border:2px solid rgba(15,29,48,.28);border-top-color:var(--navy-900);
+  animation:spin .7s linear infinite;display:none;
+}
+.cta.is-loading .spinner{display:block}
+@keyframes spin{to{transform:rotate(360deg)}}
 
-  /* Reorder */
-  .reorder-box {
-    width: 100%;
-    background: var(--cream);
-    border-radius: var(--radius);
-    padding: 16px;
-    margin-bottom: 14px;
-    text-align: left;
-  }
-  .reorder-title { font-size: 14px; font-weight: 700; margin-bottom: 5px; }
-  .reorder-note { font-size: 12.5px; color: var(--text-muted); line-height: 1.55; margin-bottom: 12px; }
-  .buy-btn {
-    display: block;
-    width: 100%;
-    padding: 12px;
-    background: var(--navy);
-    color: white;
-    border-radius: 8px;
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 600;
-    text-align: center;
-    transition: background 0.15s;
-  }
-  .buy-btn:hover { background: var(--navy-deep); }
+.submit-err{
+  display:none;align-items:center;justify-content:center;gap:6px;
+  margin-top:12px;padding:10px 12px;border-radius:var(--r-sm);
+  background:var(--danger-100);color:var(--danger-700);
+  font-size:13px;font-weight:600;
+}
+.submit-err.show{display:flex}
 
-  /* Review */
-  .review-box {
-    width: 100%;
-    border: 1.5px solid var(--border);
-    border-radius: var(--radius);
-    padding: 16px;
-    text-align: left;
-  }
-  .review-title { font-size: 14px; font-weight: 700; margin-bottom: 5px; }
-  .review-note { font-size: 12.5px; color: var(--text-muted); line-height: 1.55; margin-bottom: 12px; }
-  .review-btn {
-    display: block;
-    width: 100%;
-    padding: 12px;
-    background: white;
-    color: var(--navy);
-    border: 1.5px solid var(--navy);
-    border-radius: 8px;
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 600;
-    text-align: center;
-    transition: background 0.15s;
-    margin-bottom: 12px;
-  }
-  .review-btn:hover { background: var(--cream); }
-  .guide-title { font-size: 11px; font-weight: 700; color: var(--text-light); letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 6px; }
-  .guide-step { font-size: 12.5px; color: var(--text-muted); padding: 5px 0; line-height: 1.5; border-bottom: 1px solid var(--cream-dark); }
-  .guide-step:last-child { border-bottom: none; padding-bottom: 0; }
+.gdpr{margin-top:13px;font-size:11.5px;line-height:1.6;color:var(--text-muted);text-align:center}
 
-  /* Tips */
-  .tips-card {
-    width: 100%;
-    max-width: 480px;
-    background: white;
-    border-bottom: 1px solid var(--border);
-    padding: 20px 24px 22px;
-  }
-  .tip {
-    display: flex;
-    gap: 10px;
-    align-items: flex-start;
-    font-size: 12.5px;
-    color: var(--text-muted);
-    line-height: 1.55;
-    padding: 7px 0;
-  }
-  .tip-dot {
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: var(--gold);
-    flex-shrink: 0;
-    margin-top: 7px;
-  }
-  .tip a { color: var(--navy); }
+/* ── 信任条 ───────────────────────────────────────────────────── */
+.trust{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:20px 16px 4px}
+.trust-item{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
+.trust-item svg{color:var(--navy-500)}
+.trust-item span{font-size:11px;font-weight:600;color:var(--text-muted);line-height:1.35}
 
-  /* Trust bar */
-  .trust-bar {
-    width: 100%;
-    max-width: 480px;
-    display: flex;
-    justify-content: space-around;
-    padding: 14px 16px;
-    background: white;
-    border-bottom: 1px solid var(--border);
-  }
-  .trust-item { display: flex; flex-direction: column; align-items: center; gap: 3px; }
-  .trust-icon { font-size: 18px; }
-  .trust-label { font-size: 10px; color: var(--text-muted); font-weight: 500; text-align: center; }
+/* ── 区块通用 ─────────────────────────────────────────────────── */
+.section{padding:26px 20px 0}
+.section > h2{font-size:16px;font-weight:700;color:var(--text);margin-bottom:14px;letter-spacing:-.1px}
 
-  /* Footer */
-  .footer {
-    width: 100%;
-    max-width: 480px;
-    padding: 16px;
-    text-align: center;
-    font-size: 10px;
-    color: var(--text-light);
-    line-height: 1.7;
-  }
-  .footer a { color: var(--text-muted); }
+/* ── 流程步骤（纵向带连接线） ────────────────────────────────── */
+.steps{list-style:none;position:relative}
+.steps li{display:flex;gap:13px;align-items:flex-start;padding-bottom:16px;position:relative}
+.steps li:last-child{padding-bottom:0}
+.steps li::before{
+  content:'';position:absolute;left:13px;top:30px;bottom:0;width:2px;
+  background:linear-gradient(var(--navy-100),var(--navy-100));border-radius:2px;
+}
+.steps li:last-child::before{display:none}
+.step-num{
+  flex-shrink:0;width:28px;height:28px;border-radius:50%;
+  background:var(--navy-700);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12.5px;font-weight:700;position:relative;z-index:1;
+}
+.step-num.done{background:var(--success-600)}
+.step-txt b{display:block;font-size:14px;font-weight:650;color:var(--text);line-height:1.4}
+.step-txt small{display:block;font-size:12.5px;line-height:1.55;color:var(--text-muted);margin-top:2px}
+
+/* ── FAQ ──────────────────────────────────────────────────────── */
+.faq{display:flex;flex-direction:column;gap:8px}
+details.acc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);overflow:hidden}
+details.acc summary{
+  list-style:none;cursor:pointer;min-height:48px;
+  padding:13px 15px;display:flex;align-items:center;justify-content:space-between;gap:12px;
+  font-size:13.5px;font-weight:650;color:var(--text);
+}
+details.acc summary::-webkit-details-marker{display:none}
+details.acc summary:focus-visible{outline:2px solid var(--navy-700);outline-offset:-3px}
+details.acc summary::after{
+  content:'';width:8px;height:8px;flex-shrink:0;
+  border-right:2px solid var(--text-faint);border-bottom:2px solid var(--text-faint);
+  transform:rotate(45deg) translate(-1px,-1px);
+  transition:transform var(--t-base) var(--ease);
+}
+details.acc[open] summary::after{transform:rotate(-135deg) translate(-1px,-1px)}
+details.acc .acc-body{padding:0 15px 14px;font-size:13px;line-height:1.62;color:var(--text-muted)}
+
+/* ── 页脚 ─────────────────────────────────────────────────────── */
+.footer{padding:26px 20px 34px;text-align:center;font-size:11px;line-height:1.7;color:var(--text-muted)}
+.footer a{color:var(--navy-600);text-decoration:none;border-bottom:1px solid var(--navy-200)}
+/* 法律声明是必须被阅读的正文，不能用 --text-faint（3.4:1）—— 那是占位符/图标专用 */
+.footer .legal{margin-top:8px;color:var(--text-muted)}
+
+/* ══ 成功态 ═════════════════════════════════════════════════════ */
+/* 自带深色头图：注册完成后折扣码必须落在首屏内，不能要求用户再往下滚 */
+.success{display:none;padding:0}
+.success.on{display:block}
+.success-hero{
+  position:relative;overflow:hidden;background:var(--navy-900);color:#fff;
+  padding:30px 24px 30px;text-align:center;
+}
+.success-hero::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(120% 90% at 85% -20%, rgba(200,168,75,.22) 0%, transparent 58%);
+  pointer-events:none;
+}
+.success-body{padding:20px 20px 0}
+.ok-ring{
+  position:relative;width:74px;height:74px;margin:0 auto 16px;border-radius:50%;
+  background:var(--success-100);display:flex;align-items:center;justify-content:center;
+}
+.ok-ring svg{width:38px;height:38px}
+.ok-ring path{
+  stroke:var(--success-600);stroke-width:3.2;fill:none;
+  stroke-linecap:round;stroke-linejoin:round;
+  stroke-dasharray:44;stroke-dashoffset:44;
+}
+.success.on .ok-ring{animation:pop var(--t-slow) var(--ease) both}
+.success.on .ok-ring path{animation:draw 480ms var(--ease) 160ms both}
+@keyframes pop{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes draw{to{stroke-dashoffset:0}}
+.success h2{font-size:22px;font-weight:700;color:#fff;letter-spacing:-.3px;margin-bottom:8px;position:relative}
+.success .sub{font-size:13.5px;line-height:1.65;color:rgba(255,255,255,.72);max-width:32ch;margin:0 auto;position:relative}
+
+/* 折扣票券（CONFIG.promoCode 为空时整块隐藏） */
+.ticket{
+  position:relative;background:var(--navy-900);border-radius:var(--r-lg);
+  padding:18px 18px 16px;color:#fff;overflow:hidden;text-align:center;
+  box-shadow:var(--sh-md);
+}
+.ticket::before,.ticket::after{
+  content:'';position:absolute;top:50%;width:20px;height:20px;border-radius:50%;
+  background:var(--bg);transform:translateY(-50%);
+}
+.ticket::before{left:-10px} .ticket::after{right:-10px}
+.ticket-label{font-size:9.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-300);margin-bottom:12px}
+.ticket-code{
+  display:block;width:100%;padding:13px;
+  background:rgba(255,255,255,.07);border:1.5px dashed rgba(200,168,75,.55);
+  border-radius:var(--r-md);color:var(--gold-300);
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+  font-size:21px;font-weight:700;letter-spacing:.16em;text-align:center;
+}
+.ticket-note{font-size:11.5px;line-height:1.5;color:rgba(255,255,255,.62);margin-top:11px}
+.ticket-note b{color:var(--gold-300);font-weight:700}
+.copy-row{display:flex;gap:8px;margin-top:12px}
+.copy-btn{
+  flex:1;min-height:46px;display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  background:var(--gold-500);color:var(--navy-900);border:none;border-radius:var(--r-md);
+  font:inherit;font-size:14px;font-weight:700;cursor:pointer;
+  transition:background var(--t-base) var(--ease);
+}
+.copy-btn:hover{background:var(--gold-400)}
+.copy-btn:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.saved-hint{font-size:11.5px;color:var(--text-muted);margin-top:10px;display:flex;align-items:center;justify-content:center;gap:5px}
+
+/* 后续动作卡 */
+.act{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);
+  padding:17px;text-align:left;margin-top:12px;
+}
+.act h3{font-size:14.5px;font-weight:700;color:var(--text);margin-bottom:5px;line-height:1.4}
+.act p{font-size:12.5px;line-height:1.58;color:var(--text-muted);margin-bottom:13px}
+.act-btn{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  min-height:48px;border-radius:var(--r-md);text-decoration:none;
+  font-size:14px;font-weight:650;transition:background var(--t-base) var(--ease),border-color var(--t-base) var(--ease);
+}
+.act-btn.solid{background:var(--navy-700);color:#fff}
+.act-btn.solid:hover{background:var(--navy-900)}
+.act-btn.outline{background:var(--surface);color:var(--navy-700);border:1.5px solid var(--navy-200)}
+.act-btn.outline:hover{background:var(--navy-50);border-color:var(--navy-300)}
+.act-btn:focus-visible{outline:2px solid var(--navy-700);outline-offset:2px}
+.guide{margin-top:13px;padding-top:13px;border-top:1px dashed var(--border)}
+.guide-t{font-size:10.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--text-faint);margin-bottom:8px}
+.guide li{font-size:12.5px;line-height:1.55;color:var(--text-muted);padding:5px 0;list-style:none;display:flex;gap:7px}
+.guide li::before{content:'';flex-shrink:0;width:5px;height:5px;border-radius:50%;background:var(--gold-500);margin-top:8px}
+
+/* ── 语言抽屉 ─────────────────────────────────────────────────── */
+.scrim{
+  position:fixed;inset:0;z-index:100;background:rgba(10,21,36,.5);
+  backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);
+  opacity:0;visibility:hidden;transition:opacity var(--t-slow) var(--ease),visibility var(--t-slow);
+}
+.scrim.on{opacity:1;visibility:visible}
+.sheet{
+  position:fixed;left:0;right:0;bottom:0;z-index:101;
+  max-width:480px;margin:0 auto;
+  background:var(--surface);border-radius:var(--r-xl) var(--r-xl) 0 0;
+  padding:8px 16px calc(18px + env(safe-area-inset-bottom));
+  transform:translateY(102%);transition:transform var(--t-slow) var(--ease);
+  max-height:82vh;overflow-y:auto;box-shadow:var(--sh-lg);
+}
+.sheet.on{transform:translateY(0)}
+.sheet-grab{width:38px;height:4px;border-radius:2px;background:var(--ink-300);margin:6px auto 14px}
+.sheet h3{font-size:15px;font-weight:700;color:var(--text);margin-bottom:12px}
+.lang-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.lang-opt{
+  display:flex;align-items:center;gap:10px;min-height:52px;padding:0 13px;
+  background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r-md);
+  font:inherit;font-size:13.5px;font-weight:600;color:var(--text-body);
+  cursor:pointer;text-align:left;transition:border-color var(--t-base) var(--ease),background var(--t-base) var(--ease);
+}
+.lang-opt:hover{background:var(--navy-50);border-color:var(--navy-200)}
+.lang-opt:focus-visible{outline:2px solid var(--navy-700);outline-offset:2px}
+.lang-opt .fl{font-size:19px;line-height:1;flex-shrink:0}
+.lang-opt .nm{display:flex;flex-direction:column;min-width:0}
+.lang-opt .nm small{font-size:10.5px;font-weight:600;color:var(--text-muted);letter-spacing:.06em}
+.lang-opt[aria-current="true"]{border-color:var(--navy-700);background:var(--navy-50)}
+.lang-opt[aria-current="true"] .nm b{color:var(--navy-700)}
+.lang-opt .tick{margin-left:auto;color:var(--navy-700);display:none;flex-shrink:0}
+.lang-opt[aria-current="true"] .tick{display:block}
+
+/* ── Toast ────────────────────────────────────────────────────── */
+.toast{
+  position:fixed;left:50%;bottom:26px;z-index:200;
+  transform:translate(-50%,20px);opacity:0;pointer-events:none;
+  display:flex;align-items:center;gap:8px;
+  padding:11px 17px;border-radius:var(--r-full);
+  background:var(--navy-900);color:#fff;font-size:13px;font-weight:600;
+  box-shadow:var(--sh-lg);transition:opacity var(--t-base) var(--ease),transform var(--t-base) var(--ease);
+  max-width:calc(100vw - 32px);
+}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+/* ── 降级：尊重系统「减少动态效果」 ──────────────────────────── */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
+  .sheet{transform:none}
+}
 </style>
 </head>
 <body>
+<div class="page">
 
-<div class="lang-bar" id="langBar"></div>
+  <!-- ═══ 粘性顶栏：品牌 + 语言入口 ═══ -->
+  <header class="topbar">
+    <div class="tb-inner">
+      <a class="brand" href="#" aria-label="AromeLivii">
+        <svg class="brand-mark" width="30" height="30" viewBox="0 0 64 64" aria-hidden="true">
+          <rect width="64" height="64" rx="15" fill="#1a2e4a"/>
+          <path d="M32 13l15 5.6v11.6c0 9.6-6.4 17.7-15 21.2-8.6-3.5-15-11.6-15-21.2V18.6L32 13z" fill="none" stroke="#c8a84b" stroke-width="3.6"/>
+          <path d="M24.5 32.5l5.5 5.5 10.5-11" fill="none" stroke="#e8c96a" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="brand-text">
+          <b id="brandName">AromeLivii</b>
+          <i id="brandSub">Staubsaugerbeutel</i>
+        </span>
+      </a>
 
-<div class="hero">
-  <div class="brand-row">
-    <div class="brand-name" id="brandName">YourBrand</div>
-    <div class="brand-sub" id="brandSub">Staubsaugerbeutel</div>
-  </div>
-  <div class="shield-icon">
-    <svg viewBox="0 0 64 64" width="56" height="56">
-      <path d="M32 6l20 7.5V32c0 12.5-8.5 23-20 27.5C20.5 55 12 44.5 12 32V13.5L32 6z" fill="none" stroke="#c8a84b" stroke-width="3"/>
-      <path d="M22 32l7 7 13-13" fill="none" stroke="#e8c96a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-  </div>
-  <div class="hero-title" id="heroTitle"></div>
-  <div class="hero-sub" id="heroSub"></div>
-</div>
+      <button class="lang-trigger" id="langTrigger" aria-haspopup="dialog" aria-expanded="false">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+          <circle cx="12" cy="12" r="9"/><path d="M3.2 9h17.6M3.2 15h17.6"/>
+          <path d="M12 3a15 15 0 010 18a15 15 0 010-18z"/>
+        </svg>
+        <span id="langCurrent">DE</span>
+        <svg class="chev" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M6 9.5l6 6 6-6"/></svg>
+      </button>
+    </div>
+  </header>
 
-<div class="card" id="mainCard">
-  <div class="value-wrap">
-    <div class="section-label" id="valueLabel"></div>
-    <div class="value-item"><div class="value-check">✓</div><div id="v1"></div></div>
-    <div class="value-item"><div class="value-check">✓</div><div id="v2"></div></div>
-    <div class="value-item"><div class="value-check">✓</div><div id="v3"></div></div>
-  </div>
+  <!-- ═══ Hero ═══ -->
+  <section class="hero">
+    <div class="hero-shield">
+      <svg viewBox="0 0 64 64" width="60" height="60" aria-hidden="true">
+        <path d="M32 6l20 7.5V32c0 12.5-8.5 23-20 27.5C20.5 55 12 44.5 12 32V13.5L32 6z" fill="none" stroke="#c8a84b" stroke-width="2.8"/>
+        <path d="M22 32l7 7 13-13" fill="none" stroke="#e8c96a" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <h1 class="hero-title" id="heroTitle"></h1>
+    <p class="hero-sub" id="heroSub"></p>
+    <ul class="hero-chips">
+      <li class="chip">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3l7 2.6v5.6c0 4.5-3 8.3-7 9.9-4-1.6-7-5.4-7-9.9V5.6L12 3z"/></svg>
+        <span id="c1"></span>
+      </li>
+      <li class="chip">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.5 12a8.5 8.5 0 11-2.6-6.1"/><path d="M20.8 4.2v4.4h-4.4"/></svg>
+        <span id="c2"></span>
+      </li>
+      <li class="chip">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3.5 12.6V5.2c0-.9.8-1.7 1.7-1.7h7.4c.5 0 .9.2 1.2.5l7.5 7.5a1.7 1.7 0 010 2.4l-6.9 6.9a1.7 1.7 0 01-2.4 0L4 13.8a1.7 1.7 0 01-.5-1.2z"/><circle cx="8.2" cy="8.2" r="1.3"/></svg>
+        <span id="c3"></span>
+      </li>
+    </ul>
+  </section>
 
-  <div class="steps-wrap">
-    <div class="section-label" id="stepsLabel"></div>
-    <div class="step">
-      <div class="step-num">1</div>
-      <div>
-        <div class="step-title" id="s1t"></div>
-        <div class="step-desc" id="s1d"></div>
+  <!-- ═══ 表单态 ═══ -->
+  <div id="formState">
+    <div class="stage-wrap">
+      <form class="card" id="regForm" novalidate>
+        <div class="card-head">
+          <div>
+            <h2 id="cardTitle"></h2>
+            <p id="cardSub"></p>
+          </div>
+          <span class="time-pill">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5.2l3.2 2"/></svg>
+            30 s
+          </span>
+        </div>
+
+        <!-- 邮箱 -->
+        <div class="field">
+          <label for="emailInput" id="emailLabel"></label>
+          <div class="control" id="emailCtl">
+            <svg class="lead-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+              <rect x="2.5" y="4.5" width="19" height="15" rx="3"/><path d="M3 7l9 6 9-6"/>
+            </svg>
+            <input type="email" id="emailInput" inputmode="email" autocomplete="email"
+                   autocapitalize="off" spellcheck="false" aria-describedby="emailErr">
+            <span class="tail">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2d7a4f" stroke-width="2.4" aria-hidden="true"><path d="M4 12.5l5.5 5.5L20 7"/></svg>
+            </span>
+          </div>
+          <p class="err-msg" id="emailErr" role="alert">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.4v.1"/></svg>
+            <span id="emailErrText"></span>
+          </p>
+        </div>
+
+        <!-- 订单后 4 位 -->
+        <div class="field">
+          <label for="orderInput" id="orderLabel"></label>
+          <div class="control" id="orderCtl">
+            <svg class="lead-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+              <path d="M6 3.5h9.5L20 8v12.5H6z"/><path d="M15 3.5V8h4.5M9 12.5h6M9 16h4"/>
+            </svg>
+            <input type="text" id="orderInput" inputmode="numeric" pattern="[0-9]*"
+                   maxlength="4" autocomplete="off" aria-describedby="orderErr">
+            <span class="tail">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2d7a4f" stroke-width="2.4" aria-hidden="true"><path d="M4 12.5l5.5 5.5L20 7"/></svg>
+            </span>
+          </div>
+          <p class="err-msg" id="orderErr" role="alert">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.4v.1"/></svg>
+            <span id="orderErrText"></span>
+          </p>
+
+          <details class="help">
+            <summary>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.3a2.5 2.5 0 114.2 2.1c-.7.6-1.3 1-1.3 1.9"/><path d="M12.5 16.4v.1"/></svg>
+              <span id="orderHelpTitle"></span>
+              <svg class="caret" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M6 9.5l6 6 6-6"/></svg>
+            </summary>
+            <p id="orderHelpText"></p>
+          </details>
+        </div>
+
+        <!-- 营销同意 -->
+        <label class="optin" for="optinInput">
+          <input type="checkbox" id="optinInput">
+          <span id="optinText"></span>
+        </label>
+
+        <!-- CTA -->
+        <button type="submit" class="cta" id="ctaBtn">
+          <span class="spinner" aria-hidden="true"></span>
+          <span id="ctaText"></span>
+          <svg class="arrow" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M4.5 12h15M13 5.5l6.5 6.5-6.5 6.5"/></svg>
+        </button>
+
+        <p class="submit-err" id="submitErr" role="alert">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.4v.1"/></svg>
+          <span id="submitErrText"></span>
+        </p>
+
+        <p class="gdpr" id="gdprText"></p>
+      </form>
+    </div>
+
+    <!-- 信任条 -->
+    <div class="trust">
+      <div class="trust-item">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5"/><path d="M8 10.5V7.8a4 4 0 018 0v2.7"/></svg>
+        <span id="t1"></span>
+      </div>
+      <div class="trust-item">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 3l7 2.6v5.6c0 4.5-3 8.3-7 9.9-4-1.6-7-5.4-7-9.9V5.6L12 3z"/><path d="M9 12l2.2 2.2L15.5 10"/></svg>
+        <span id="t2"></span>
+      </div>
+      <div class="trust-item">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="3"/><path d="M3 7l9 6 9-6"/></svg>
+        <span id="t3"></span>
       </div>
     </div>
-    <div class="step">
-      <div class="step-num">2</div>
-      <div>
-        <div class="step-title" id="s2t"></div>
-        <div class="step-desc" id="s2d"></div>
+
+    <!-- 流程 -->
+    <section class="section">
+      <h2 id="stepsLabel"></h2>
+      <ol class="steps">
+        <li>
+          <span class="step-num">1</span>
+          <span class="step-txt"><b id="s1t"></b><small id="s1d"></small></span>
+        </li>
+        <li>
+          <span class="step-num">2</span>
+          <span class="step-txt"><b id="s2t"></b><small id="s2d"></small></span>
+        </li>
+        <li>
+          <span class="step-num">3</span>
+          <span class="step-txt"><b id="s3t"></b><small id="s3d"></small></span>
+        </li>
+      </ol>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section">
+      <h2 id="faqTitle"></h2>
+      <div class="faq">
+        <details class="acc">
+          <summary id="faq1q"></summary>
+          <div class="acc-body" id="faq1a"></div>
+        </details>
+        <details class="acc">
+          <summary id="faq2q"></summary>
+          <div class="acc-body" id="faq2a"></div>
+        </details>
+        <details class="acc">
+          <summary id="faq3q"></summary>
+          <div class="acc-body" id="faq3a"></div>
+        </details>
+      </div>
+    </section>
+  </div>
+
+  <!-- ═══ 成功态 ═══ -->
+  <div class="success" id="successState">
+    <div class="success-hero">
+      <div class="ok-ring">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12.5l5 5L19.5 7"/></svg>
+      </div>
+      <h2 id="okTitle"></h2>
+      <p class="sub" id="okSub"></p>
+    </div>
+
+    <div class="success-body">
+    <div class="ticket" id="ticket" style="display:none">
+      <div class="ticket-label" id="promoLabel"></div>
+      <code class="ticket-code" id="promoCode"></code>
+      <div class="copy-row">
+        <button type="button" class="copy-btn" id="copyBtn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="8.5" y="8.5" width="12" height="12" rx="2.4"/><path d="M15.5 5.5H5.9c-1 0-1.9.8-1.9 1.9v9.6"/></svg>
+          <span id="copyText"></span>
+        </button>
+      </div>
+      <p class="ticket-note" id="promoNote"></p>
+    </div>
+    <p class="saved-hint" id="savedHint" style="display:none">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 3.5h9.5L20 8v12.5H6z"/><path d="M15 3.5V8h4.5"/></svg>
+      <span id="okSaved"></span>
+    </p>
+
+    <div class="act">
+      <h3 id="reorderTitle"></h3>
+      <p id="reorderNote"></p>
+      <a class="act-btn solid" id="buyBtn" href="#" target="_blank" rel="noopener sponsored">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 5.5h2.2l2.2 10.4h9.7l2-7.4H7"/><circle cx="9.5" cy="19" r="1.4"/><circle cx="17" cy="19" r="1.4"/></svg>
+        <span id="buyText"></span>
+      </a>
+    </div>
+
+    <div class="act">
+      <h3 id="reviewTitle"></h3>
+      <p id="reviewNote"></p>
+      <a class="act-btn outline" id="reviewBtn" href="#" target="_blank" rel="noopener">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3.6l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8L3.5 9.8l5.9-.9L12 3.6z"/></svg>
+        <span id="reviewText"></span>
+      </a>
+      <div class="guide">
+        <div class="guide-t" id="guideTitle"></div>
+        <ul>
+          <li id="g1"></li>
+          <li id="g2"></li>
+          <li id="g3"></li>
+        </ul>
       </div>
     </div>
-    <div class="step">
-      <div class="step-num">3</div>
-      <div>
-        <div class="step-title" id="s3t"></div>
-        <div class="step-desc" id="s3d"></div>
-      </div>
-    </div>
+    </div><!-- /.success-body -->
   </div>
 
-  <div class="form-wrap" id="formWrap">
-    <label class="f-label" id="emailLabel" for="emailInput"></label>
-    <input class="f-input" type="email" id="emailInput" autocomplete="email">
-    <div class="f-err" id="emailErr"></div>
-
-    <label class="f-label" id="orderLabel" for="orderInput"></label>
-    <input class="f-input" type="text" id="orderInput" maxlength="4" inputmode="numeric" autocomplete="off">
-    <div class="f-err" id="orderErr"></div>
-
-    <label class="optin-row" for="optinInput">
-      <input type="checkbox" id="optinInput">
-      <span class="optin-text" id="optinText"></span>
-    </label>
-
-    <button class="cta-btn" id="ctaBtn" onclick="handleSubmit()">
-      <span id="ctaText"></span>
-    </button>
-    <div class="submit-err" id="submitErr"></div>
-
-    <p class="gdpr-text" id="gdprText"></p>
-  </div>
-
-  <!-- Success state (hidden initially) -->
-  <div class="success-wrap" id="successWrap">
-    <div class="success-check">✓</div>
-    <div class="success-title" id="okTitle"></div>
-    <div class="success-sub" id="okSub"></div>
-
-    <div class="promo-box" id="promoBox">
-      <div class="promo-label" id="promoLabel"></div>
-      <div class="promo-row">
-        <div class="promo-code" id="promoCode"></div>
-        <button class="copy-btn" id="copyBtn" onclick="copyCode()"></button>
-      </div>
-      <div class="promo-note" id="promoNote"></div>
-    </div>
-
-    <div class="reorder-box">
-      <div class="reorder-title" id="reorderTitle"></div>
-      <div class="reorder-note" id="reorderNote"></div>
-      <a class="buy-btn" id="buyBtn" href="#" target="_blank" rel="noopener-sponsored"></a>
-    </div>
-
-    <div class="review-box">
-      <div class="review-title" id="reviewTitle"></div>
-      <div class="review-note" id="reviewNote"></div>
-      <a class="review-btn" id="reviewBtn" href="#" target="_blank" rel="noopener"></a>
-      <div class="guide-title" id="guideTitle"></div>
-      <div class="guide-step" id="g1"></div>
-      <div class="guide-step" id="g2"></div>
-      <div class="guide-step" id="g3"></div>
-    </div>
-  </div>
+  <!-- ═══ 页脚 ═══ -->
+  <footer class="footer" id="footerText"></footer>
 </div>
 
-<div class="tips-card">
-  <div class="section-label" id="tipsLabel"></div>
-  <div class="tip"><div class="tip-dot"></div><div id="tip1"></div></div>
-  <div class="tip"><div class="tip-dot"></div><div id="tip2"></div></div>
-  <div class="tip"><div class="tip-dot"></div><div id="tip3"></div></div>
+<!-- ═══ 语言抽屉 ═══ -->
+<div class="scrim" id="scrim"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+  <div class="sheet-grab" aria-hidden="true"></div>
+  <h3 id="sheetTitle"></h3>
+  <div class="lang-grid" id="langGrid"></div>
 </div>
 
-<div class="trust-bar">
-  <div class="trust-item">
-    <div class="trust-icon">🔒</div>
-    <div class="trust-label" id="t1"></div>
-  </div>
-  <div class="trust-item">
-    <div class="trust-icon">🛡️</div>
-    <div class="trust-label" id="t2"></div>
-  </div>
-  <div class="trust-item">
-    <div class="trust-icon">✉️</div>
-    <div class="trust-label" id="t3"></div>
-  </div>
+<!-- ═══ Toast ═══ -->
+<div class="toast" id="toast" role="status" aria-live="polite">
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.4" aria-hidden="true"><path d="M4 12.5l5.5 5.5L20 7"/></svg>
+  <span id="toastText"></span>
 </div>
-
-<div class="footer" id="footerText"></div>
 
 <script>
 // ═══════════════════════════════════════════════════════════════════
-// CONFIG — fill these in before going live.
+// CONFIG —— 上线前按需填写
 // ═══════════════════════════════════════════════════════════════════
 const CONFIG = {
   brandName: 'AromeLivii',
   supportEmail: 'support@aromelivii.com',
-  // 产品 ASIN 列表。恰好 1 个时「写评价」按钮直达评论页；多个时退到
-  // 「我的订单」页，避免买家评错 listing。
   asins: ['B09HR63433', 'B0CWLCFXFQ'],
-  promoCode: '',                                // ← 在 Seller Central 创建促销后填入 Claim Code；留空则隐藏折扣码模块
-  promoDiscount: '10 %',
-  imprintUrl: '',                               // ← Impressum 链接（德国站建议提供），留空则不显示
+  promoCode: '',            // ← 在 Seller Central 创建促销后填入 Claim Code；留空则隐藏整个折扣票券模块
+  promoDiscount: '10 %',    // ← 与促销设置一致
+  imprintUrl: '',           // ← Impressum 链接（德国站建议提供），留空则不显示
 };
 
 // ═══════════════════════════════════════════════════════════════════
-// Language data
+// 语言字典
 // ═══════════════════════════════════════════════════════════════════
 const L = {
-  de:{flag:'🇩🇪',label:'DE',domain:'de',
+  de:{flag:'🇩🇪',code:'DE',name:'Deutsch',
     brandSub:'Staubsaugerbeutel',
     title:'<em>12 Monate</em> Gratis-Garantie&shy;verlängerung',
     sub:'Danke für Ihren Kauf! Registrieren Sie Ihre Staubsaugerbeutel und aktivieren Sie kostenlos 12 Monate zusätzliche Garantie.',
-    valueLabel:'Das erhalten Sie',
-    v1:'12 Monate zusätzliche Garantie auf Herstellungsfehler',
-    v2:'Kostenloser Ersatz bei Defekt — schnell und unkompliziert',
-    v3:'Exklusiver Rabattcode für Ihre nächste Bestellung',
-    stepsLabel:'So funktioniert es',
-    s1t:'E-Mail & Bestellnummer eintragen',s1d:'E-Mail-Adresse und die letzten 4 Ziffern Ihrer Amazon-Bestellnummer',
-    s2t:'Garantie aktivieren',s2d:'Ein Klick genügt — Sie erhalten sofort eine Bestätigung',
-    s3t:'Rabattcode erhalten',s3d:'Ihr persönlicher Code wird direkt hier angezeigt',
-    emailLabel:'E-MAIL-ADRESSE',emailPh:'name@beispiel.de',
-    orderLabel:'LETZTE 4 ZIFFERN DER BESTELLNUMMER',orderPh:'z. B. 5678',
+    c1:'12 Monate Garantie', c2:'Kostenloser Ersatz', c3:'Exklusiver Rabatt',
+    cardTitle:'Garantie aktivieren', cardSub:'Dauert weniger als 30 Sekunden',
+    emailLabel:'E-Mail-Adresse', emailPh:'name@beispiel.de',
+    orderLabel:'Letzte 4 Ziffern der Bestellnummer', orderPh:'0000',
+    orderHelpTitle:'Wo finde ich die letzten 4 Ziffern?',
+    orderHelpText:'In Ihrer Amazon-Bestellbestätigung oder unter „Meine Bestellungen" → Bestellung auswählen → Bestellnummer. Es genügen die letzten 4 Ziffern.',
     optin:'Ja, ich möchte gelegentlich Angebote und Nachbestell-Erinnerungen per E-Mail erhalten (optional, jederzeit abbestellbar).',
-    cta:'Garantie jetzt aktivieren →',ctaLoading:'Wird aktiviert…',
+    cta:'Garantie jetzt aktivieren', ctaLoading:'Wird aktiviert…',
     gdpr:'Ihre Daten werden ausschließlich zur Garantieregistrierung verwendet und gemäß DSGVO verarbeitet. Keine Weitergabe an Dritte.',
     emailErr:'Bitte gültige E-Mail-Adresse eingeben',
     orderErr:'Bitte 4 Ziffern eingeben',
     submitErr:'Verbindung fehlgeschlagen. Bitte versuchen Sie es erneut.',
-    okTitle:'Garantie aktiviert!',
-    okSub:'Ihre 12-Monats-Garantieverlängerung ist ab sofort aktiv. Bewahren Sie diese Seite als Nachweis auf.',
-    promoLabel:'IHR RABATTCODE FÜR DIE NÄCHSTE BESTELLUNG',
+    okTitle:'Garantie aktiviert!', okSub:'Ihre 12-Monats-Garantieverlängerung ist ab sofort aktiv. Bewahren Sie diese Seite als Nachweis auf.',
+    okSaved:'Code notiert? Er gilt für Ihre nächste Bestellung.',
+    promoLabel:'Ihr Rabattcode für die nächste Bestellung',
     promoNote:'%d Rabatt — beim nächsten Einkauf auf Amazon an der Kasse eingeben.',
-    copy:'Kopieren',copied:'Kopiert ✓',
+    copy:'Code kopieren', copied:'Kopiert',
     reorderTitle:'Bald neue Beutel nötig?',
     reorderNote:'Staubsaugerbeutel alle 4–8 Wochen wechseln. Mit dem Amazon-Spar-Abo kommen neue automatisch.',
     buyBtn:'Auf Amazon nachbestellen',
@@ -626,41 +721,45 @@ const L = {
     reviewNote:'Eine ehrliche Bewertung hilft anderen Käufern enorm — und einem kleinen Betrieb wie uns. Ganz freiwillig und ohne Gegenleistung.',
     reviewBtn:'Bewertung auf Amazon schreiben',
     guideTitle:'So geht es in 30 Sekunden',
-    g1:'① Amazon öffnen → „Meine Bestellungen“',
-    g2:'② Produkt suchen → „Produktbewertung schreiben“',
-    g3:'③ Ehrliche Erfahrung teilen — fertig',
-    tipsLabel:'Gut zu wissen',
-    tip1:'Beutel spätestens wechseln, wenn die Saugleistung nachlässt — auch wenn er noch nicht voll ist.',
-    tip2:'Volle Beutel verschlossen im Restmüll entsorgen.',
-    tip3:'Fragen zu Kompatibilität oder Defekten? Schreiben Sie uns einfach eine E-Mail.',
-    t1:'DSGVO-konform',t2:'12 Mon. Garantie',t3:'Support per E-Mail',
+    g1:'Amazon öffnen → „Meine Bestellungen"',
+    g2:'Produkt suchen → „Produktbewertung schreiben"',
+    g3:'Ehrliche Erfahrung teilen — fertig',
+    stepsLabel:'So funktioniert es',
+    s1t:'E-Mail & Bestellnummer eintragen', s1d:'E-Mail-Adresse und die letzten 4 Ziffern Ihrer Amazon-Bestellnummer',
+    s2t:'Garantie aktivieren', s2d:'Ein Klick genügt — Sie erhalten sofort eine Bestätigung',
+    s3t:'Rabattcode erhalten', s3d:'Ihr persönlicher Code wird direkt hier angezeigt',
+    faqTitle:'Gut zu wissen',
+    faq1q:'Wann muss ich den Beutel wechseln?',
+    faq1a:'Beutel spätestens wechseln, wenn die Saugleistung nachlässt — auch wenn er noch nicht voll ist.',
+    faq2q:'Wie entsorge ich volle Beutel?',
+    faq2a:'Volle Beutel verschlossen im Restmüll entsorgen.',
+    faq3q:'Fragen oder ein Defekt?',
+    faq3a:'Schreiben Sie uns einfach eine E-Mail an %e — wir antworten in der Regel innerhalb eines Werktags.',
+    t1:'DSGVO-konform', t2:'12 Mon. Garantie', t3:'Support per E-Mail',
+    sheetTitle:'Sprache wählen',
     footer:'Diese Website steht in keiner Verbindung mit Amazon.com, Inc. oder seinen Tochtergesellschaften.'},
 
-  fr:{flag:'🇫🇷',label:'FR',domain:'fr',
+  fr:{flag:'🇫🇷',code:'FR',name:'Français',
     brandSub:'Sacs pour aspirateur',
     title:'<em>12 mois</em> de garantie supplémentaire offerts',
     sub:'Merci pour votre achat ! Enregistrez vos sacs d\'aspirateur et activez gratuitement 12 mois de garantie supplémentaire.',
-    valueLabel:'Ce que vous recevez',
-    v1:'12 mois de garantie supplémentaire contre les défauts de fabrication',
-    v2:'Remplacement gratuit en cas de défaut — rapide et sans complication',
-    v3:'Un code de réduction exclusif pour votre prochaine commande',
-    stepsLabel:'Comment ça marche',
-    s1t:'Saisissez vos coordonnées',s1d:'Votre e-mail et les 4 derniers chiffres de votre n° de commande Amazon',
-    s2t:'Activez la garantie',s2d:'Un clic suffit — confirmation immédiate',
-    s3t:'Recevez votre code promo',s3d:'Votre code personnel s\'affiche directement ici',
-    emailLabel:'ADRESSE E-MAIL',emailPh:'nom@exemple.fr',
-    orderLabel:'4 DERNIERS CHIFFRES DU N° DE COMMANDE',orderPh:'ex. 5678',
+    c1:'12 mois de garantie', c2:'Remplacement gratuit', c3:'Réduction exclusive',
+    cardTitle:'Activer la garantie', cardSub:'Moins de 30 secondes',
+    emailLabel:'Adresse e-mail', emailPh:'nom@exemple.fr',
+    orderLabel:'4 derniers chiffres du n° de commande', orderPh:'0000',
+    orderHelpTitle:'Où trouver les 4 derniers chiffres ?',
+    orderHelpText:'Dans votre confirmation de commande Amazon ou sous « Vos commandes » → sélectionnez la commande → numéro de commande. Les 4 derniers chiffres suffisent.',
     optin:'Oui, je souhaite recevoir occasionnellement des offres et des rappels de réassort par e-mail (facultatif, désinscription à tout moment).',
-    cta:'Activer ma garantie →',ctaLoading:'Activation…',
+    cta:'Activer ma garantie', ctaLoading:'Activation…',
     gdpr:'Vos données sont utilisées uniquement pour l\'enregistrement de la garantie et traitées conformément au RGPD. Aucun partage avec des tiers.',
     emailErr:'Veuillez saisir une adresse e-mail valide',
     orderErr:'Veuillez saisir 4 chiffres',
     submitErr:'Échec de la connexion. Veuillez réessayer.',
-    okTitle:'Garantie activée !',
-    okSub:'Votre extension de garantie de 12 mois est active dès maintenant. Conservez cette page comme preuve.',
-    promoLabel:'VOTRE CODE PROMO POUR LA PROCHAINE COMMANDE',
+    okTitle:'Garantie activée !', okSub:'Votre extension de garantie de 12 mois est active dès maintenant. Conservez cette page comme preuve.',
+    okSaved:'Code noté ? Il est valable pour votre prochaine commande.',
+    promoLabel:'Votre code promo pour la prochaine commande',
     promoNote:'%d de réduction — à saisir lors du paiement sur Amazon.',
-    copy:'Copier',copied:'Copié ✓',
+    copy:'Copier le code', copied:'Copié',
     reorderTitle:'Bientôt besoin de nouveaux sacs ?',
     reorderNote:'Changez le sac toutes les 4 à 8 semaines. Avec « Économisez en vous abonnant », les rechanges arrivent automatiquement.',
     buyBtn:'Commander à nouveau sur Amazon',
@@ -668,41 +767,45 @@ const L = {
     reviewNote:'Un avis honnête aide beaucoup les autres acheteurs — et notre petite entreprise familiale. Totalement facultatif, sans contrepartie.',
     reviewBtn:'Laisser un avis sur Amazon',
     guideTitle:'En 30 secondes',
-    g1:'① Ouvrir Amazon → « Vos commandes »',
-    g2:'② Trouver le produit → « Donner mon avis »',
-    g3:'③ Partager votre expérience — terminé',
-    tipsLabel:'Bon à savoir',
-    tip1:'Changez le sac dès que la puissance d\'aspiration diminue — même s\'il n\'est pas plein.',
-    tip2:'Jetez les sacs pleins, bien fermés, avec les déchets résiduels.',
-    tip3:'Une question sur la compatibilité ou un défaut ? Écrivez-nous simplement par e-mail.',
-    t1:'Conforme RGPD',t2:'Garantie 12 mois',t3:'Support par e-mail',
+    g1:'Ouvrir Amazon → « Vos commandes »',
+    g2:'Trouver le produit → « Donner mon avis »',
+    g3:'Partager votre expérience — terminé',
+    stepsLabel:'Comment ça marche',
+    s1t:'Saisissez vos coordonnées', s1d:'Votre e-mail et les 4 derniers chiffres de votre n° de commande Amazon',
+    s2t:'Activez la garantie', s2d:'Un clic suffit — confirmation immédiate',
+    s3t:'Recevez votre code promo', s3d:'Votre code personnel s\'affiche directement ici',
+    faqTitle:'Bon à savoir',
+    faq1q:'Quand changer le sac ?',
+    faq1a:'Changez le sac dès que la puissance d\'aspiration diminue — même s\'il n\'est pas plein.',
+    faq2q:'Comment jeter un sac plein ?',
+    faq2a:'Jetez les sacs pleins, bien fermés, avec les déchets résiduels.',
+    faq3q:'Une question ou un défaut ?',
+    faq3a:'Écrivez-nous simplement à %e — nous répondons en général sous un jour ouvré.',
+    t1:'Conforme RGPD', t2:'Garantie 12 mois', t3:'Support par e-mail',
+    sheetTitle:'Choisir la langue',
     footer:'Ce site n\'est pas affilié à Amazon.com, Inc. ou à ses filiales.'},
 
-  it:{flag:'🇮🇹',label:'IT',domain:'it',
+  it:{flag:'🇮🇹',code:'IT',name:'Italiano',
     brandSub:'Sacchetti per aspirapolvere',
     title:'<em>12 mesi</em> di garanzia extra gratis',
     sub:'Grazie per il tuo acquisto! Registra i tuoi sacchetti per aspirapolvere e attiva gratis 12 mesi di garanzia aggiuntiva.',
-    valueLabel:'Cosa ricevi',
-    v1:'12 mesi di garanzia aggiuntiva sui difetti di fabbricazione',
-    v2:'Sostituzione gratuita in caso di difetto — rapida e senza complicazioni',
-    v3:'Codice sconto esclusivo per il tuo prossimo ordine',
-    stepsLabel:'Come funziona',
-    s1t:'Inserisci i tuoi dati',s1d:'La tua e-mail e le ultime 4 cifre del numero d\'ordine Amazon',
-    s2t:'Attiva la garanzia',s2d:'Basta un clic — conferma immediata',
-    s3t:'Ricevi il codice sconto',s3d:'Il tuo codice personale appare direttamente qui',
-    emailLabel:'INDIRIZZO E-MAIL',emailPh:'nome@esempio.it',
-    orderLabel:'ULTIME 4 CIFRE DEL NUMERO D\'ORDINE',orderPh:'es. 5678',
+    c1:'12 mesi di garanzia', c2:'Sostituzione gratuita', c3:'Sconto esclusivo',
+    cardTitle:'Attiva la garanzia', cardSub:'Meno di 30 secondi',
+    emailLabel:'Indirizzo e-mail', emailPh:'nome@esempio.it',
+    orderLabel:'Ultime 4 cifre del numero d\'ordine', orderPh:'0000',
+    orderHelpTitle:'Dove trovo le ultime 4 cifre?',
+    orderHelpText:'Nella conferma d\'ordine Amazon o in «I miei ordini» → seleziona l\'ordine → numero d\'ordine. Bastano le ultime 4 cifre.',
     optin:'Sì, desidero ricevere occasionalmente offerte e promemoria per il riordino via e-mail (facoltativo, cancellabile in qualsiasi momento).',
-    cta:'Attiva la garanzia →',ctaLoading:'Attivazione…',
+    cta:'Attiva la garanzia', ctaLoading:'Attivazione…',
     gdpr:'I tuoi dati vengono utilizzati solo per la registrazione della garanzia e trattati in conformità con il GDPR. Nessuna condivisione con terzi.',
     emailErr:'Inserisci un indirizzo e-mail valido',
     orderErr:'Inserisci 4 cifre',
     submitErr:'Connessione non riuscita. Riprova.',
-    okTitle:'Garanzia attivata!',
-    okSub:'La tua estensione di garanzia di 12 mesi è attiva fin da subito. Conserva questa pagina come prova.',
-    promoLabel:'IL TUO CODICE SCONTO PER IL PROSSIMO ORDINE',
+    okTitle:'Garanzia attivata!', okSub:'La tua estensione di garanzia di 12 mesi è attiva fin da subito. Conserva questa pagina come prova.',
+    okSaved:'Codice annotato? Vale per il tuo prossimo ordine.',
+    promoLabel:'Il tuo codice sconto per il prossimo ordine',
     promoNote:'Sconto del %d — inseriscilo al momento del pagamento su Amazon.',
-    copy:'Copia',copied:'Copiato ✓',
+    copy:'Copia il codice', copied:'Copiato',
     reorderTitle:'Presto serviranno nuovi sacchetti?',
     reorderNote:'Cambia il sacchetto ogni 4–8 settimane. Con «Iscriviti e Risparmia» i ricambi arrivano automaticamente.',
     buyBtn:'Riordina su Amazon',
@@ -710,41 +813,45 @@ const L = {
     reviewNote:'Una recensione onesta aiuta tantissimo gli altri acquirenti — e la nostra piccola azienda a conduzione familiare. Del tutto volontaria e senza ricompensa.',
     reviewBtn:'Scrivi una recensione su Amazon',
     guideTitle:'In 30 secondi',
-    g1:'① Apri Amazon → «I miei ordini»',
-    g2:'② Trova il prodotto → «Scrivi una recensione»',
-    g3:'③ Condividi la tua esperienza — fatto',
-    tipsLabel:'Buono a sapersi',
-    tip1:'Sostituisci il sacchetto appena cala la potenza di aspirazione — anche se non è pieno.',
-    tip2:'Smaltisci i sacchetti pieni, ben chiusi, nei rifiuti indifferenziati.',
-    tip3:'Domande su compatibilità o difetti? Scrivici semplicemente via e-mail.',
-    t1:'Conforme GDPR',t2:'Garanzia 12 mesi',t3:'Supporto via e-mail',
+    g1:'Apri Amazon → «I miei ordini»',
+    g2:'Trova il prodotto → «Scrivi una recensione»',
+    g3:'Condividi la tua esperienza — fatto',
+    stepsLabel:'Come funziona',
+    s1t:'Inserisci i tuoi dati', s1d:'La tua e-mail e le ultime 4 cifre del numero d\'ordine Amazon',
+    s2t:'Attiva la garanzia', s2d:'Basta un clic — conferma immediata',
+    s3t:'Ricevi il codice sconto', s3d:'Il tuo codice personale appare direttamente qui',
+    faqTitle:'Buono a sapersi',
+    faq1q:'Quando cambiare il sacchetto?',
+    faq1a:'Sostituisci il sacchetto appena cala la potenza di aspirazione — anche se non è pieno.',
+    faq2q:'Come smaltire un sacchetto pieno?',
+    faq2a:'Smaltisci i sacchetti pieni, ben chiusi, nei rifiuti indifferenziati.',
+    faq3q:'Domande o un difetto?',
+    faq3a:'Scrivici semplicemente a %e — di norma rispondiamo entro un giorno lavorativo.',
+    t1:'Conforme GDPR', t2:'Garanzia 12 mesi', t3:'Supporto via e-mail',
+    sheetTitle:'Scegli la lingua',
     footer:'Questo sito non è affiliato ad Amazon.com, Inc. o alle sue filiali.'},
 
-  es:{flag:'🇪🇸',label:'ES',domain:'es',
+  es:{flag:'🇪🇸',code:'ES',name:'Español',
     brandSub:'Bolsas para aspiradora',
     title:'<em>12 meses</em> de garantía adicional gratis',
     sub:'¡Gracias por tu compra! Registra tus bolsas de aspiradora y activa gratis 12 meses de garantía adicional.',
-    valueLabel:'Lo que recibes',
-    v1:'12 meses de garantía adicional por defectos de fabricación',
-    v2:'Sustitución gratuita en caso de defecto — rápida y sencilla',
-    v3:'Código de descuento exclusivo para tu próximo pedido',
-    stepsLabel:'Cómo funciona',
-    s1t:'Introduce tus datos',s1d:'Tu e-mail y los últimos 4 dígitos de tu pedido de Amazon',
-    s2t:'Activa la garantía',s2d:'Un clic basta — confirmación inmediata',
-    s3t:'Recibe tu código de descuento',s3d:'Tu código personal aparece directamente aquí',
-    emailLabel:'DIRECCIÓN DE E-MAIL',emailPh:'nombre@ejemplo.es',
-    orderLabel:'ÚLTIMOS 4 DÍGITOS DEL N.º DE PEDIDO',orderPh:'ej. 5678',
+    c1:'12 meses de garantía', c2:'Sustitución gratuita', c3:'Descuento exclusivo',
+    cardTitle:'Activar la garantía', cardSub:'Menos de 30 segundos',
+    emailLabel:'Dirección de e-mail', emailPh:'nombre@ejemplo.es',
+    orderLabel:'Últimos 4 dígitos del n.º de pedido', orderPh:'0000',
+    orderHelpTitle:'¿Dónde encuentro los últimos 4 dígitos?',
+    orderHelpText:'En tu confirmación de pedido de Amazon o en «Mis pedidos» → selecciona el pedido → número de pedido. Bastan los últimos 4 dígitos.',
     optin:'Sí, deseo recibir ocasionalmente ofertas y recordatorios de reposición por e-mail (opcional, cancelable en cualquier momento).',
-    cta:'Activar mi garantía →',ctaLoading:'Activando…',
+    cta:'Activar mi garantía', ctaLoading:'Activando…',
     gdpr:'Tus datos se usan exclusivamente para el registro de la garantía y se tratan conforme al RGPD. No se comparten con terceros.',
     emailErr:'Introduce una dirección de e-mail válida',
     orderErr:'Introduce 4 dígitos',
     submitErr:'Error de conexión. Inténtalo de nuevo.',
-    okTitle:'¡Garantía activada!',
-    okSub:'Tu extensión de garantía de 12 meses está activa desde ya. Guarda esta página como comprobante.',
-    promoLabel:'TU CÓDIGO DE DESCUENTO PARA EL PRÓXIMO PEDIDO',
+    okTitle:'¡Garantía activada!', okSub:'Tu extensión de garantía de 12 meses está activa desde ya. Guarda esta página como comprobante.',
+    okSaved:'¿Código anotado? Vale para tu próximo pedido.',
+    promoLabel:'Tu código de descuento para el próximo pedido',
     promoNote:'%d de descuento — introdúcelo al pagar en Amazon.',
-    copy:'Copiar',copied:'Copiado ✓',
+    copy:'Copiar el código', copied:'Copiado',
     reorderTitle:'¿Pronto necesitarás bolsas nuevas?',
     reorderNote:'Cambia la bolsa cada 4–8 semanas. Con «Repite y ahorra» los repuestos llegan automáticamente.',
     buyBtn:'Volver a comprar en Amazon',
@@ -752,41 +859,45 @@ const L = {
     reviewNote:'Una reseña honesta ayuda muchísimo a otros compradores — y a nuestra pequeña empresa familiar. Totalmente voluntaria y sin contraprestación.',
     reviewBtn:'Escribir una reseña en Amazon',
     guideTitle:'En 30 segundos',
-    g1:'① Abre Amazon → «Mis pedidos»',
-    g2:'② Busca el producto → «Escribir una opinión»',
-    g3:'③ Comparte tu experiencia — listo',
-    tipsLabel:'Conviene saber',
-    tip1:'Cambia la bolsa en cuanto baje la potencia de succión — aunque no esté llena.',
-    tip2:'Desecha las bolsas llenas, bien cerradas, con la basura residual.',
-    tip3:'¿Dudas sobre compatibilidad o algún defecto? Escríbenos por e-mail.',
-    t1:'Conforme al RGPD',t2:'Garantía 12 meses',t3:'Soporte por e-mail',
+    g1:'Abre Amazon → «Mis pedidos»',
+    g2:'Busca el producto → «Escribir una opinión»',
+    g3:'Comparte tu experiencia — listo',
+    stepsLabel:'Cómo funciona',
+    s1t:'Introduce tus datos', s1d:'Tu e-mail y los últimos 4 dígitos de tu pedido de Amazon',
+    s2t:'Activa la garantía', s2d:'Un clic basta — confirmación inmediata',
+    s3t:'Recibe tu código de descuento', s3d:'Tu código personal aparece directamente aquí',
+    faqTitle:'Conviene saber',
+    faq1q:'¿Cuándo cambiar la bolsa?',
+    faq1a:'Cambia la bolsa en cuanto baje la potencia de succión — aunque no esté llena.',
+    faq2q:'¿Cómo desechar una bolsa llena?',
+    faq2a:'Desecha las bolsas llenas, bien cerradas, con la basura residual.',
+    faq3q:'¿Dudas o algún defecto?',
+    faq3a:'Escríbenos a %e — solemos responder en un día laborable.',
+    t1:'Conforme al RGPD', t2:'Garantía 12 meses', t3:'Soporte por e-mail',
+    sheetTitle:'Elegir idioma',
     footer:'Este sitio no está afiliado a Amazon.com, Inc. ni a sus filiales.'},
 
-  nl:{flag:'🇳🇱',label:'NL',domain:'nl',
+  nl:{flag:'🇳🇱',code:'NL',name:'Nederlands',
     brandSub:'Stofzuigerzakken',
     title:'<em>12 maanden</em> extra garantie, gratis',
     sub:'Bedankt voor je aankoop! Registreer je stofzuigerzakken en activeer gratis 12 maanden extra garantie.',
-    valueLabel:'Wat je krijgt',
-    v1:'12 maanden extra garantie op fabricagefouten',
-    v2:'Gratis vervanging bij een defect — snel en zonder gedoe',
-    v3:'Exclusieve kortingscode voor je volgende bestelling',
-    stepsLabel:'Zo werkt het',
-    s1t:'Vul je gegevens in',s1d:'Je e-mailadres en de laatste 4 cijfers van je Amazon-bestelling',
-    s2t:'Activeer de garantie',s2d:'Eén klik is genoeg — direct bevestiging',
-    s3t:'Ontvang je kortingscode',s3d:'Je persoonlijke code verschijnt direct hier',
-    emailLabel:'E-MAILADRES',emailPh:'naam@voorbeeld.nl',
-    orderLabel:'LAATSTE 4 CIJFERS VAN JE BESTELNUMMER',orderPh:'bv. 5678',
+    c1:'12 maanden garantie', c2:'Gratis vervanging', c3:'Exclusieve korting',
+    cardTitle:'Garantie activeren', cardSub:'Minder dan 30 seconden',
+    emailLabel:'E-mailadres', emailPh:'naam@voorbeeld.nl',
+    orderLabel:'Laatste 4 cijfers van je bestelnummer', orderPh:'0000',
+    orderHelpTitle:'Waar vind ik de laatste 4 cijfers?',
+    orderHelpText:'In je Amazon-bestelbevestiging of onder «Je bestellingen» → kies de bestelling → bestelnummer. De laatste 4 cijfers zijn genoeg.',
     optin:'Ja, ik wil af en toe aanbiedingen en bijbestelherinneringen per e-mail ontvangen (optioneel, op elk moment afmeldbaar).',
-    cta:'Activeer mijn garantie →',ctaLoading:'Activeren…',
+    cta:'Activeer mijn garantie', ctaLoading:'Activeren…',
     gdpr:'Je gegevens worden uitsluitend gebruikt voor de garantieregistratie en verwerkt conform de AVG. Nooit gedeeld met derden.',
     emailErr:'Vul een geldig e-mailadres in',
     orderErr:'Vul 4 cijfers in',
     submitErr:'Verbinding mislukt. Probeer het opnieuw.',
-    okTitle:'Garantie geactiveerd!',
-    okSub:'Je garantieverlenging van 12 maanden is nu actief. Bewaar deze pagina als bewijs.',
-    promoLabel:'JOUW KORTINGSCODE VOOR DE VOLGENDE BESTELLING',
+    okTitle:'Garantie geactiveerd!', okSub:'Je garantieverlenging van 12 maanden is nu actief. Bewaar deze pagina als bewijs.',
+    okSaved:'Code genoteerd? Hij geldt voor je volgende bestelling.',
+    promoLabel:'Jouw kortingscode voor de volgende bestelling',
     promoNote:'%d korting — invoeren bij het afrekenen op Amazon.',
-    copy:'Kopiëren',copied:'Gekopieerd ✓',
+    copy:'Code kopiëren', copied:'Gekopieerd',
     reorderTitle:'Binnenkort nieuwe zakken nodig?',
     reorderNote:'Vervang de zak elke 4–8 weken. Met «Meld je aan en bespaar» komen nieuwe automatisch binnen.',
     buyBtn:'Opnieuw bestellen op Amazon',
@@ -794,41 +905,45 @@ const L = {
     reviewNote:'Een eerlijke beoordeling helpt andere kopers enorm — en ons kleine familiebedrijf. Helemaal vrijwillig en zonder tegenprestatie.',
     reviewBtn:'Schrijf een beoordeling op Amazon',
     guideTitle:'In 30 seconden',
-    g1:'① Open Amazon → «Je bestellingen»',
-    g2:'② Zoek het product → «Beoordeling schrijven»',
-    g3:'③ Deel je eerlijke ervaring — klaar',
-    tipsLabel:'Handig om te weten',
-    tip1:'Vervang de zak zodra het zuigvermogen afneemt — ook als hij nog niet vol is.',
-    tip2:'Gooi volle zakken goed gesloten bij het restafval.',
-    tip3:'Vragen over compatibiliteit of een defect? Mail gewoon even met onze support.',
-    t1:'AVG-conform',t2:'12 mnd. garantie',t3:'Support per e-mail',
+    g1:'Open Amazon → «Je bestellingen»',
+    g2:'Zoek het product → «Beoordeling schrijven»',
+    g3:'Deel je eerlijke ervaring — klaar',
+    stepsLabel:'Zo werkt het',
+    s1t:'Vul je gegevens in', s1d:'Je e-mailadres en de laatste 4 cijfers van je Amazon-bestelling',
+    s2t:'Activeer de garantie', s2d:'Eén klik is genoeg — direct bevestiging',
+    s3t:'Ontvang je kortingscode', s3d:'Je persoonlijke code verschijnt direct hier',
+    faqTitle:'Handig om te weten',
+    faq1q:'Wanneer moet ik de zak vervangen?',
+    faq1a:'Vervang de zak zodra het zuigvermogen afneemt — ook als hij nog niet vol is.',
+    faq2q:'Hoe gooi ik een volle zak weg?',
+    faq2a:'Gooi volle zakken goed gesloten bij het restafval.',
+    faq3q:'Vragen of een defect?',
+    faq3a:'Mail ons op %e — we reageren meestal binnen één werkdag.',
+    t1:'AVG-conform', t2:'12 mnd. garantie', t3:'Support per e-mail',
+    sheetTitle:'Kies taal',
     footer:'Deze website is niet gelieerd aan Amazon.com, Inc. of haar dochterondernemingen.'},
 
-  en:{flag:'🇬🇧',label:'EN',domain:'de',
+  en:{flag:'🇬🇧',code:'EN',name:'English',
     brandSub:'Vacuum cleaner bags',
     title:'<em>12 months</em> of free extended warranty',
     sub:'Thank you for your purchase! Register your vacuum bags and activate 12 months of extra warranty — free of charge.',
-    valueLabel:'What you get',
-    v1:'12 months of additional warranty against manufacturing defects',
-    v2:'Free replacement in case of a defect — fast and hassle-free',
-    v3:'Exclusive discount code for your next order',
-    stepsLabel:'How it works',
-    s1t:'Enter your details',s1d:'Your email and the last 4 digits of your Amazon order number',
-    s2t:'Activate the warranty',s2d:'One click is enough — instant confirmation',
-    s3t:'Get your discount code',s3d:'Your personal code appears right here',
-    emailLabel:'EMAIL ADDRESS',emailPh:'name@example.com',
-    orderLabel:'LAST 4 DIGITS OF YOUR ORDER NUMBER',orderPh:'e.g. 5678',
+    c1:'12-month warranty', c2:'Free replacement', c3:'Exclusive discount',
+    cardTitle:'Activate warranty', cardSub:'Takes less than 30 seconds',
+    emailLabel:'Email address', emailPh:'name@example.com',
+    orderLabel:'Last 4 digits of your order number', orderPh:'0000',
+    orderHelpTitle:'Where do I find the last 4 digits?',
+    orderHelpText:'In your Amazon order confirmation or under "Your Orders" → select the order → order number. The last 4 digits are enough.',
     optin:'Yes, I\'d like to occasionally receive offers and restock reminders by email (optional, unsubscribe anytime).',
-    cta:'Activate my warranty →',ctaLoading:'Activating…',
+    cta:'Activate my warranty', ctaLoading:'Activating…',
     gdpr:'Your data is used solely for the warranty registration and processed in accordance with GDPR. Never shared with third parties.',
     emailErr:'Please enter a valid email address',
     orderErr:'Please enter 4 digits',
     submitErr:'Connection failed. Please try again.',
-    okTitle:'Warranty activated!',
-    okSub:'Your 12-month warranty extension is active as of now. Keep this page as proof.',
-    promoLabel:'YOUR DISCOUNT CODE FOR THE NEXT ORDER',
+    okTitle:'Warranty activated!', okSub:'Your 12-month warranty extension is active as of now. Keep this page as proof.',
+    okSaved:'Code noted? It applies to your next order.',
+    promoLabel:'Your discount code for the next order',
     promoNote:'%d off — enter the code at Amazon checkout.',
-    copy:'Copy',copied:'Copied ✓',
+    copy:'Copy code', copied:'Copied',
     reorderTitle:'Need new bags soon?',
     reorderNote:'Replace the bag every 4–8 weeks. With Amazon\'s Subscribe & Save, new bags arrive automatically.',
     buyBtn:'Reorder on Amazon',
@@ -836,179 +951,226 @@ const L = {
     reviewNote:'An honest review helps other buyers enormously — and a small family business like ours. Completely voluntary, with no reward attached.',
     reviewBtn:'Write a review on Amazon',
     guideTitle:'In 30 seconds',
-    g1:'① Open Amazon → "Your Orders"',
-    g2:'② Find the product → "Write a product review"',
-    g3:'③ Share your honest experience — done',
-    tipsLabel:'Good to know',
-    tip1:'Replace the bag as soon as suction power drops — even if it\'s not full.',
-    tip2:'Dispose of full bags, tightly closed, with household waste.',
-    tip3:'Questions about compatibility or a defect? Just send us an email.',
-    t1:'GDPR compliant',t2:'12-month warranty',t3:'Email support',
+    g1:'Open Amazon → "Your Orders"',
+    g2:'Find the product → "Write a product review"',
+    g3:'Share your honest experience — done',
+    stepsLabel:'How it works',
+    s1t:'Enter your details', s1d:'Your email and the last 4 digits of your Amazon order number',
+    s2t:'Activate the warranty', s2d:'One click is enough — instant confirmation',
+    s3t:'Get your discount code', s3d:'Your personal code appears right here',
+    faqTitle:'Good to know',
+    faq1q:'When should I replace the bag?',
+    faq1a:'Replace the bag as soon as suction power drops — even if it\'s not full.',
+    faq2q:'How do I dispose of a full bag?',
+    faq2a:'Dispose of full bags, tightly closed, with household waste.',
+    faq3q:'Questions or a defect?',
+    faq3a:'Just email us at %e — we usually reply within one business day.',
+    t1:'GDPR compliant', t2:'12-month warranty', t3:'Email support',
+    sheetTitle:'Choose language',
     footer:'This website is not affiliated with Amazon.com, Inc. or its subsidiaries.'}
 };
 
-// ─── Detect language from browser ────────────────────────────────
-function detectLang() {
-  const nav = navigator.language || navigator.languages?.[0] || 'de';
+const ORDER = ['de','fr','it','es','nl','en'];
+const $ = id => document.getElementById(id);
+const hasPromo = !!CONFIG.promoCode;
+
+function detectLang(){
+  const nav = (navigator.language || (navigator.languages && navigator.languages[0]) || 'de');
   const code = nav.split('-')[0].toLowerCase();
   return L[code] ? code : 'de';
 }
-
 let cur = detectLang();
 
-// ─── Apply language ───────────────────────────────────────────────
-function applyLang(k) {
+// ─── 渲染语言 ─────────────────────────────────────────────────────
+function applyLang(k){
   cur = k;
   const l = L[k];
   document.documentElement.lang = k;
+  const set = (id, t) => { const el = $(id); if (el) el.textContent = t; };
 
-  const set = (id, text) => { document.getElementById(id).textContent = text; };
-
-  // Hero
-  set('brandName', CONFIG.brandName);
+  $('brandName').textContent = CONFIG.brandName;
   set('brandSub', l.brandSub);
-  document.getElementById('heroTitle').innerHTML = l.title;
+  $('heroTitle').innerHTML = l.title;
   set('heroSub', l.sub);
+  set('c1', l.c1); set('c2', l.c2); set('c3', l.c3);
 
-  // Value
-  set('valueLabel', l.valueLabel);
-  set('v1', l.v1);
-  set('v2', l.v2);
-  set('v3', l.v3);
+  set('cardTitle', l.cardTitle); set('cardSub', l.cardSub);
+  set('emailLabel', l.emailLabel); $('emailInput').placeholder = l.emailPh;
+  set('orderLabel', l.orderLabel); $('orderInput').placeholder = l.orderPh;
+  set('orderHelpTitle', l.orderHelpTitle); set('orderHelpText', l.orderHelpText);
+  set('optinText', l.optin);
+  set('ctaText', l.cta);
+  set('gdprText', l.gdpr);
+  set('emailErrText', l.emailErr);
+  set('orderErrText', l.orderErr);
+  set('submitErrText', l.submitErr);
 
-  // Steps
+  set('okTitle', l.okTitle); set('okSub', l.okSub); set('okSaved', l.okSaved);
+  // 折扣票券：CONFIG.promoCode 留空时整块（含 savedHint）隐藏
+  $('ticket').style.display = hasPromo ? '' : 'none';
+  $('savedHint').style.display = hasPromo ? '' : 'none';
+  set('promoLabel', l.promoLabel);
+  $('promoCode').textContent = CONFIG.promoCode;
+  set('promoNote', l.promoNote.replace('%d', CONFIG.promoDiscount));
+  set('copyText', l.copy);
+  set('reorderTitle', l.reorderTitle); set('reorderNote', l.reorderNote);
+  set('buyText', l.buyBtn); $('buyBtn').href = buyUrl(l);
+  set('reviewTitle', l.reviewTitle); set('reviewNote', l.reviewNote);
+  set('reviewText', l.reviewBtn); $('reviewBtn').href = reviewUrl(l);
+  set('guideTitle', l.guideTitle);
+  set('g1', l.g1); set('g2', l.g2); set('g3', l.g3);
+
   set('stepsLabel', l.stepsLabel);
   set('s1t', l.s1t); set('s1d', l.s1d);
   set('s2t', l.s2t); set('s2d', l.s2d);
   set('s3t', l.s3t); set('s3d', l.s3d);
 
-  // Form
-  set('emailLabel', l.emailLabel);
-  document.getElementById('emailInput').placeholder = l.emailPh;
-  set('orderLabel', l.orderLabel);
-  document.getElementById('orderInput').placeholder = l.orderPh;
-  set('optinText', l.optin);
-  set('ctaText', l.cta);
-  set('gdprText', l.gdpr);
-  set('emailErr', l.emailErr);
-  set('orderErr', l.orderErr);
-  set('submitErr', l.submitErr);
+  set('faqTitle', l.faqTitle);
+  set('faq1q', l.faq1q); set('faq1a', l.faq1a);
+  set('faq2q', l.faq2q); set('faq2a', l.faq2a);
+  set('faq3q', l.faq3q); set('faq3a', l.faq3a.replace('%e', CONFIG.supportEmail));
 
-  // Success
-  set('okTitle', l.okTitle);
-  set('okSub', l.okSub);
-  document.getElementById('promoBox').style.display = CONFIG.promoCode ? '' : 'none';
-  set('promoLabel', l.promoLabel);
-  set('promoCode', CONFIG.promoCode);
-  set('promoNote', l.promoNote.replace('%d', CONFIG.promoDiscount));
-  set('copyBtn', l.copy);
-  set('reorderTitle', l.reorderTitle);
-  set('reorderNote', l.reorderNote);
-  set('buyBtn', l.buyBtn);
-  document.getElementById('buyBtn').href = buyUrl(l);
-  set('reviewTitle', l.reviewTitle);
-  set('reviewNote', l.reviewNote);
-  set('reviewBtn', l.reviewBtn);
-  document.getElementById('reviewBtn').href = reviewUrl(l);
-  set('guideTitle', l.guideTitle);
-  set('g1', l.g1);
-  set('g2', l.g2);
-  set('g3', l.g3);
+  set('t1', l.t1); set('t2', l.t2); set('t3', l.t3);
+  set('sheetTitle', l.sheetTitle);
+  $('langCurrent').textContent = l.code;
 
-  // Tips
-  set('tipsLabel', l.tipsLabel);
-  document.getElementById('tip1').textContent = l.tip1;
-  document.getElementById('tip2').textContent = l.tip2;
-  document.getElementById('tip3').textContent = l.tip3;
+  $('footerText').innerHTML =
+    CONFIG.brandName + ' · <a href="mailto:' + CONFIG.supportEmail + '">' + CONFIG.supportEmail + '</a>' +
+    '<div class="legal">' + l.footer +
+    (CONFIG.imprintUrl ? ' <a href="' + CONFIG.imprintUrl + '" target="_blank" rel="noopener">Impressum</a>' : '') +
+    '</div>';
 
-  // Trust & footer
-  set('t1', l.t1);
-  set('t2', l.t2);
-  set('t3', l.t3);
-  document.getElementById('footerText').innerHTML =
-    CONFIG.brandName + ' · <a href="mailto:' + CONFIG.supportEmail + '">' + CONFIG.supportEmail + '</a><br>' +
-    l.footer +
-    (CONFIG.imprintUrl ? '<br><a href="' + CONFIG.imprintUrl + '" target="_blank" rel="noopener">Impressum / Imprint</a>' : '');
-
-  buildLangBar();
+  buildLangGrid();
 }
 
-function buildLangBar() {
-  const bar = document.getElementById('langBar');
-  bar.innerHTML = '';
-  Object.keys(L).forEach(k => {
-    const btn = document.createElement('button');
-    btn.className = 'lang-btn' + (k === cur ? ' active' : '');
-    btn.textContent = L[k].flag + ' ' + L[k].label;
-    btn.onclick = () => applyLang(k);
-    bar.appendChild(btn);
+// ─── 语言抽屉 ─────────────────────────────────────────────────────
+function buildLangGrid(){
+  $('langGrid').innerHTML = ORDER.map(k => {
+    const l = L[k];
+    return `<button type="button" class="lang-opt" data-lang="${k}" aria-current="${k === cur}">
+      <span class="fl" aria-hidden="true">${l.flag}</span>
+      <span class="nm"><b>${l.name}</b><small>${l.code}</small></span>
+      <svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M4 12.5l5.5 5.5L20 7"/></svg>
+    </button>`;
+  }).join('');
+  $('langGrid').querySelectorAll('.lang-opt').forEach(b => {
+    b.addEventListener('click', () => { applyLang(b.dataset.lang); closeSheet(); });
   });
 }
 
-// ─── Amazon links ─────────────────────────────────────────────────
-function reviewUrl(l) {
-  if (CONFIG.asins.length === 1) {
-    return 'https://www.amazon.' + l.domain + '/review/create-review?asin=' + encodeURIComponent(CONFIG.asins[0]);
+function openSheet(){
+  $('scrim').classList.add('on');
+  $('sheet').classList.add('on');
+  $('langTrigger').setAttribute('aria-expanded', 'true');
+  const first = $('langGrid').querySelector('[aria-current="true"]') || $('langGrid').querySelector('.lang-opt');
+  first && first.focus();
+}
+function closeSheet(){
+  $('scrim').classList.remove('on');
+  $('sheet').classList.remove('on');
+  $('langTrigger').setAttribute('aria-expanded', 'false');
+}
+$('langTrigger').addEventListener('click', () => {
+  $('sheet').classList.contains('on') ? closeSheet() : openSheet();
+});
+$('scrim').addEventListener('click', closeSheet);
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSheet(); });
+
+// ─── Amazon 链接 ──────────────────────────────────────────────────
+// 语言 → 站点后缀。EN 是给非德语的英语用户看的，仍落在德国站（卖家实际经营站点）。
+const DOMAIN = { de:'de', fr:'fr', it:'it', es:'es', nl:'nl', en:'de' };
+
+function reviewUrl(l){
+  const d = DOMAIN[l.code.toLowerCase()] || 'de';
+  if (CONFIG.asins.length === 1){
+    return 'https://www.amazon.' + d + '/review/create-review?asin=' + encodeURIComponent(CONFIG.asins[0]);
   }
-  // Zero or multiple ASINs: send the buyer to their order history so the
-  // review lands on the listing they actually purchased.
-  return 'https://www.amazon.' + l.domain + '/gp/your-account/order-history';
+  // 0 个或多个 ASIN：退到「我的订单」，避免买家评错 listing
+  return 'https://www.amazon.' + d + '/gp/your-account/order-history';
+}
+function buyUrl(l){
+  const d = DOMAIN[l.code.toLowerCase()] || 'de';
+  return 'https://www.amazon.' + d + '/s?k=' + encodeURIComponent(CONFIG.brandName + ' ' + l.brandSub);
 }
 
-function buyUrl(l) {
-  return 'https://www.amazon.' + l.domain + '/s?k=' + encodeURIComponent(CONFIG.brandName + ' ' + l.brandSub);
+// ─── Toast ────────────────────────────────────────────────────────
+let toastTimer;
+function toast(msg){
+  $('toastText').textContent = msg;
+  $('toast').classList.add('on');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => $('toast').classList.remove('on'), 2200);
 }
 
-// ─── Copy promo code ──────────────────────────────────────────────
-async function copyCode() {
-  const btn = document.getElementById('copyBtn');
-  const code = CONFIG.promoCode;
+// ─── 复制折扣码 ───────────────────────────────────────────────────
+$('copyBtn').addEventListener('click', async () => {
   try {
-    await navigator.clipboard.writeText(code);
-    trackEvent('copy_code', { lang: cur });
-    btn.textContent = L[cur].copied;
-    setTimeout(() => { btn.textContent = L[cur].copy; }, 1500);
+    await navigator.clipboard.writeText(CONFIG.promoCode);
+    toast(L[cur].copied + ' ✓');
   } catch {
-    // Clipboard API unavailable (older browsers / insecure context):
-    // select the code text so the user can long-press-copy
-    const el = document.getElementById('promoCode');
-    const range = document.createRange();
-    range.selectNodeContents(el);
-    const sel = window.getSelection();
-    sel.removeAllRanges();
-    sel.addRange(range);
+    const el = $('promoCode');
+    const r = document.createRange();
+    r.selectNodeContents(el);
+    const s = window.getSelection();
+    s.removeAllRanges(); s.addRange(r);
+    toast(L[cur].copy);
   }
+  trackEvent('copy_code', { lang: cur });
+});
+
+// ─── 表单校验 ─────────────────────────────────────────────────────
+const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+function markField(ctlId, errId, bad){
+  $(ctlId).classList.toggle('is-error', bad);
+  $(errId).classList.toggle('show', bad);
+  $(ctlId).classList.remove('is-ok');
+}
+function clearField(ctlId, errId){
+  $(ctlId).classList.remove('is-error', 'is-ok');
+  $(errId).classList.remove('show');
 }
 
-// ─── Form submit ──────────────────────────────────────────────────
-async function handleSubmit() {
-  const email = document.getElementById('emailInput').value.trim();
-  const order = document.getElementById('orderInput').value.trim();
-  const marketing = document.getElementById('optinInput').checked;
+$('emailInput').addEventListener('input', () => clearField('emailCtl', 'emailErr'));
+$('emailInput').addEventListener('blur', () => {
+  const v = $('emailInput').value.trim();
+  if (!v) return;
+  if (emailRe.test(v)) { clearField('emailCtl', 'emailErr'); $('emailCtl').classList.add('is-ok'); }
+  else markField('emailCtl', 'emailErr', true);
+});
+
+// 订单后 4 位：只允许数字，自动截断
+$('orderInput').addEventListener('input', e => {
+  e.target.value = e.target.value.replace(/\D/g, '').slice(0, 4);
+  clearField('orderCtl', 'orderErr');
+});
+$('orderInput').addEventListener('blur', () => {
+  const v = $('orderInput').value.trim();
+  if (!v) return;
+  if (/^\d{4}$/.test(v)) { clearField('orderCtl', 'orderErr'); $('orderCtl').classList.add('is-ok'); }
+  else markField('orderCtl', 'orderErr', true);
+});
+
+// ─── 提交 ─────────────────────────────────────────────────────────
+$('regForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const email = $('emailInput').value.trim();
+  const order = $('orderInput').value.trim();
   let ok = true;
 
-  document.getElementById('emailErr').style.display = 'none';
-  document.getElementById('orderErr').style.display = 'none';
-  document.getElementById('submitErr').style.display = 'none';
-  document.getElementById('emailInput').classList.remove('error');
-  document.getElementById('orderInput').classList.remove('error');
-
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    document.getElementById('emailErr').style.display = 'block';
-    document.getElementById('emailInput').classList.add('error');
-    ok = false;
+  if (!emailRe.test(email)) { markField('emailCtl', 'emailErr', true); ok = false; }
+  if (!/^\d{4}$/.test(order)) { markField('orderCtl', 'orderErr', true); ok = false; }
+  $('submitErr').classList.remove('show');
+  if (!ok) {
+    const firstBad = document.querySelector('.control.is-error input');
+    firstBad && firstBad.focus();
+    return;
   }
-  if (!/^\d{4}$/.test(order)) {
-    document.getElementById('orderErr').style.display = 'block';
-    document.getElementById('orderInput').classList.add('error');
-    ok = false;
-  }
-  if (!ok) return;
 
-  const btn = document.getElementById('ctaBtn');
-  const label = document.getElementById('ctaText');
+  const btn = $('ctaBtn');
   btn.disabled = true;
-  label.textContent = L[cur].ctaLoading;
+  btn.classList.add('is-loading');
+  $('ctaText').textContent = L[cur].ctaLoading;
 
   trackEvent('submit', { lang: cur, order_suffix: order });
 
@@ -1017,47 +1179,43 @@ async function handleSubmit() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        email, order_suffix: order, lang: cur, marketing_consent: marketing,
+        email, order_suffix: order, lang: cur,
+        marketing_consent: $('optinInput').checked,
       }),
     });
     const data = await res.json().catch(() => ({}));
-    if (!res.ok || !data.ok) throw new Error('submit rejected');
-
-    document.getElementById('formWrap').style.display = 'none';
-    document.getElementById('successWrap').style.display = 'flex';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (!res.ok || !data.ok) throw new Error('rejected');
+    showSuccess();
   } catch {
-    document.getElementById('submitErr').style.display = 'block';
+    $('submitErr').classList.add('show');
     btn.disabled = false;
-    label.textContent = L[cur].cta;
+    btn.classList.remove('is-loading');
+    $('ctaText').textContent = L[cur].cta;
   }
-}
-
-// ─── Analytics helper ─────────────────────────────────────────────
-function trackEvent(name, props) {
-  fetch('/api/track', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ event: name, ...props, ts: Date.now() })
-  }).catch(() => {});
-}
-
-// ─── Input listeners ──────────────────────────────────────────────
-document.getElementById('emailInput').addEventListener('input', () => {
-  document.getElementById('emailErr').style.display = 'none';
-  document.getElementById('emailInput').classList.remove('error');
-});
-document.getElementById('orderInput').addEventListener('input', () => {
-  document.getElementById('orderErr').style.display = 'none';
-  document.getElementById('orderInput').classList.remove('error');
 });
 
-// ─── Init ─────────────────────────────────────────────────────────
+function showSuccess(){
+  // 隐藏 hero：让成功态的头图 + 折扣码整体上移进首屏
+  document.querySelector('.hero').style.display = 'none';
+  $('formState').style.display = 'none';
+  $('successState').classList.add('on');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ─── 埋点 ─────────────────────────────────────────────────────────
+function trackEvent(name, props){
+  try {
+    fetch('/api/track', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ event: name, ...props, ts: Date.now() }),
+    }).catch(() => {});
+  } catch (_) {}
+}
+
+// ─── 初始化 ───────────────────────────────────────────────────────
 applyLang(cur);
-
-window.addEventListener('load', () => {
-  trackEvent('pageview', { lang: cur, ref: document.referrer });
-});
+window.addEventListener('load', () => trackEvent('pageview', { lang: cur, ref: document.referrer }));
 </script>
 </body>
 </html>

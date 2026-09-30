@@ -1,205 +1,1145 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>数据统计面板</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>数据统计面板 · AromeLivii</title>
 <meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#0f1d30">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231a2e4a'/%3E%3Cpath d='M32 12l16 6v12c0 10-6.8 18.4-16 22-9.2-3.6-16-12-16-22V18l16-6z' fill='none' stroke='%23c8a84b' stroke-width='4'/%3E%3Cpath d='M24 32l6 6 12-12' fill='none' stroke='%23c8a84b' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif; background: #f5f5f5; color: #1a1a1a; padding: 20px; }
-  h1 { font-size: 20px; font-weight: 600; margin-bottom: 20px; color: #111; }
-  .login-box { max-width: 360px; margin: 80px auto; background: white; border-radius: 12px; padding: 28px; border: 1px solid #e5e5e5; }
-  .login-box h2 { font-size: 18px; margin-bottom: 16px; }
-  input[type=text], input[type=password] { width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; margin-bottom: 12px; }
-  .btn { width: 100%; padding: 11px; background: #1a2e4a; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; }
-  .btn:hover { background: #0f1d30; }
-  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; margin-bottom: 24px; }
-  .stat-card { background: white; border-radius: 10px; padding: 18px; border: 1px solid #e5e5e5; }
-  .stat-label { font-size: 11px; color: #888; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 6px; }
-  .stat-val { font-size: 32px; font-weight: 300; color: #1a2e4a; }
-  .stat-sub { font-size: 12px; color: #aaa; margin-top: 4px; }
-  table { width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; border: 1px solid #e5e5e5; }
-  thead { background: #1a2e4a; color: white; }
-  th { padding: 10px 14px; font-size: 12px; font-weight: 600; text-align: left; letter-spacing: 0.3px; }
-  td { padding: 10px 14px; font-size: 13px; border-bottom: 1px solid #f0f0f0; }
-  tr:last-child td { border-bottom: none; }
-  tr:hover td { background: #fafafa; }
-  .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; }
-  .badge-green { background: #e8f5ee; color: #2d7a4f; }
-  .badge-blue { background: #e8f0fc; color: #1d3a8a; }
-  .section-title { font-size: 14px; font-weight: 600; margin: 20px 0 10px; color: #333; }
-  .lang-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
-  .lang-pill { padding: 5px 12px; background: white; border: 1px solid #e5e5e5; border-radius: 20px; font-size: 12px; }
-  .error-msg { color: #c0392b; font-size: 13px; margin-top: 8px; }
-  .refresh-btn { float: right; padding: 6px 14px; background: white; border: 1px solid #ddd; border-radius: 6px; font-size: 12px; cursor: pointer; margin-bottom: 10px; }
-  .mini-btn { float: right; padding: 5px 12px; background: white; border: 1px solid #ddd; border-radius: 6px; font-size: 12px; cursor: pointer; margin-bottom: 10px; }
-  .mini-btn:hover { background: #f0f0f0; }
-  .empty-hint { font-size: 13px; color: #aaa; padding: 16px 0; text-align: center; }
-  td.mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; }
+/* ══════════════════════════════════════════════════════════════════
+   Design tokens —— 与 design/design-system.html 同源
+   ══════════════════════════════════════════════════════════════════ */
+:root{
+  --navy-950:#0a1524; --navy-900:#0f1d30; --navy-800:#152942;
+  --navy-700:#1a2e4a; --navy-600:#27405f; --navy-500:#3b5a7d;
+  --navy-400:#5f7d9e; --navy-300:#93a9c1; --navy-200:#c3d0de;
+  --navy-100:#e3eaf1; --navy-50:#f3f7fa;
+  --gold-800:#6f5716; --gold-700:#8f7220; --gold-600:#ad8d31;
+  --gold-500:#c8a84b; --gold-400:#d9bd6d; --gold-300:#e8c96a;
+  --gold-200:#f1e0ad; --gold-100:#f9f2dc; --gold-50:#fdfbf3;
+  --ink-900:#171614; --ink-800:#2e2b28; --ink-700:#4a4641;
+  --ink-600:#6b6560; --ink-500:#8a837c; --ink-400:#a9a29a;
+  --ink-300:#c9c3ba; --ink-200:#e2ddd3; --ink-100:#f0ece4; --ink-50:#f9f7f3;
+  --bg:#f6f4ef; --surface:#ffffff;
+  --border:#e2ddd3; --border-strong:#cfc8bb;
+  --text:#171614; --text-body:#3d3a36; --text-muted:#6b6560; --text-faint:#8a837c;
+  --success-700:#1f6b43; --success-600:#2d7a4f; --success-100:#e7f4ec;
+  --danger-700:#a5291c; --danger-600:#c0392b; --danger-100:#fdecea;
+  --info-600:#1d3a8a; --info-100:#e8f0fc;
+  --r-sm:8px; --r-md:12px; --r-lg:16px; --r-xl:22px; --r-full:999px;
+  --sh-xs:0 1px 2px rgba(23,22,20,.06);
+  --sh-sm:0 2px 6px rgba(23,22,20,.07), 0 1px 2px rgba(23,22,20,.04);
+  --sh-md:0 10px 26px -8px rgba(15,29,48,.16), 0 2px 6px rgba(23,22,20,.05);
+  --sh-lg:0 24px 52px -16px rgba(15,29,48,.26);
+  --ease:cubic-bezier(.2,.7,.3,1);
+  --t-fast:120ms; --t-base:180ms; --t-slow:300ms;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,'PingFang SC','Microsoft YaHei',sans-serif;
+  background:var(--bg);color:var(--text-body);font-size:14px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+button,input,select{font-family:inherit}
+.num{font-variant-numeric:tabular-nums}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+/* 仅供屏幕阅读器的文本：视觉隐藏但保留在无障碍树中 */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+/* ══ 登录态 ═════════════════════════════════════════════════════ */
+#login{
+  min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;
+  background:
+    radial-gradient(90% 70% at 80% 0%, rgba(200,168,75,.10) 0%, transparent 55%),
+    radial-gradient(80% 60% at 10% 100%, rgba(26,46,74,.10) 0%, transparent 55%),
+    var(--bg);
+}
+.login-card{
+  width:100%;max-width:380px;background:var(--surface);
+  border-radius:var(--r-xl);box-shadow:var(--sh-lg);padding:32px 28px 26px;
+}
+.login-mark{width:52px;height:52px;border-radius:15px;background:var(--navy-700);display:flex;align-items:center;justify-content:center;margin:0 auto 18px}
+.login-card h1{font-size:20px;font-weight:700;color:var(--text);text-align:center;letter-spacing:-.2px}
+.login-card .sub{font-size:13px;color:var(--text-muted);text-align:center;margin:6px 0 22px}
+.login-card label{display:block;font-size:13px;font-weight:650;color:var(--text-body);margin-bottom:7px}
+.control{
+  display:flex;align-items:center;gap:10px;min-height:50px;padding:0 14px;
+  background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r-md);
+  transition:border-color var(--t-base) var(--ease),box-shadow var(--t-base) var(--ease);
+}
+.control:focus-within{border-color:var(--navy-700);box-shadow:0 0 0 3px var(--navy-100)}
+.control.is-error{border-color:var(--danger-600);box-shadow:0 0 0 3px var(--danger-100)}
+.control input{flex:1;min-width:0;border:none;outline:none;background:none;font:inherit;font-size:16px;color:var(--text);padding:13px 0}
+.control input::placeholder{color:var(--text-faint)}
+.eye{
+  flex-shrink:0;background:none;border:none;cursor:pointer;padding:6px;min-height:36px;min-width:36px;
+  display:flex;align-items:center;justify-content:center;color:var(--text-faint);border-radius:var(--r-sm);
+}
+.eye:hover{background:var(--ink-100);color:var(--text-body)}
+.eye:focus-visible{outline:2px solid var(--navy-700);outline-offset:1px}
+.err-msg{display:none;align-items:center;gap:5px;margin-top:8px;font-size:12.5px;font-weight:550;color:var(--danger-700)}
+.err-msg.show{display:flex}
+.remember{display:flex;align-items:center;gap:9px;margin:14px 0 18px;cursor:pointer;min-height:44px}
+.remember input{width:18px;height:18px;accent-color:var(--navy-700);cursor:pointer;flex-shrink:0}
+.remember span{font-size:12.5px;color:var(--text-muted)}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  min-height:46px;padding:0 18px;border:1.5px solid transparent;border-radius:var(--r-md);
+  font:inherit;font-size:14px;font-weight:650;cursor:pointer;white-space:nowrap;
+  transition:background var(--t-base) var(--ease),border-color var(--t-base) var(--ease),box-shadow var(--t-base) var(--ease),transform var(--t-fast) var(--ease);
+}
+.btn:focus-visible{outline:2px solid var(--navy-700);outline-offset:2px}
+.btn-navy{background:var(--navy-700);color:#fff}
+.btn-navy:hover{background:var(--navy-900)}
+.btn-ghost{background:var(--surface);color:var(--navy-700);border-color:var(--border-strong)}
+.btn-ghost:hover{background:var(--navy-50);border-color:var(--navy-300)}
+.btn-block{width:100%}
+.btn:disabled{opacity:.55;cursor:not-allowed;transform:none;box-shadow:none}
+.hint{
+  margin-top:16px;padding:10px 12px;border-radius:var(--r-sm);
+  background:var(--gold-50);border:1px solid var(--gold-200);
+  font-size:11.5px;line-height:1.55;color:var(--gold-800);text-align:center;
+}
+
+/* ══ 应用外壳 ═══════════════════════════════════════════════════ */
+#app{display:none;min-height:100vh}
+#app.on{display:grid;grid-template-columns:236px minmax(0,1fr)}
+@media(max-width:1000px){#app.on{grid-template-columns:1fr}}
+
+/* 侧栏 */
+.side{
+  background:var(--navy-900);color:#fff;padding:20px 14px;
+  display:flex;flex-direction:column;gap:8px;position:sticky;top:0;height:100vh;overflow-y:auto;
+}
+/* ≤1000px：侧栏拆成两行头部 —— 第一行品牌 + 退出，第二行三个等宽标签页。
+   单行横向排列会把「退出」挤出 390px 可视区，所以必须换行。 */
+@media(max-width:1000px){
+  .side{position:static;height:auto;flex-direction:row;flex-wrap:wrap;align-items:center;gap:10px;padding:10px 14px;overflow:visible}
+}
+.side-brand{display:flex;align-items:center;gap:10px;padding:4px 8px 18px;border-bottom:1px solid rgba(255,255,255,.1);margin-bottom:10px}
+@media(max-width:1000px){.side-brand{padding:0;border-bottom:none;margin:0}}
+.side-brand b{font-size:13.5px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;display:block;line-height:1.2}
+.side-brand small{font-size:9.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-400)}
+@media(max-width:1000px){.side-brand .txt{display:none}}
+.nav{display:flex;flex-direction:column;gap:3px}
+.nav button{
+  display:flex;align-items:center;gap:10px;min-height:42px;padding:0 12px;
+  background:none;border:none;border-radius:var(--r-sm);
+  color:rgba(255,255,255,.68);font:inherit;font-size:13.5px;font-weight:600;
+  cursor:pointer;text-align:left;white-space:nowrap;width:100%;
+  transition:background var(--t-base) var(--ease),color var(--t-base) var(--ease);
+}
+.nav button svg{flex-shrink:0;opacity:.85}
+.nav button:hover{background:rgba(255,255,255,.08);color:#fff}
+.nav button[aria-current="page"]{background:var(--navy-700);color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+.nav button:focus-visible{outline:2px solid var(--gold-400);outline-offset:2px}
+/* ⚠️ 下面两个媒体查询必须排在 `.nav button` 基础规则**之后**。
+   同优先级下后者胜出——写在前面时这两段覆盖会被基础规则整段吃掉（静默失效）。 */
+@media(max-width:1000px){
+  .nav{order:3;flex-basis:100%;width:100%;display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+  .nav button{justify-content:center;padding:0 8px;font-size:12.5px;gap:7px}
+}
+/* ≤420px：三个等宽标签页的 min-content（图标 + 4 个汉字）会顶破 320px 视口，
+   逐项收窄——比截断标签文字或改成 2+1 换行更可读。 */
+@media(max-width:420px){
+  .nav{gap:4px}
+  .nav button{padding:0 5px;font-size:11.5px;gap:5px}
+  .nav button svg{width:15px;height:15px}
+}
+.side-foot{margin-top:auto;padding-top:14px;border-top:1px solid rgba(255,255,255,.1)}
+.side-foot button{
+  display:flex;align-items:center;gap:9px;width:100%;min-height:40px;padding:0 12px;
+  background:none;border:none;border-radius:var(--r-sm);cursor:pointer;
+  color:rgba(255,255,255,.6);font:inherit;font-size:13px;font-weight:600;white-space:nowrap;
+}
+.side-foot button:hover{background:rgba(255,255,255,.08);color:#fff}
+.side-foot button:focus-visible{outline:2px solid var(--gold-400);outline-offset:2px}
+@media(max-width:1000px){.side-foot{margin:0 0 0 auto;padding:0;border:none}.side-foot button{width:auto}}
+
+/* 主区 */
+.main{min-width:0;display:flex;flex-direction:column}
+.topbar{
+  position:sticky;top:0;z-index:40;
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  padding:14px 24px;background:rgba(246,244,239,.88);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+}
+@media(max-width:640px){
+  .topbar{padding:12px 16px}
+  /* 当前标签页已高亮，标题冗余，移动端让位给筛选与刷新 */
+  .topbar h1{display:none}
+  .topbar{justify-content:space-between}
+}
+.topbar h1{font-size:18px;font-weight:700;color:var(--text);letter-spacing:-.2px;margin-right:auto}
+.range{
+  display:flex;align-items:center;gap:8px;min-height:40px;padding:0 12px;
+  background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r-md);
+  font-size:13px;font-weight:600;color:var(--text-body);
+}
+.range:focus-within{border-color:var(--navy-700);box-shadow:0 0 0 3px var(--navy-100)}
+.range select{border:none;outline:none;background:none;font:inherit;font-size:13px;font-weight:650;color:var(--text-body);cursor:pointer}
+.content{padding:22px 24px 48px;display:flex;flex-direction:column;gap:22px}
+@media(max-width:640px){.content{padding:18px 16px 40px;gap:18px}}
+.view{display:none;flex-direction:column;gap:22px}
+.view.on{display:flex}
+
+/* ══ 区块标题 ═══════════════════════════════════════════════════ */
+.sec-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:-8px}
+.sec-head h2{font-size:15.5px;font-weight:700;color:var(--text);letter-spacing:-.1px}
+.sec-head .cnt{font-size:12.5px;color:var(--text-muted);font-weight:550}
+
+/* ══ KPI 卡 ═════════════════════════════════════════════════════ */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}
+.kpi{
+  position:relative;background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r-lg);padding:17px 18px 14px;box-shadow:var(--sh-xs);
+  overflow:hidden;
+}
+.kpi-label{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);display:flex;align-items:center;gap:6px}
+.kpi-label svg{color:var(--navy-400);flex-shrink:0}
+.kpi-val{font-size:31px;font-weight:300;color:var(--navy-700);line-height:1.15;margin:9px 0 2px;letter-spacing:-.5px}
+.kpi-val strong{font-weight:600}
+.kpi-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:26px}
+/* KPI 脚注是「过去 14 天 / 目标线 3% · 已达标」这类要被读的信息，
+   不能用 --text-faint（3.74:1）—— 那是占位符/图标专用 */
+.kpi-sub{font-size:11.5px;color:var(--text-muted)}
+.spark{width:84px;height:26px;flex-shrink:0;overflow:visible}
+.kpi.is-accent{background:linear-gradient(150deg,var(--navy-900),var(--navy-700));border-color:transparent}
+.kpi.is-accent .kpi-label{color:rgba(255,255,255,.68)}
+.kpi.is-accent .kpi-label svg{color:var(--gold-400)}
+.kpi.is-accent .kpi-val{color:#fff}
+.kpi.is-accent .kpi-sub{color:rgba(255,255,255,.55)}
+
+/* ══ 语言分布 ═══════════════════════════════════════════════════ */
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--sh-xs)}
+.lang-list{padding:6px 18px 14px}
+.lang-row{display:grid;grid-template-columns:118px minmax(0,1fr) 96px;gap:14px;align-items:center;padding:9px 0;border-bottom:1px solid var(--ink-100)}
+.lang-row:last-child{border-bottom:none}
+@media(max-width:560px){.lang-row{grid-template-columns:88px minmax(0,1fr);gap:10px}.lang-row .lv{grid-column:2;text-align:right;margin-top:-4px}}
+.lang-name{font-size:13px;font-weight:600;color:var(--text-body);display:flex;align-items:center;gap:7px}
+/* 条形图：必须显式 display:block —— <span> 默认 inline，宽高会失效 */
+.bar{display:block;width:100%;height:9px;border-radius:var(--r-full);background:var(--ink-100);overflow:hidden}
+.bar-fill{display:block;height:100%;border-radius:var(--r-full);background:linear-gradient(90deg,var(--navy-700),var(--navy-500));transition:width var(--t-slow) var(--ease)}
+.lang-row:nth-child(1) .bar-fill{background:linear-gradient(90deg,var(--navy-800),var(--navy-600))}
+/* 数值用 --text-body 压深、百分比用 --text-muted，靠明度差做层级；
+   两者都 ≥4.5:1（--text-faint 只有 3.5:1，不能用） */
+.lv{font-size:12.5px;color:var(--text-body);text-align:right;font-weight:650}
+.lv em{font-style:normal;color:var(--text-muted);font-weight:500;margin-left:5px}
+
+/* ══ 表格工具条 ═════════════════════════════════════════════════ */
+.toolbar{
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  padding:12px 16px;border-bottom:1px solid var(--border);
+}
+.search{
+  display:flex;align-items:center;gap:8px;flex:1;min-width:190px;min-height:40px;padding:0 12px;
+  background:var(--bg);border:1.5px solid var(--border);border-radius:var(--r-md);
+  transition:border-color var(--t-base) var(--ease),box-shadow var(--t-base) var(--ease),background var(--t-base) var(--ease);
+}
+.search:focus-within{background:var(--surface);border-color:var(--navy-700);box-shadow:0 0 0 3px var(--navy-100)}
+.search svg{flex-shrink:0;color:var(--text-faint)}
+.search input{flex:1;min-width:0;border:none;outline:none;background:none;font:inherit;font-size:14px;color:var(--text)}
+.search input::placeholder{color:var(--text-faint)}
+.filters{display:flex;gap:6px;flex-wrap:wrap}
+.fchip{
+  display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 13px;
+  background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r-full);
+  font:inherit;font-size:12.5px;font-weight:650;color:var(--text-muted);cursor:pointer;
+  transition:all var(--t-base) var(--ease);
+}
+.fchip:hover{border-color:var(--navy-300);color:var(--navy-700)}
+.fchip:focus-visible{outline:2px solid var(--navy-700);outline-offset:2px}
+.fchip[aria-pressed="true"]{background:var(--navy-700);border-color:var(--navy-700);color:#fff}
+.fchip .n{font-variant-numeric:tabular-nums;opacity:.7;font-weight:600}
+.fchip[aria-pressed="true"] .n{opacity:.85}
+.tb-actions{display:flex;gap:8px;margin-left:auto;flex-wrap:wrap}
+.trunc-note{
+  display:none;padding:10px 16px;border-bottom:1px solid var(--border);
+  background:var(--gold-50);font-size:11.5px;line-height:1.55;color:var(--gold-800);
+}
+.trunc-note.show{display:block}
+
+/* ══ 数据表 ═════════════════════════════════════════════════════ */
+.tbl-wrap{overflow-x:auto}
+table.data{width:100%;border-collapse:collapse;font-size:13px}
+table.data th{
+  background:var(--navy-50);color:var(--navy-700);
+  font-size:10.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+  text-align:left;padding:10px 14px;white-space:nowrap;border-bottom:1px solid var(--border);
+}
+table.data th.sortable{cursor:pointer;user-select:none}
+table.data th.sortable:hover{background:var(--navy-100)}
+table.data th .sarrow{display:inline-block;margin-left:5px;opacity:.32;font-size:10px}
+table.data th[aria-sort] .sarrow{opacity:1;color:var(--navy-700)}
+table.data th:focus-visible{outline:2px solid var(--navy-700);outline-offset:-3px}
+table.data td{padding:10px 14px;border-bottom:1px solid var(--ink-100);vertical-align:middle;color:var(--text-body)}
+table.data tbody tr:last-child td{border-bottom:none}
+table.data tbody tr:hover td{background:var(--navy-50)}
+table.data td.mail a{color:var(--navy-700);text-decoration:none;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px}
+table.data td.mail a:hover{text-decoration:underline}
+table.data td.time{white-space:nowrap;color:var(--text-muted);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px}
+table.data td.n{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+table.data tfoot td{background:var(--navy-50);font-weight:700;color:var(--navy-700);border-top:1px solid var(--border);border-bottom:none}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:var(--r-full);font-size:11.5px;font-weight:650;white-space:nowrap}
+.badge-green{background:var(--success-100);color:var(--success-700)}
+.badge-gray{background:var(--ink-100);color:var(--text-muted)}
+.row-btn{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:32px;height:32px;border-radius:var(--r-sm);border:none;background:none;
+  color:var(--text-faint);cursor:pointer;transition:all var(--t-fast) var(--ease);
+}
+.row-btn:hover{background:var(--navy-100);color:var(--navy-700)}
+.row-btn:focus-visible{outline:2px solid var(--navy-700);outline-offset:1px}
+
+/* 移动端：表格转卡片 */
+@media(max-width:760px){
+  table.data thead{display:none}
+  table.data,table.data tbody,table.data tr,table.data td,table.data tfoot{display:block;width:100%}
+  table.data tr{border:1px solid var(--border);border-radius:var(--r-md);margin-bottom:9px;padding:5px 0;background:var(--surface)}
+  table.data td{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:6px 14px;border:none;text-align:right}
+  table.data td::before{
+    content:attr(data-label);flex-shrink:0;text-align:left;
+    font-size:10.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted);
+  }
+  table.data td.n{text-align:right}
+  table.data tfoot tr{border:none;background:var(--navy-50)}
+  /* 移动端卡片里条形图是 flex 子项，需要显式占位 */
+  table.data td .bar{flex:1;min-width:0;margin-left:12px}
+}
+
+/* ══ 空 / 骨架 ══════════════════════════════════════════════════ */
+.empty{padding:46px 20px;text-align:center}
+.empty svg{color:var(--ink-300);margin-bottom:12px}
+.empty b{display:block;font-size:14px;font-weight:650;color:var(--text-body);margin-bottom:4px}
+.empty p{font-size:12.5px;color:var(--text-muted)}
+.sk{background:linear-gradient(90deg,var(--ink-100) 25%,var(--ink-50) 50%,var(--ink-100) 75%);background-size:200% 100%;animation:sh 1.3s infinite;border-radius:6px}
+@keyframes sh{to{background-position:-200% 0}}
+.sk-row{display:flex;align-items:center;gap:14px;padding:12px 16px;border-bottom:1px solid var(--ink-100)}
+
+/* ══ Toast ══════════════════════════════════════════════════════ */
+.toast{
+  position:fixed;left:50%;bottom:26px;z-index:200;
+  transform:translate(-50%,20px);opacity:0;pointer-events:none;
+  display:flex;align-items:center;gap:8px;padding:11px 17px;border-radius:var(--r-full);
+  background:var(--navy-900);color:#fff;font-size:13px;font-weight:600;
+  box-shadow:var(--sh-lg);transition:opacity var(--t-base) var(--ease),transform var(--t-base) var(--ease);
+  max-width:calc(100vw - 32px);
+}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.01ms !important;transition-duration:.01ms !important}
+}
 </style>
 </head>
 <body>
 
-<!-- Login screen -->
-<div class="login-box" id="loginBox">
-  <h2>📊 统计面板</h2>
-  <p style="font-size:13px;color:#888;margin-bottom:16px">请输入统计密钥以查看数据</p>
-  <input type="password" id="secretInput" placeholder="stats secret key" onkeydown="if(event.key==='Enter')loadStats()">
-  <button class="btn" onclick="loadStats()">查看数据</button>
-  <div class="error-msg" id="loginErr"></div>
+<!-- ══════════ 登录 ══════════ -->
+<div id="login">
+  <div class="login-card">
+    <div class="login-mark">
+      <svg width="28" height="28" viewBox="0 0 64 64" aria-hidden="true">
+        <path d="M32 13l15 5.6v11.6c0 9.6-6.4 17.7-15 21.2-8.6-3.5-15-11.6-15-21.2V18.6L32 13z" fill="none" stroke="#c8a84b" stroke-width="3.6"/>
+        <path d="M24.5 32.5l5.5 5.5 10.5-11" fill="none" stroke="#e8c96a" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <h1>落地页数据面板</h1>
+    <p class="sub">AromeLivii · 延保注册转化统计</p>
+
+    <label for="secretInput">统计密钥</label>
+    <div class="control" id="secretCtl">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#8a837c" stroke-width="1.7" aria-hidden="true"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5"/><path d="M8 10.5V7.8a4 4 0 018 0v2.7"/></svg>
+      <input type="password" id="secretInput" placeholder="••••••••••••" autocomplete="current-password">
+      <button type="button" class="eye" id="eyeBtn" aria-label="显示密钥" aria-pressed="false">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M2.5 12S6 5.8 12 5.8 21.5 12 21.5 12 18 18.2 12 18.2 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/></svg>
+      </button>
+    </div>
+    <p class="err-msg" id="loginErr" role="alert">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.4v.1"/></svg>
+      <span id="loginErrText"></span>
+    </p>
+
+    <label class="remember" for="rememberInput">
+      <input type="checkbox" id="rememberInput" checked>
+      <span>在本标签页内记住密钥，刷新免重复输入</span>
+    </label>
+
+    <button class="btn btn-navy btn-block" id="loginBtn">查看数据</button>
+
+    <p class="hint">
+      密钥即 Cloudflare Worker 的 <code>STATS_SECRET</code> 变量值。
+    </p>
+  </div>
 </div>
 
-<!-- Dashboard -->
-<div id="dashboard" style="display:none; max-width:900px; margin:0 auto;">
-  <button class="refresh-btn" onclick="loadStats(null, true)">↻ 刷新</button>
-  <h1>落地页数据统计</h1>
+<!-- ══════════ 面板 ══════════ -->
+<div id="app">
+  <aside class="side">
+    <div class="side-brand">
+      <svg width="30" height="30" viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="15" fill="#1a2e4a"/>
+        <path d="M32 13l15 5.6v11.6c0 9.6-6.4 17.7-15 21.2-8.6-3.5-15-11.6-15-21.2V18.6L32 13z" fill="none" stroke="#c8a84b" stroke-width="3.6"/>
+        <path d="M24.5 32.5l5.5 5.5 10.5-11" fill="none" stroke="#e8c96a" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="txt"><b>AromeLivii</b><small>Analytics</small></span>
+    </div>
 
-  <div class="grid" id="totalsGrid"></div>
+    <nav class="nav" aria-label="面板导航">
+      <button type="button" data-view="overview" aria-current="page">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="2"/><rect x="13.5" y="3.5" width="7" height="7" rx="2"/><rect x="3.5" y="13.5" width="7" height="7" rx="2"/><rect x="13.5" y="13.5" width="7" height="7" rx="2"/></svg>
+        概览
+      </button>
+      <button type="button" data-view="leads">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3.5 6.5h17M3.5 12h17M3.5 17.5h11"/></svg>
+        注册明细
+      </button>
+      <button type="button" data-view="daily">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 19.5V9.5M9.6 19.5V4.5M15.2 19.5v-7M20.8 19.5v-4"/></svg>
+        每日明细
+      </button>
+    </nav>
 
-  <div class="section-title" id="langSectionTitle"></div>
-  <div class="lang-bar" id="langBar"></div>
+    <div class="side-foot">
+      <button type="button" id="logoutBtn">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M14.5 8.5V5.9c0-1-.8-1.9-1.9-1.9H5.9C4.9 4 4 4.9 4 5.9v12.2c0 1 .8 1.9 1.9 1.9h6.7c1 0 1.9-.8 1.9-1.9v-2.6"/><path d="M9.5 12h10M16.5 9l3 3-3 3"/></svg>
+        退出
+      </button>
+    </div>
+  </aside>
 
-  <div class="section-title" id="leadsSectionTitle"></div>
-  <button class="mini-btn" id="copyEmailsBtn" onclick="copyEmails()" style="display:none"></button>
-  <table>
-    <thead>
-      <tr>
-        <th>时间</th>
-        <th>邮箱</th>
-        <th>订单后 4 位</th>
-        <th>语言</th>
-        <th>营销同意</th>
-      </tr>
-    </thead>
-    <tbody id="leadsBody"></tbody>
-  </table>
-  <p class="empty-hint" id="leadsEmpty" style="display:none">该时间段内暂无注册记录</p>
+  <div class="main">
+    <header class="topbar">
+      <h1 id="pageTitle">概览</h1>
+      <label class="range" for="rangeSel">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 9.5h17M8 3.5v3M16 3.5v3"/></svg>
+        <select id="rangeSel">
+          <option value="7">近 7 天</option>
+          <option value="14" selected>近 14 天</option>
+          <option value="30">近 30 天</option>
+          <option value="90">近 90 天</option>
+        </select>
+      </label>
+      <button class="btn btn-ghost" id="refreshBtn">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.5 12a8.5 8.5 0 11-2.6-6.1"/><path d="M20.8 4.2v4.4h-4.4"/></svg>
+        刷新
+      </button>
+    </header>
 
-  <div class="section-title">每日明细</div>
-  <table>
-    <thead>
-      <tr>
-        <th>日期</th>
-        <th>浏览量 PV</th>
-        <th>提交数</th>
-        <th>转化率</th>
-        <th>获客量</th>
-      </tr>
-    </thead>
-    <tbody id="tableBody"></tbody>
-  </table>
+    <div class="content">
+
+      <!-- ── 概览 ── -->
+      <section class="view on" id="view-overview" aria-labelledby="pageTitle">
+        <div class="kpis" id="kpis"></div>
+
+        <div class="sec-head">
+          <h2>各语言访问分布</h2>
+          <span class="cnt" id="langCnt"></span>
+        </div>
+        <div class="panel"><div class="lang-list" id="langList"></div></div>
+
+        <div class="sec-head">
+          <h2>最近注册</h2>
+          <span class="cnt">最新 5 条，完整列表见「注册明细」</span>
+        </div>
+        <div class="panel"><div class="tbl-wrap"><table class="data" id="recentTbl">
+          <thead><tr>
+            <th>时间</th><th>邮箱</th><th>订单后 4 位</th><th>语言</th><th>营销同意</th>
+          </tr></thead>
+          <tbody id="recentBody"></tbody>
+        </table></div></div>
+      </section>
+
+      <!-- ── 注册明细 ── -->
+      <section class="view" id="view-leads">
+        <div class="panel">
+          <div class="toolbar">
+            <div class="search">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.4 15.4L20.5 20.5"/></svg>
+              <input type="search" id="leadSearch" placeholder="搜索邮箱或订单后 4 位…" aria-label="搜索注册记录">
+            </div>
+            <div class="filters" role="group" aria-label="按营销同意筛选">
+              <button type="button" class="fchip" data-consent="all" aria-pressed="true">全部 <span class="n" id="nAll">0</span></button>
+              <button type="button" class="fchip" data-consent="yes" aria-pressed="false">已同意 <span class="n" id="nYes">0</span></button>
+              <button type="button" class="fchip" data-consent="no" aria-pressed="false">未同意 <span class="n" id="nNo">0</span></button>
+            </div>
+            <div class="tb-actions">
+              <button class="btn btn-ghost" id="csvBtn">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3.5v12M7.5 11l4.5 4.5 4.5-4.5"/><path d="M4.5 20.5h15"/></svg>
+                导出 CSV
+              </button>
+              <button class="btn btn-navy" id="copyEmailsBtn">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="8.5" y="8.5" width="12" height="12" rx="2.4"/><path d="M15.5 5.5H5.9c-1 0-1.9.8-1.9 1.9v9.6"/></svg>
+                <span id="copyEmailsText">复制邮箱</span>
+              </button>
+            </div>
+          </div>
+          <p class="trunc-note" id="truncNote"></p>
+          <div class="tbl-wrap"><table class="data" id="leadsTbl">
+            <thead><tr>
+              <th class="sortable" data-sort="ts" tabindex="0" aria-sort="descending">时间 <span class="sarrow">▼</span></th>
+              <th class="sortable" data-sort="email" tabindex="0">邮箱 <span class="sarrow">↕</span></th>
+              <th class="sortable" data-sort="order_suffix" tabindex="0">订单后 4 位 <span class="sarrow">↕</span></th>
+              <th class="sortable" data-sort="lang" tabindex="0">语言 <span class="sarrow">↕</span></th>
+              <th class="sortable" data-sort="marketing_consent" tabindex="0">营销同意 <span class="sarrow">↕</span></th>
+              <th style="width:48px"><span class="sr-only">操作</span></th>
+            </tr></thead>
+            <tbody id="leadsBody"></tbody>
+          </table></div>
+          <div id="leadsEmpty"></div>
+        </div>
+      </section>
+
+      <!-- ── 每日明细 ── -->
+      <section class="view" id="view-daily">
+        <div class="sec-head">
+          <h2>每日明细</h2>
+          <span class="cnt" id="dailyCnt"></span>
+        </div>
+        <div class="panel"><div class="tbl-wrap"><table class="data" id="dailyTbl">
+          <thead><tr>
+            <th>日期</th>
+            <th style="width:30%">浏览量分布</th>
+            <th class="sortable" data-sort="pageviews" tabindex="0" style="text-align:right">浏览量 PV <span class="sarrow">↕</span></th>
+            <th class="sortable" data-sort="submissions" tabindex="0" style="text-align:right">提交数 <span class="sarrow">↕</span></th>
+            <th class="sortable" data-sort="rate" tabindex="0" style="text-align:right">转化率 <span class="sarrow">↕</span></th>
+            <th style="text-align:right">获客量</th>
+          </tr></thead>
+          <tbody id="dailyBody"></tbody>
+          <tfoot id="dailyFoot"></tfoot>
+        </table></div></div>
+        <p style="font-size:11.5px;color:var(--text-muted);line-height:1.6">
+          转化率 = 提交数 ÷ 浏览量。绿色徽章表示当日转化率达到或超过 <strong id="targetLine">3%</strong> 的目标线。<br>
+          KV 无原子自增，所有计数为「读-改-写」近似值，高并发下会略偏低。
+        </p>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite">
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.4" aria-hidden="true"><path d="M4 12.5l5.5 5.5L20 7"/></svg>
+  <span id="toastText"></span>
 </div>
 
 <script>
-// Single source of truth for the reporting window — the section titles below
-// render from it, so the UI can never drift from the data it shows.
-const DAYS = 14;
-let savedSecret = '';
-let currentLeads = [];
+/* ══════════════════════════════════════════════════════════════════
+   配置
+   ══════════════════════════════════════════════════════════════════ */
+const API = '/api/stats';
+const CONSENT_TARGET = 3;   // 转化率目标线（%），仅用于徽章配色，不是后端规则
+const SESSION_KEY = 'arome-stats-secret';
 
-const esc = (s) => String(s == null ? '' : s)
-  .replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const LANG_META = {
+  de:{flag:'🇩🇪',name:'德语'}, fr:{flag:'🇫🇷',name:'法语'}, it:{flag:'🇮🇹',name:'意大利语'},
+  es:{flag:'🇪🇸',name:'西班牙语'}, nl:{flag:'🇳🇱',name:'荷兰语'}, en:{flag:'🇬🇧',name:'英语'},
+};
 
-function fmtTime(ts) {
+/* ══════════════════════════════════════════════════════════════════
+   工具
+   ══════════════════════════════════════════════════════════════════ */
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const nf = n => Number(n || 0).toLocaleString('en-US');
+
+function fmtTime(ts){
   const d = new Date(ts);
-  if (isNaN(d.getTime())) return '';
-  const p = (n) => String(n).padStart(2, '0');
-  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;
+  if (isNaN(d)) return '';
+  const p = n => String(n).padStart(2,'0');
+  return `${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;
 }
 
-async function copyEmails() {
-  const btn = document.getElementById('copyEmailsBtn');
-  const text = currentLeads.map((l) => l.email).filter(Boolean).join('\n');
-  if (!text) return;
+// CSV 会被导出到表格外使用，必须带年份（表内因为窗口只有 7–90 天，省掉年份更省宽度）
+function fmtTimeFull(ts){
+  const d = new Date(ts);
+  if (isNaN(d)) return '';
+  const p = n => String(n).padStart(2,'0');
+  return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;
+}
+
+function spark(values, opts){
+  const w = 84, h = 26, pad = 3;
+  const max = Math.max(...values, 1), min = Math.min(...values);
+  const span = (max - min) || 1;
+  const pts = values.map((v, i) => [
+    (i * w) / Math.max(values.length - 1, 1),
+    h - pad - ((v - min) / span) * (h - pad * 2),
+  ]);
+  const line = pts.map((p, i) => `${i ? 'L' : 'M'}${p[0].toFixed(1)} ${p[1].toFixed(1)}`).join(' ');
+  const area = `${line} L${w} ${h} L0 ${h} Z`;
+  return `<svg class="spark" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-hidden="true">
+    <path d="${area}" fill="${opts.area}"/>
+    <path d="${line}" fill="none" stroke="${opts.stroke}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>`;
+}
+
+let toastTimer;
+function toast(msg){
+  $('toastText').textContent = msg;
+  $('toast').classList.add('on');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => $('toast').classList.remove('on'), 2200);
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   状态
+   ══════════════════════════════════════════════════════════════════ */
+const state = {
+  view:'overview', days:14, q:'', consent:'all',
+  sortKey:'ts', sortDir:'desc', dailySort:null, dailyDir:'desc',
+  empty:false, loading:false,
+  secret:'',
+  daily:[], leads:[], leadsTruncated:false,
+  totals:{ pageviews:0, submissions:0, leads:0 },
+};
+
+function totals(){
+  const pv = Number(state.totals.pageviews) || 0;
+  const sub = Number(state.totals.submissions) || 0;
+  const rate = pv ? (sub / pv) * 100 : 0;
+  // 「获客总量」是累计去重值（KV 的 leads:total），不随窗口变化
+  return { pv, sub, rate, leadsTotal: Number(state.totals.leads) || 0 };
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   数据获取 —— GET /api/stats?days=N（X-Stats-Secret 头鉴权）
+   ══════════════════════════════════════════════════════════════════ */
+async function fetchStats(){
+  let res;
+  try {
+    res = await fetch(`${API}?days=${state.days}`, {
+      headers: { 'X-Stats-Secret': state.secret },
+      cache: 'no-store',
+    });
+  } catch {
+    throw { code: 0 };
+  }
+  if (res.status === 401) throw { code: 401 };
+  if (!res.ok) throw { code: res.status };
+
+  let data;
+  try { data = await res.json(); } catch { throw { code: 500 }; }
+
+  const daily = Array.isArray(data.daily) ? data.daily : [];
+  const leads = Array.isArray(data.leads) ? data.leads : [];
+  const t = data.totals || {};
+
+  state.daily = daily;
+  state.leads = leads;
+  state.leadsTruncated = Boolean(data.leads_truncated);
+  state.totals = {
+    pageviews: Number(t.pageviews) || 0,
+    submissions: Number(t.submissions) || 0,
+    leads: Number(t.leads) || 0,
+  };
+  // 时间窗内既无浏览也无注册 → 走空态（否则会渲染出 14 行全 0 的噪音）
+  state.empty = !daily.length || (state.totals.pageviews === 0 && leads.length === 0);
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   渲染
+   ══════════════════════════════════════════════════════════════════ */
+function renderKPIs(){
+  const t = totals();
+  const pvSeries = state.daily.map(r => r.pageviews);
+  const subSeries = state.daily.map(r => r.submissions);
+  const series = arr => (arr.length ? arr : [0, 0]);
+
+  $('kpis').innerHTML = `
+    <div class="kpi">
+      <div class="kpi-label">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M2.5 12S6 5.8 12 5.8 21.5 12 21.5 12 18 18.2 12 18.2 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/></svg>
+        总浏览量
+      </div>
+      <div class="kpi-val num"><strong>${nf(t.pv)}</strong></div>
+      <div class="kpi-foot">
+        <span class="kpi-sub">过去 ${state.days} 天</span>
+        ${spark(series(pvSeries), {area:'rgba(26,46,74,.09)', stroke:'#1a2e4a'})}
+      </div>
+    </div>
+
+    <div class="kpi">
+      <div class="kpi-label">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 3.5h9.5L20 8v12.5H6z"/><path d="M15 3.5V8h4.5M9 12.5h6M9 16h4"/></svg>
+        表单提交
+      </div>
+      <div class="kpi-val num"><strong>${nf(t.sub)}</strong></div>
+      <div class="kpi-foot">
+        <span class="kpi-sub">有效信息</span>
+        ${spark(series(subSeries), {area:'rgba(26,46,74,.09)', stroke:'#1a2e4a'})}
+      </div>
+    </div>
+
+    <div class="kpi">
+      <div class="kpi-label">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3.5 19.5L9 12l4 4.5 7.5-9.5"/><path d="M15.5 7h5v5"/></svg>
+        转化率
+      </div>
+      <div class="kpi-val num"><strong>${t.rate.toFixed(2)}%</strong></div>
+      <div class="kpi-foot">
+        <span class="kpi-sub">目标线 ${CONSENT_TARGET}% · ${t.rate >= CONSENT_TARGET ? '已达标' : '未达标'}</span>
+      </div>
+    </div>
+
+    <div class="kpi is-accent">
+      <div class="kpi-label">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M16 19.5v-1.8a3.7 3.7 0 00-3.7-3.7H6.7A3.7 3.7 0 003 17.7v1.8"/><circle cx="9.5" cy="7.8" r="3.3"/><path d="M21 19.5v-1.8a3.7 3.7 0 00-2.8-3.6M15.5 4.7a3.7 3.7 0 010 6.2"/></svg>
+        获客总量
+      </div>
+      <div class="kpi-val num"><strong>${nf(t.leadsTotal)}</strong></div>
+      <div class="kpi-foot">
+        <span class="kpi-sub">去重邮箱 · 累计（不受时间窗影响）</span>
+      </div>
+    </div>`;
+}
+
+function renderLangs(){
+  const acc = {};
+  state.daily.forEach(r => Object.entries(r.by_lang || {}).forEach(([k, v]) => { acc[k] = (acc[k] || 0) + Number(v || 0); }));
+  const rows = Object.entries(acc).sort((a, b) => b[1] - a[1]);
+  const total = rows.reduce((a, r) => a + r[1], 0);
+  const max = rows.length ? rows[0][1] : 1;
+
+  $('langCnt').textContent = total
+    ? `近 ${state.days} 天合计 ${nf(total)} 次浏览`
+    : '';
+
+  // 全部为 0 时（by_lang 六个键都在但值都是 0）不能渲染成 6 条空条——
+  // 那看起来像「加载失败」，而不是「这段时间没有访问」。
+  $('langList').innerHTML = total
+    ? rows.map(([k, v]) => {
+        const m = LANG_META[k] || {flag:'🏳️', name:k};
+        return `<div class="lang-row">
+          <span class="lang-name"><span aria-hidden="true">${m.flag}</span>${esc(m.name)}</span>
+          <span class="bar"><span class="bar-fill" style="width:${(v / max * 100).toFixed(1)}%"></span></span>
+          <span class="lv num">${nf(v)}<em>${total ? (v / total * 100).toFixed(0) : 0}%</em></span>
+        </div>`;
+      }).join('')
+    : emptyBlock('暂无语言分布数据', '当前时间窗内还没有产生页面浏览。');
+}
+
+function leadRows(list, withAction){
+  return list.map(l => {
+    const m = LANG_META[l.lang] || {flag:'🏳️', name:l.lang};
+    return `<tr>
+      <td class="time" data-label="时间">${esc(fmtTime(l.ts))}</td>
+      <td class="mail" data-label="邮箱"><a href="mailto:${esc(l.email)}">${esc(l.email)}</a></td>
+      <td class="mono" data-label="订单后 4 位">${esc(l.order_suffix)}</td>
+      <td data-label="语言"><span class="badge badge-gray"><span aria-hidden="true">${m.flag}</span>${esc(String(l.lang || '').toUpperCase())}</span></td>
+      <td data-label="营销同意">${l.marketing_consent
+        ? '<span class="badge badge-green">已同意</span>'
+        : '<span class="badge badge-gray">未同意</span>'}</td>
+      ${withAction ? `<td data-label="" style="text-align:right">
+        <button class="row-btn" type="button" data-copy="${esc(l.email)}" title="复制该邮箱" aria-label="复制邮箱 ${esc(l.email)}">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="8.5" y="8.5" width="12" height="12" rx="2.4"/><path d="M15.5 5.5H5.9c-1 0-1.9.8-1.9 1.9v9.6"/></svg>
+        </button>
+      </td>` : ''}
+    </tr>`;
+  }).join('');
+}
+
+function renderRecent(){
+  const list = state.leads.slice()
+    .sort((a, b) => new Date(b.ts).getTime() - new Date(a.ts).getTime())
+    .slice(0, 5);
+  $('recentBody').innerHTML = list.length
+    ? leadRows(list, false)
+    : `<tr><td colspan="5" style="padding:0">${emptyBlock('暂无注册记录', '当前时间窗内没有买家提交注册。')}</td></tr>`;
+}
+
+function filteredLeads(){
+  let list = state.leads.slice();
+  const q = state.q.trim().toLowerCase();
+  if (q) list = list.filter(l =>
+    String(l.email || '').toLowerCase().includes(q) || String(l.order_suffix || '').includes(q));
+  if (state.consent === 'yes') list = list.filter(l => l.marketing_consent);
+  if (state.consent === 'no') list = list.filter(l => !l.marketing_consent);
+
+  const k = state.sortKey, dir = state.sortDir === 'asc' ? 1 : -1;
+  list.sort((a, b) => {
+    let x = a[k], y = b[k];
+    if (k === 'ts') { x = new Date(x).getTime(); y = new Date(y).getTime(); }
+    if (typeof x === 'boolean') { x = x ? 1 : 0; y = y ? 1 : 0; }
+    if (typeof x === 'string' || typeof y === 'string') {
+      return String(x == null ? '' : x).localeCompare(String(y == null ? '' : y)) * dir;
+    }
+    return ((Number(x) || 0) - (Number(y) || 0)) * dir;
+  });
+  return list;
+}
+
+function renderLeads(){
+  const list = filteredLeads();
+  const total = state.leads.length;
+  const yes = state.leads.filter(l => l.marketing_consent).length;
+
+  $('nAll').textContent = total;
+  $('nYes').textContent = yes;
+  $('nNo').textContent = total - yes;
+  $('copyEmailsText').textContent = list.length ? `复制 ${list.length} 个邮箱` : '复制邮箱';
+  $('copyEmailsBtn').disabled = !list.length;
+  $('csvBtn').disabled = !list.length;
+
+  // 后端只回传最近 500 条，必须显式告知，否则会被误读成「窗口内就这么点人」
+  const note = $('truncNote');
+  if (state.leadsTruncated){
+    note.textContent = `记录较多，仅显示最近 ${nf(total)} 条。缩小时间范围可看到更早的注册。`;
+    note.classList.add('show');
+  } else {
+    note.textContent = '';
+    note.classList.remove('show');
+  }
+
+  // 排序指示
+  document.querySelectorAll('#leadsTbl th.sortable').forEach(th => {
+    if (th.dataset.sort === state.sortKey){
+      th.setAttribute('aria-sort', state.sortDir === 'asc' ? 'ascending' : 'descending');
+      th.querySelector('.sarrow').textContent = state.sortDir === 'asc' ? '▲' : '▼';
+    } else {
+      th.removeAttribute('aria-sort');
+      th.querySelector('.sarrow').textContent = '↕';
+    }
+  });
+
+  if (state.empty){
+    $('leadsBody').innerHTML = '';
+    $('leadsEmpty').innerHTML = emptyBlock('暂无注册记录', '当前时间窗内没有买家提交注册。换个时间范围试试，或确认落地页已正常上线。');
+    $('leadsTbl').style.display = 'none';
+    return;
+  }
+  if (!list.length){
+    $('leadsTbl').style.display = 'none';
+    $('leadsEmpty').innerHTML = emptyBlock('没有匹配的记录', '调整搜索关键词或切换筛选条件后重试。');
+    return;
+  }
+  $('leadsTbl').style.display = '';
+  $('leadsEmpty').innerHTML = '';
+  $('leadsBody').innerHTML = leadRows(list, true);
+}
+
+function emptyBlock(title, text){
+  return `<div class="empty">
+    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+      <rect x="3.5" y="5" width="17" height="14" rx="2.5"/><path d="M3.5 9.5h17M8 14h4"/>
+    </svg>
+    <b>${esc(title)}</b>
+    <p>${esc(text)}</p>
+  </div>`;
+}
+
+function renderDaily(){
+  let rows = state.daily.slice();
+  if (state.dailySort){
+    const k = state.dailySort, dir = state.dailyDir === 'asc' ? 1 : -1;
+    rows.sort((a, b) => {
+      const val = r => k === 'rate'
+        ? (r.pageviews ? r.submissions / r.pageviews : 0)
+        : (Number(r[k]) || 0);
+      return (val(a) - val(b)) * dir;
+    });
+  } else {
+    rows.reverse(); // 默认最新在上
+  }
+
+  const maxPV = Math.max(...state.daily.map(r => Number(r.pageviews) || 0), 1);
+
+  document.querySelectorAll('#dailyTbl th.sortable').forEach(th => {
+    if (th.dataset.sort === state.dailySort){
+      th.setAttribute('aria-sort', state.dailyDir === 'asc' ? 'ascending' : 'descending');
+      th.querySelector('.sarrow').textContent = state.dailyDir === 'asc' ? '▲' : '▼';
+    } else {
+      th.removeAttribute('aria-sort');
+      th.querySelector('.sarrow').textContent = '↕';
+    }
+  });
+
+  if (state.empty){
+    $('dailyBody').innerHTML = '';
+    $('dailyFoot').innerHTML = '';
+    $('dailyCnt').textContent = '';
+    $('dailyTbl').style.display = 'none';
+    return;
+  }
+  $('dailyTbl').style.display = '';
+
+  $('dailyBody').innerHTML = rows.map(r => {
+    const pv = Number(r.pageviews) || 0;
+    const sub = Number(r.submissions) || 0;
+    const rate = pv ? (sub / pv) * 100 : 0;
+    const hit = rate >= CONSENT_TARGET;
+    return `<tr>
+      <td class="time" data-label="日期">${esc(String(r.date || '').slice(5))}</td>
+      <td data-label="浏览量分布">
+        <span class="bar" style="height:8px"><span class="bar-fill" style="width:${(pv / maxPV * 100).toFixed(1)}%"></span></span>
+      </td>
+      <td class="n num" data-label="浏览量 PV">${nf(pv)}</td>
+      <td class="n num" data-label="提交数">${nf(sub)}</td>
+      <td class="n" data-label="转化率"><span class="badge ${hit ? 'badge-green' : 'badge-gray'} num">${rate.toFixed(1)}%</span></td>
+      <td class="n num" data-label="获客量">${nf(r.leads_count)}</td>
+    </tr>`;
+  }).join('');
+
+  const t = totals();
+  const daysWithData = state.daily.filter(r => (Number(r.pageviews) || 0) > 0 || (Number(r.submissions) || 0) > 0).length;
+  $('dailyCnt').textContent = `近 ${state.days} 天 · 共 ${daysWithData} 天有数据`;
+  $('dailyFoot').innerHTML = `<tr>
+    <td data-label="日期">合计</td>
+    <td data-label="浏览量分布"></td>
+    <td class="n num" data-label="浏览量 PV">${nf(t.pv)}</td>
+    <td class="n num" data-label="提交数">${nf(t.sub)}</td>
+    <td class="n num" data-label="转化率">${t.rate.toFixed(2)}%</td>
+    <td class="n num" data-label="获客量">${nf(state.daily.reduce((a, r) => a + (Number(r.leads_count) || 0), 0))}</td>
+  </tr>`;
+}
+
+function renderLoading(){
+  $('kpis').innerHTML = Array.from({length:4}, () =>
+    `<div class="kpi"><div class="sk" style="width:78px;height:11px"></div>
+     <div class="sk" style="width:110px;height:30px;margin:12px 0 8px"></div>
+     <div class="sk" style="width:130px;height:11px"></div></div>`).join('');
+  $('langCnt').textContent = '';
+  $('langList').innerHTML = Array.from({length:6}, () =>
+    `<div class="sk-row" style="border:none;padding:9px 0">
+      <div class="sk" style="width:78px;height:12px"></div>
+      <div class="sk" style="flex:1;height:9px"></div>
+      <div class="sk" style="width:58px;height:12px"></div>
+    </div>`).join('');
+  $('recentBody').innerHTML = Array.from({length:4}, () =>
+    `<tr><td><div class="sk" style="width:82px;height:12px"></div></td>
+     <td><div class="sk" style="width:170px;height:12px"></div></td>
+     <td><div class="sk" style="width:42px;height:12px"></div></td>
+     <td><div class="sk" style="width:48px;height:18px;border-radius:999px"></div></td>
+     <td><div class="sk" style="width:58px;height:18px;border-radius:999px"></div></td></tr>`).join('');
+  $('leadsTbl').style.display = 'none';
+  $('leadsEmpty').innerHTML = '';
+  $('dailyTbl').style.display = 'none';
+}
+
+function renderAll(){
+  if (state.loading){ renderLoading(); return; }
+  $('leadsTbl').style.display = '';
+  $('dailyTbl').style.display = '';
+  renderKPIs();
+  renderLangs();
+  renderRecent();
+  renderLeads();
+  renderDaily();
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   交互
+   ══════════════════════════════════════════════════════════════════ */
+const TITLES = {overview:'概览', leads:'注册明细', daily:'每日明细'};
+
+document.querySelectorAll('.nav button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    state.view = btn.dataset.view;
+    document.querySelectorAll('.nav button').forEach(b => {
+      if (b === btn) b.setAttribute('aria-current', 'page');
+      else b.removeAttribute('aria-current');
+    });
+    document.querySelectorAll('.view').forEach(v => v.classList.toggle('on', v.id === 'view-' + state.view));
+    $('pageTitle').textContent = TITLES[state.view];
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+});
+
+document.querySelectorAll('.fchip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    state.consent = chip.dataset.consent;
+    document.querySelectorAll('.fchip').forEach(c => c.setAttribute('aria-pressed', String(c === chip)));
+    renderLeads();
+  });
+});
+
+$('leadSearch').addEventListener('input', e => { state.q = e.target.value; renderLeads(); });
+
+// 表头排序：鼠标点击 + 键盘（Enter / Space）
+function bindSort(selector, keyName, dirName, rerender){
+  document.querySelectorAll(selector).forEach(th => {
+    const toggle = () => {
+      const k = th.dataset.sort;
+      if (state[keyName] === k) state[dirName] = state[dirName] === 'asc' ? 'desc' : 'asc';
+      else { state[keyName] = k; state[dirName] = dirName === 'sortDir' ? 'asc' : 'desc'; }
+      rerender();
+    };
+    th.addEventListener('click', toggle);
+    th.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); toggle(); }
+    });
+  });
+}
+bindSort('#leadsTbl th.sortable', 'sortKey', 'sortDir', renderLeads);
+bindSort('#dailyTbl th.sortable', 'dailySort', 'dailyDir', renderDaily);
+
+// 单行复制
+document.addEventListener('click', async e => {
+  const btn = e.target.closest('[data-copy]');
+  if (!btn) return;
+  try { await navigator.clipboard.writeText(btn.dataset.copy); toast('已复制该邮箱 ✓'); }
+  catch { window.prompt('手动复制：', btn.dataset.copy); }
+});
+
+// 批量复制（只复制当前筛选结果 —— 避免「以为复制了全部」）
+$('copyEmailsBtn').addEventListener('click', async () => {
+  const list = filteredLeads();
+  if (!list.length) return;
+  const text = list.map(l => l.email).join('\n');
   try {
     await navigator.clipboard.writeText(text);
-    const old = btn.textContent;
-    btn.textContent = '已复制 ✓';
-    setTimeout(() => { btn.textContent = old; }, 1500);
+    toast(`已复制 ${list.length} 个邮箱 ✓`);
   } catch {
     window.prompt('手动复制以下邮箱：', text);
   }
+});
+
+// CSV 导出（带 BOM，Excel 打开不乱码）
+$('csvBtn').addEventListener('click', () => {
+  const list = filteredLeads();
+  if (!list.length) { toast('没有可导出的记录'); return; }
+  const head = ['时间','邮箱','订单后4位','语言','营销同意'];
+  const rows = list.map(l => [fmtTimeFull(l.ts), l.email, l.order_suffix, l.lang, l.marketing_consent ? '是' : '否']);
+  const csv = '\uFEFF' + [head, ...rows]
+    .map(r => r.map(c => `"${String(c == null ? '' : c).replace(/"/g, '""')}"`).join(',')).join('\r\n');
+  const url = URL.createObjectURL(new Blob([csv], {type:'text/csv;charset=utf-8'}));
+  const a = document.createElement('a');
+  a.href = url; a.download = `leads-${state.days}d.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+  toast(`已导出 ${list.length} 条记录 ✓`);
+});
+
+/* ══════════════════════════════════════════════════════════════════
+   登录 / 刷新 / 退出
+   ══════════════════════════════════════════════════════════════════ */
+function showLoginError(msg){
+  $('secretCtl').classList.add('is-error');
+  $('loginErrText').textContent = msg;
+  $('loginErr').classList.add('show');
+}
+function clearLoginError(){
+  $('secretCtl').classList.remove('is-error');
+  $('loginErr').classList.remove('show');
 }
 
-async function loadStats(secret, refresh) {
-  const s = secret || document.getElementById('secretInput')?.value || savedSecret;
-  if (!s) return;
-  savedSecret = s;
+function enterApp(){
+  $('login').style.display = 'none';
+  $('app').classList.add('on');
+  renderAll();
+}
 
+async function doLogin(){
+  const v = $('secretInput').value.trim();
+  if (!v){
+    showLoginError('请输入统计密钥');
+    $('secretInput').focus();
+    return;
+  }
+  const btn = $('loginBtn');
+  btn.disabled = true;
+  btn.textContent = '验证中…';
+  state.secret = v;
+  clearLoginError();
   try {
-    const res = await fetch(`/api/stats?days=${DAYS}`, {
-      headers: { 'X-Stats-Secret': s },
-    });
-    if (res.status === 401) {
-      document.getElementById('loginErr').textContent = '密钥错误，请重试';
-      return;
-    }
-    const data = await res.json();
-
-    document.getElementById('loginBox').style.display = 'none';
-    document.getElementById('dashboard').style.display = 'block';
-
-    const t = data.totals;
-    document.getElementById('totalsGrid').innerHTML = `
-      <div class="stat-card"><div class="stat-label">总浏览量</div><div class="stat-val">${t.pageviews.toLocaleString()}</div><div class="stat-sub">过去 ${DAYS} 天</div></div>
-      <div class="stat-card"><div class="stat-label">表单提交</div><div class="stat-val">${t.submissions.toLocaleString()}</div><div class="stat-sub">有效信息</div></div>
-      <div class="stat-card"><div class="stat-label">转化率</div><div class="stat-val">${t.conversion_rate}</div><div class="stat-sub">浏览→提交</div></div>
-      <div class="stat-card"><div class="stat-label">获客总量</div><div class="stat-val">${t.leads.toLocaleString()}</div><div class="stat-sub">去重邮箱（累计）</div></div>
-    `;
-
-    document.getElementById('langSectionTitle').textContent = `各语言访问分布（近 ${DAYS} 天合计）`;
-
-    // Language totals
-    const langTotals = data.daily.reduce((acc, r) => {
-      Object.entries(r.by_lang).forEach(([k,v]) => { acc[k] = (acc[k]||0) + v; });
-      return acc;
-    }, {});
-    const langNames = { de:'🇩🇪 德语', fr:'🇫🇷 法语', it:'🇮🇹 意大利语', es:'🇪🇸 西班牙语', nl:'🇳🇱 荷兰语', en:'🇬🇧 英语' };
-    const totalPV = Object.values(langTotals).reduce((a,b)=>a+b,0) || 1;
-    document.getElementById('langBar').innerHTML = Object.entries(langTotals)
-      .sort((a,b)=>b[1]-a[1])
-      .map(([k,v]) => `<div class="lang-pill">${langNames[k]||k}: <strong>${v}</strong> (${((v/totalPV)*100).toFixed(0)}%)</div>`)
-      .join('');
-
-    // Registration list — the contacts the seller follows up with by hand.
-    // No email is sent by the system; this table IS the handoff.
-    const leads = Array.isArray(data.leads) ? data.leads : [];
-    currentLeads = leads;
-
-    document.getElementById('leadsSectionTitle').textContent =
-      `注册明细（近 ${DAYS} 天，共 ${leads.length} 条${data.leads_truncated ? '，仅显示最近 ' + leads.length + ' 条' : ''}）`;
-
-    const copyBtn = document.getElementById('copyEmailsBtn');
-    copyBtn.textContent = `复制 ${leads.length} 个邮箱`;
-    copyBtn.style.display = leads.length ? '' : 'none';
-
-    document.getElementById('leadsBody').innerHTML = leads.map((l) => `
-      <tr>
-        <td>${esc(fmtTime(l.ts))}</td>
-        <td class="mono">${esc(l.email)}</td>
-        <td>${esc(l.order_suffix)}</td>
-        <td>${esc(l.lang)}</td>
-        <td>${l.marketing_consent ? '<span class="badge badge-green">已同意</span>' : '<span class="badge badge-blue">未同意</span>'}</td>
-      </tr>
-    `).join('');
-    document.getElementById('leadsEmpty').style.display = leads.length ? 'none' : 'block';
-
-    // Daily table
-    document.getElementById('tableBody').innerHTML = [...data.daily].reverse().map(r => `
-      <tr>
-        <td>${r.date}</td>
-        <td>${r.pageviews.toLocaleString()}</td>
-        <td>${r.submissions.toLocaleString()}</td>
-        <td><span class="badge ${parseFloat(r.conversion_rate)>=3?'badge-green':'badge-blue'}">${r.conversion_rate}</span></td>
-        <td>${r.leads_count}</td>
-      </tr>
-    `).join('');
-
-  } catch (err) {
-    document.getElementById('loginErr').textContent = '加载失败，请检查网络';
+    await fetchStats();
+    if ($('rememberInput').checked) sessionStorage.setItem(SESSION_KEY, v);
+    else sessionStorage.removeItem(SESSION_KEY);
+    enterApp();
+  } catch (err){
+    state.secret = '';
+    sessionStorage.removeItem(SESSION_KEY);
+    showLoginError(err && err.code === 401
+      ? '密钥错误，请重试'
+      : (err && err.code === 500 ? '服务端配置异常（KV 未绑定？）' : '加载失败，请检查网络后重试'));
+    $('secretInput').focus();
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '查看数据';
   }
 }
+
+async function reload(announce){
+  state.loading = true;
+  renderAll();
+  try {
+    await fetchStats();
+    state.loading = false;
+    renderAll();
+    if (announce) toast('数据已刷新 ✓');
+  } catch (err){
+    state.loading = false;
+    renderAll();
+    if (err && err.code === 401){
+      logout();
+      showLoginError('密钥已失效，请重新登录');
+    } else {
+      toast('刷新失败，请稍后重试');
+    }
+  }
+}
+
+function logout(){
+  state.secret = '';
+  state.daily = [];
+  state.leads = [];
+  state.leadsTruncated = false;
+  state.totals = { pageviews:0, submissions:0, leads:0 };
+  state.empty = false;
+  state.loading = false;
+  state.q = '';
+  state.consent = 'all';
+  state.sortKey = 'ts'; state.sortDir = 'desc';
+  state.dailySort = null; state.dailyDir = 'desc';
+  sessionStorage.removeItem(SESSION_KEY);
+  $('leadSearch').value = '';
+  document.querySelectorAll('.fchip').forEach(c => c.setAttribute('aria-pressed', String(c.dataset.consent === 'all')));
+  $('app').classList.remove('on');
+  $('login').style.display = '';
+  $('secretInput').value = '';
+  clearLoginError();
+}
+
+$('loginBtn').addEventListener('click', doLogin);
+$('secretInput').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+$('secretInput').addEventListener('input', clearLoginError);
+$('eyeBtn').addEventListener('click', () => {
+  const inp = $('secretInput');
+  const show = inp.type === 'password';
+  inp.type = show ? 'text' : 'password';
+  $('eyeBtn').setAttribute('aria-pressed', String(show));
+  $('eyeBtn').setAttribute('aria-label', show ? '隐藏密钥' : '显示密钥');
+});
+$('logoutBtn').addEventListener('click', logout);
+
+$('rangeSel').addEventListener('change', e => {
+  state.days = Number(e.target.value);
+  reload(false);
+});
+
+$('refreshBtn').addEventListener('click', () => reload(true));
+
+/* ══════════════════════════════════════════════════════════════════
+   初始化
+   ══════════════════════════════════════════════════════════════════ */
+$('targetLine').textContent = CONSENT_TARGET + '%';
+
+(async function init(){
+  const saved = sessionStorage.getItem(SESSION_KEY);
+  if (!saved) return;
+  state.secret = saved;
+  try {
+    await fetchStats();
+    enterApp();
+  } catch {
+    // 会话里的密钥已失效：静默退回登录态，不打扰用户
+    state.secret = '';
+    sessionStorage.removeItem(SESSION_KEY);
+  }
+})();
 </script>
 </body>
 </html>
