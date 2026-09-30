@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AromeLivii 设计系统 · Design Tokens</title>
+<style>
+/* ══════════════════════════════════════════════════════════════════
+   AromeLivii Design Tokens — v2.0
+   单一事实来源。落地页与统计面板均从这套 token 取值。
+   ══════════════════════════════════════════════════════════════════ */
+:root{
+  /* ── 品牌主色 Navy ──────────────────────────────────────────── */
+  --navy-950:#0a1524; --navy-900:#0f1d30; --navy-800:#152942;
+  --navy-700:#1a2e4a; --navy-600:#27405f; --navy-500:#3b5a7d;
+  --navy-400:#5f7d9e; --navy-300:#93a9c1; --navy-200:#c3d0de;
+  --navy-100:#e3eaf1; --navy-50:#f3f7fa;
+
+  /* ── 品牌辅色 Gold ──────────────────────────────────────────── */
+  --gold-800:#6f5716; --gold-700:#8f7220; --gold-600:#ad8d31;
+  --gold-500:#c8a84b; --gold-400:#d9bd6d; --gold-300:#e8c96a;
+  --gold-200:#f1e0ad; --gold-100:#f9f2dc; --gold-50:#fdfbf3;
+
+  /* ── 中性色（暖调，呼应米白底） ─────────────────────────────── */
+  --ink-900:#171614; --ink-800:#2e2b28; --ink-700:#4a4641;
+  --ink-600:#6b6560; --ink-500:#8a837c; --ink-400:#a9a29a;
+  --ink-300:#c9c3ba; --ink-200:#e2ddd3; --ink-100:#f0ece4; --ink-50:#f9f7f3;
+
+  /* ── 语义 · 表面 ────────────────────────────────────────────── */
+  --bg:#f6f4ef; --surface:#ffffff; --surface-sunken:#f6f4ef;
+  --border:#e2ddd3; --border-strong:#cfc8bb;
+
+  /* ── 语义 · 文字 ────────────────────────────────────────────── */
+  --text:#171614; --text-body:#3d3a36; --text-muted:#6b6560;
+  --text-faint:#8a837c; --text-onbrand:#ffffff;
+  --text-onbrand-muted:rgba(255,255,255,.72);
+
+  /* ── 语义 · 状态 ────────────────────────────────────────────── */
+  --success-700:#1f6b43; --success-600:#2d7a4f; --success-100:#e7f4ec;
+  --danger-700:#a5291c;  --danger-600:#c0392b;  --danger-100:#fdecea;
+  --info-600:#1d3a8a;    --info-100:#e8f0fc;
+  --warn-600:#9a6b00;    --warn-100:#fdf3dd;
+
+  /* ── 圆角 ───────────────────────────────────────────────────── */
+  --r-xs:6px; --r-sm:8px; --r-md:12px; --r-lg:16px; --r-xl:22px; --r-full:999px;
+
+  /* ── 阴影 ───────────────────────────────────────────────────── */
+  --sh-xs:0 1px 2px rgba(23,22,20,.06);
+  --sh-sm:0 2px 6px rgba(23,22,20,.07), 0 1px 2px rgba(23,22,20,.04);
+  --sh-md:0 10px 26px -8px rgba(15,29,48,.16), 0 2px 6px rgba(23,22,20,.05);
+  --sh-lg:0 24px 52px -16px rgba(15,29,48,.26);
+  --sh-gold:0 8px 22px -6px rgba(200,168,75,.5);
+
+  /* ── 动效 ───────────────────────────────────────────────────── */
+  --ease:cubic-bezier(.2,.7,.3,1);
+  --t-fast:120ms; --t-base:180ms; --t-slow:300ms;
+
+  /* ── 间距（4px 基数） ───────────────────────────────────────── */
+  --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:20px;
+  --sp-6:24px; --sp-8:32px; --sp-10:40px; --sp-12:48px; --sp-16:64px;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,'PingFang SC','Microsoft YaHei',sans-serif;
+  background:var(--bg); color:var(--text-body); line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:var(--navy-700)}
+
+/* ── 布局 ──────────────────────────────────────────────────────── */
+.shell{display:grid;grid-template-columns:230px minmax(0,1fr);max-width:1180px;margin:0 auto;gap:0}
+@media(max-width:900px){.shell{grid-template-columns:1fr}}
+
+.side{
+  position:sticky;top:0;height:100vh;overflow-y:auto;
+  padding:var(--sp-8) var(--sp-5);border-right:1px solid var(--border);
+  background:var(--surface);
+}
+@media(max-width:900px){.side{position:static;height:auto;border-right:none;border-bottom:1px solid var(--border)}}
+.side-brand{display:flex;align-items:center;gap:var(--sp-3);margin-bottom:var(--sp-6)}
+.side-brand svg{flex-shrink:0}
+.side-title{font-size:14px;font-weight:700;color:var(--text);letter-spacing:.02em}
+.side-sub{font-size:11px;color:var(--text-faint);letter-spacing:.06em;text-transform:uppercase}
+.side nav{display:flex;flex-direction:column;gap:2px}
+@media(max-width:900px){.side nav{flex-direction:row;flex-wrap:wrap;gap:var(--sp-2)}}
+.side nav a{
+  display:block;padding:7px 10px;border-radius:var(--r-sm);font-size:13px;
+  color:var(--text-muted);text-decoration:none;transition:background var(--t-fast) var(--ease),color var(--t-fast) var(--ease);
+}
+.side nav a:hover{background:var(--navy-50);color:var(--navy-700)}
+.side nav a.on{background:var(--navy-700);color:#fff;font-weight:600}
+
+.main{padding:var(--sp-10) var(--sp-8) var(--sp-16)}
+@media(max-width:900px){.main{padding:var(--sp-8) var(--sp-5) var(--sp-12)}}
+
+/* ── 章节 ──────────────────────────────────────────────────────── */
+.sec{margin-bottom:var(--sp-16);scroll-margin-top:var(--sp-6)}
+.sec > h2{
+  font-size:22px;font-weight:700;color:var(--text);letter-spacing:-.01em;
+  padding-bottom:var(--sp-3);border-bottom:2px solid var(--navy-700);
+  margin-bottom:var(--sp-3);display:flex;align-items:baseline;gap:var(--sp-3);
+}
+.sec > h2 span{font-size:12px;font-weight:600;color:var(--text-faint);letter-spacing:.08em;text-transform:uppercase}
+.sec > .lead{font-size:14px;color:var(--text-muted);margin-bottom:var(--sp-6);max-width:70ch}
+
+h3.blk{font-size:15px;font-weight:700;color:var(--text);margin:var(--sp-8) 0 var(--sp-3)}
+h3.blk:first-of-type{margin-top:var(--sp-4)}
+.note{font-size:12.5px;color:var(--text-muted);margin-bottom:var(--sp-4);max-width:70ch}
+
+/* ── 色板 ──────────────────────────────────────────────────────── */
+.ramp{display:grid;grid-template-columns:repeat(auto-fit,minmax(84px,1fr));gap:var(--sp-2);margin-bottom:var(--sp-6)}
+.sw{border-radius:var(--r-sm);overflow:hidden;border:1px solid var(--border);background:var(--surface)}
+.sw .chip{height:56px}
+.sw .meta{padding:6px 8px}
+.sw .name{font-size:10.5px;font-weight:700;color:var(--text);font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.sw .hex{font-size:10px;color:var(--text-faint);font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.sw .cr{font-size:9.5px;margin-top:3px;font-weight:600}
+.cr.pass{color:var(--success-700)} .cr.fail{color:var(--danger-700)}
+
+/* ── 表格 ──────────────────────────────────────────────────────── */
+table.t{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);overflow:hidden;font-size:13px}
+table.t th{background:var(--navy-50);color:var(--navy-700);font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;text-align:left;padding:9px 14px;border-bottom:1px solid var(--border)}
+table.t td{padding:9px 14px;border-bottom:1px solid var(--ink-100);vertical-align:top}
+table.t tr:last-child td{border-bottom:none}
+table.t code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;color:var(--navy-700);background:var(--navy-50);padding:1px 5px;border-radius:4px}
+table.t td.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px}
+
+/* ── 字阶演示 ──────────────────────────────────────────────────── */
+.type-row{display:flex;align-items:baseline;gap:var(--sp-5);padding:var(--sp-4) 0;border-bottom:1px dashed var(--border)}
+.type-row:last-child{border-bottom:none}
+.type-meta{flex:0 0 150px;font-size:11px;color:var(--text-faint);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;line-height:1.7}
+.type-demo{flex:1;min-width:0;color:var(--text)}
+
+/* ── 组件展台 ──────────────────────────────────────────────────── */
+.stage{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:var(--sp-6);margin-bottom:var(--sp-4)}
+.stage-label{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-faint);margin-bottom:var(--sp-4)}
+.row{display:flex;flex-wrap:wrap;gap:var(--sp-3);align-items:center}
+.stack{display:flex;flex-direction:column;gap:var(--sp-3);max-width:360px}
+
+/* 按钮 */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:var(--sp-2);
+  min-height:44px;padding:0 var(--sp-5);border:1.5px solid transparent;
+  border-radius:var(--r-md);font-size:15px;font-weight:650;cursor:pointer;
+  font-family:inherit;transition:background var(--t-base) var(--ease),transform var(--t-fast) var(--ease),box-shadow var(--t-base) var(--ease),border-color var(--t-base) var(--ease);
+}
+.btn-primary{background:var(--gold-500);color:var(--navy-900);box-shadow:var(--sh-gold)}
+.btn-primary:hover{background:var(--gold-400)}
+.btn-primary:active{transform:translateY(1px)}
+.btn-navy{background:var(--navy-700);color:#fff}
+.btn-navy:hover{background:var(--navy-900)}
+.btn-ghost{background:var(--surface);color:var(--navy-700);border-color:var(--border-strong)}
+.btn-ghost:hover{background:var(--navy-50);border-color:var(--navy-300)}
+.btn-quiet{background:transparent;color:var(--text-muted);padding:0 var(--sp-3)}
+.btn-quiet:hover{background:var(--ink-100);color:var(--text)}
+.btn-lg{min-height:54px;font-size:16px;width:100%}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
+.btn:focus-visible{outline:2px solid var(--navy-700);outline-offset:2px}
+
+/* 输入框 */
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-size:13px;font-weight:650;color:var(--text-body)}
+.field .hint{font-size:12px;color:var(--text-muted)}
+.control{
+  display:flex;align-items:center;gap:var(--sp-3);min-height:52px;padding:0 var(--sp-4);
+  background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r-md);
+  transition:border-color var(--t-base) var(--ease),box-shadow var(--t-base) var(--ease);
+}
+.control input{border:none;outline:none;background:none;font:inherit;font-size:16px;color:var(--text);width:100%;min-width:0;padding:14px 0}
+.control input::placeholder{color:var(--text-faint)}
+.control svg{flex-shrink:0;color:var(--text-faint)}
+.control.is-focus{border-color:var(--navy-700);box-shadow:0 0 0 3px var(--navy-100)}
+.control.is-error{border-color:var(--danger-600);box-shadow:0 0 0 3px var(--danger-100)}
+.control.is-ok{border-color:var(--success-600)}
+.err-msg{font-size:12.5px;color:var(--danger-700);display:flex;gap:5px;align-items:center;font-weight:550}
+
+/* 徽章 */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:var(--r-full);font-size:11.5px;font-weight:650;letter-spacing:.01em}
+.badge-green{background:var(--success-100);color:var(--success-700)}
+.badge-blue{background:var(--info-100);color:var(--info-600)}
+.badge-gray{background:var(--ink-100);color:var(--text-muted)}
+.badge-gold{background:var(--gold-100);color:var(--gold-800)}
+.badge-red{background:var(--danger-100);color:var(--danger-700)}
+
+/* 卡片 */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:var(--sp-5)}
+.card-elev{box-shadow:var(--sh-md);border-color:transparent}
+
+/* 折叠面板 */
+details.acc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);overflow:hidden}
+details.acc + details.acc{margin-top:var(--sp-2)}
+details.acc summary{
+  list-style:none;cursor:pointer;padding:14px var(--sp-4);font-size:14px;font-weight:650;color:var(--text);
+  display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);min-height:48px;
+}
+details.acc summary::-webkit-details-marker{display:none}
+details.acc summary::after{
+  content:'';width:9px;height:9px;flex-shrink:0;
+  border-right:2px solid var(--text-faint);border-bottom:2px solid var(--text-faint);
+  transform:rotate(45deg) translateY(-2px);transition:transform var(--t-base) var(--ease);
+}
+details.acc[open] summary::after{transform:rotate(-135deg) translateY(-2px)}
+details.acc .acc-body{padding:0 var(--sp-4) var(--sp-4);font-size:13.5px;color:var(--text-muted);line-height:1.65}
+
+/* 调用提示 */
+.callout{border-left:3px solid var(--navy-400);background:var(--navy-50);border-radius:0 var(--r-sm) var(--r-sm) 0;padding:var(--sp-4) var(--sp-5);font-size:13.5px;color:var(--text-body);margin:var(--sp-4) 0}
+.callout.warn{border-left-color:var(--warn-600);background:var(--warn-100)}
+.callout.danger{border-left-color:var(--danger-600);background:var(--danger-100)}
+.callout.ok{border-left-color:var(--success-600);background:var(--success-100)}
+.callout strong{color:var(--text)}
+
+/* 阴影/圆角演示 */
+.tile{height:74px;border-radius:var(--r-md);background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--text-faint);font-family:ui-monospace,Menlo,monospace}
+.grid-4{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:var(--sp-4)}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <aside class="side">
+    <div class="side-brand">
+      <svg width="34" height="34" viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="15" fill="#1a2e4a"/>
+        <path d="M32 13l15 5.6v11.6c0 9.6-6.4 17.7-15 21.2-8.6-3.5-15-11.6-15-21.2V18.6L32 13z" fill="none" stroke="#c8a84b" stroke-width="3.6"/>
+        <path d="M24.5 32.5l5.5 5.5 10.5-11" fill="none" stroke="#e8c96a" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <div>
+        <div class="side-title">AromeLivii</div>
+        <div class="side-sub">Design System v2</div>
+      </div>
+    </div>
+    <nav>
+      <a href="#color" class="on">01 色彩</a>
+      <a href="#type">02 字体</a>
+      <a href="#space">03 间距 / 圆角 / 阴影</a>
+      <a href="#motion">04 动效</a>
+      <a href="#comp">05 组件</a>
+      <a href="#a11y">06 无障碍红线</a>
+    </nav>
+  </aside>
+
+  <main class="main">
+
+    <!-- ═══ 01 色彩 ═══ -->
+    <section class="sec" id="color">
+      <h2>色彩 <span>Color</span></h2>
+      <p class="lead">保留原品牌 navy + gold 的信任感与品质感，把原来「3 个孤立色值」扩展为可用的完整色阶，并补上语义别名。每个色块下方实时计算与白底 / 页面底色的对比度，<strong>标红的即为不可用于正文的色值</strong>。</p>
+
+      <h3 class="blk">品牌主色 · Navy（信任 / 权威 / 主体结构）</h3>
+      <div class="ramp" data-ramp="navy"></div>
+
+      <h3 class="blk">品牌辅色 · Gold（行动 / 稀缺 / 奖励）</h3>
+      <div class="ramp" data-ramp="gold"></div>
+
+      <h3 class="blk">中性色 · Warm Ink（文字 / 描边 / 分隔）</h3>
+      <div class="ramp" data-ramp="ink"></div>
+
+      <h3 class="blk">语义别名 —— 写界面时只用这一层</h3>
+      <p class="note">组件代码里不允许直接写 <code>--navy-700</code> 这类原始色阶，必须走语义别名。这样换肤、暗色模式、对比度整改都只改一处。</p>
+      <table class="t">
+        <thead><tr><th style="width:190px">Token</th><th style="width:110px">取值</th><th>用途</th></tr></thead>
+        <tbody>
+          <tr><td><code>--bg</code></td><td class="mono">#f6f4ef</td><td>页面底色（暖米白，替代原 <code>--cream</code>）</td></tr>
+          <tr><td><code>--surface</code></td><td class="mono">#ffffff</td><td>卡片 / 表格 / 输入框表面</td></tr>
+          <tr><td><code>--border</code></td><td class="mono">#e2ddd3</td><td>常规描边</td></tr>
+          <tr><td><code>--border-strong</code></td><td class="mono">#cfc8bb</td><td>需要更明确边界的控件（次级按钮）</td></tr>
+          <tr><td><code>--text</code></td><td class="mono">#171614</td><td>标题</td></tr>
+          <tr><td><code>--text-body</code></td><td class="mono">#3d3a36</td><td>正文</td></tr>
+          <tr><td><code>--text-muted</code></td><td class="mono">#6b6560</td><td>次要说明 —— <strong>小字号文字的下限</strong>（米白底 5.3:1）</td></tr>
+          <tr><td><code>--text-faint</code></td><td class="mono">#8a837c</td><td>仅限占位符、图标、装饰。<strong>不得用于任何需要阅读的文字</strong>（3.4:1）</td></tr>
+          <tr><td><code>--success-600</code> / <code>-100</code></td><td class="mono">#2d7a4f / #e7f4ec</td><td>成功态、已同意徽章</td></tr>
+          <tr><td><code>--danger-600</code> / <code>-100</code></td><td class="mono">#c0392b / #fdecea</td><td>错误态、校验失败</td></tr>
+          <tr><td><code>--info-600</code> / <code>-100</code></td><td class="mono">#1d3a8a / #e8f0fc</td><td>中性信息徽章</td></tr>
+          <tr><td><code>--gold-500</code></td><td class="mono">#c8a84b</td><td>主行动按钮底色（配 navy 文字）</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout danger">
+        <strong>对比度整改（必做）</strong><br>
+        原版把 GDPR 声明、页脚、小节标签等 <strong>11px 小字</strong> 染成 <code>#9a958f</code>，在米白底上对比度仅 <strong>2.7:1</strong>，远低于 WCAG AA 要求的 4.5:1。新版统一收到 <code>--text-muted</code>（5.3:1）。这不是审美问题，是欧盟站点可访问性合规问题。
+      </div>
+    </section>
+
+    <!-- ═══ 02 字体 ═══ -->
+    <section class="sec" id="type">
+      <h2>字体 <span>Typography</span></h2>
+      <p class="lead">不引入任何 Web Font —— 项目约束是零依赖、可直接部署。使用系统字体栈，在 iOS / Android / Windows 上都是各自平台最清晰的那套字形，且德语长单词不会因字体度量差异而破版。</p>
+
+      <div class="stage">
+        <div class="stage-label">字体栈</div>
+        <div class="mono" style="font-family:ui-monospace,Menlo,monospace;font-size:12.5px;color:var(--navy-700);line-height:1.9">
+          -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial,<br>
+          'PingFang SC', 'Microsoft YaHei', sans-serif
+        </div>
+      </div>
+
+      <div class="stage">
+        <div class="stage-label">字阶 · Type Scale</div>
+        <div class="type-row">
+          <div class="type-meta">display<br>27 / 1.22 / 600</div>
+          <div class="type-demo" style="font-size:27px;line-height:1.22;font-weight:600;letter-spacing:-.4px">12 Monate Gratis-Garantie</div>
+        </div>
+        <div class="type-row">
+          <div class="type-meta">h2<br>19 / 1.3 / 700</div>
+          <div class="type-demo" style="font-size:19px;line-height:1.3;font-weight:700;letter-spacing:-.2px">So funktioniert es</div>
+        </div>
+        <div class="type-row">
+          <div class="type-meta">h3 / 卡标题<br>15 / 1.35 / 650</div>
+          <div class="type-demo" style="font-size:15px;line-height:1.35;font-weight:650">Bald neue Beutel nötig?</div>
+        </div>
+        <div class="type-row">
+          <div class="type-meta">body<br>15 / 1.62 / 400</div>
+          <div class="type-demo" style="font-size:15px;line-height:1.62">Registrieren Sie Ihre Staubsaugerbeutel und aktivieren Sie kostenlos 12 Monate zusätzliche Garantie.</div>
+        </div>
+        <div class="type-row">
+          <div class="type-meta">small<br>13.5 / 1.6 / 400</div>
+          <div class="type-demo" style="font-size:13.5px;line-height:1.6;color:var(--text-muted)">In Ihrer Amazon-Bestellbestätigung finden Sie die Bestellnummer.</div>
+        </div>
+        <div class="type-row">
+          <div class="type-meta">label<br>13 / 1.4 / 650</div>
+          <div class="type-demo" style="font-size:13px;line-height:1.4;font-weight:650">E-Mail-Adresse</div>
+        </div>
+        <div class="type-row">
+          <div class="type-meta">caption<br>11.5 / 1.55 / 400</div>
+          <div class="type-demo" style="font-size:11.5px;line-height:1.55;color:var(--text-muted)">Ihre Daten werden ausschließlich zur Garantieregistrierung verwendet.</div>
+        </div>
+      </div>
+
+      <div class="callout warn">
+        <strong>三处字体改动，每一处都在解决问题</strong><br>
+        <strong>① 输入框字号 15px → 16px。</strong>iOS Safari 在聚焦字号小于 16px 的输入框时会强制放大整个页面，用户填完邮箱会发现页面被放大、需要手动缩回去 —— 原版正是 15px。<br>
+        <strong>② 表单标签从全大写改为句首大写。</strong>原版标签是 <code>LETZTE 4 ZIFFERN DER BESTELLNUMMER</code>，33 个字符的全大写 + 字距，在 480px 宽屏上折成两行且极难扫读。德语 / 法语标签尤其长。<br>
+        <strong>③ 数据表启用 <code>font-variant-numeric: tabular-nums</code>。</strong>统计面板的数字列必须等宽对齐，否则 32px 的数字在表格里会左右跳动。
+      </div>
+    </section>
+
+    <!-- ═══ 03 间距 ═══ -->
+    <section class="sec" id="space">
+      <h2>间距 · 圆角 · 阴影 <span>Space / Radius / Elevation</span></h2>
+
+      <h3 class="blk">间距阶（4px 基数）</h3>
+      <p class="note">原版间距是散落的手写值（22px / 26px / 30px / 18px …），无法推导。收敛到 4 的倍数后，任意两块间距都有依据。</p>
+      <table class="t">
+        <thead><tr><th style="width:150px">Token</th><th style="width:90px">值</th><th>典型用途</th></tr></thead>
+        <tbody>
+          <tr><td><code>--sp-1</code> ~ <code>--sp-3</code></td><td class="mono">4 / 8 / 12</td><td>图标与文字、标签与输入框、徽章内边距</td></tr>
+          <tr><td><code>--sp-4</code> ~ <code>--sp-5</code></td><td class="mono">16 / 20</td><td>卡片内边距、字段之间的垂直间距</td></tr>
+          <tr><td><code>--sp-6</code> ~ <code>--sp-8</code></td><td class="mono">24 / 32</td><td>页面左右安全边距、卡片间距</td></tr>
+          <tr><td><code>--sp-10</code> ~ <code>--sp-16</code></td><td class="mono">40 / 48 / 64</td><td>区块之间、桌面端页面留白</td></tr>
+        </tbody>
+      </table>
+
+      <h3 class="blk">圆角</h3>
+      <div class="grid-4">
+        <div><div class="tile" style="border-radius:var(--r-xs)">6 xs</div></div>
+        <div><div class="tile" style="border-radius:var(--r-sm)">8 sm</div></div>
+        <div><div class="tile" style="border-radius:var(--r-md)">12 md</div></div>
+        <div><div class="tile" style="border-radius:var(--r-lg)">16 lg</div></div>
+        <div><div class="tile" style="border-radius:var(--r-xl)">22 xl</div></div>
+        <div><div class="tile" style="border-radius:var(--r-full)">999 full</div></div>
+      </div>
+      <p class="note" style="margin-top:var(--sp-4)">控件（按钮 / 输入框）= <code>md 12</code>；卡片 = <code>lg 16</code>；徽章 / 胶囊 = <code>full</code>。原版统一 10px 让输入框和卡片看起来「一样平」，缺少层次。</p>
+
+      <h3 class="blk">阴影 · 用高度代替描边</h3>
+      <p class="note">原版所有区块靠 <code>border-bottom: 1px</code> 一条条横线切分，视觉上是「堆叠的纸片」，没有主次。新版改用阴影分层：越靠近用户操作焦点的元素，抬得越高。</p>
+      <div class="grid-4">
+        <div><div class="tile" style="box-shadow:var(--sh-xs);border:none">xs</div><p class="note" style="margin:6px 0 0;font-size:11px">输入框内嵌提示</p></div>
+        <div><div class="tile" style="box-shadow:var(--sh-sm);border:none">sm</div><p class="note" style="margin:6px 0 0;font-size:11px">次级卡片</p></div>
+        <div><div class="tile" style="box-shadow:var(--sh-md);border:none">md</div><p class="note" style="margin:6px 0 0;font-size:11px">主表单卡</p></div>
+        <div><div class="tile" style="box-shadow:var(--sh-lg);border:none">lg</div><p class="note" style="margin:6px 0 0;font-size:11px">浮层 / 抽屉</p></div>
+        <div><div class="tile" style="box-shadow:var(--sh-gold);border:none;background:var(--gold-500);color:var(--navy-900);font-weight:700">gold</div><p class="note" style="margin:6px 0 0;font-size:11px">主 CTA 专属</p></div>
+      </div>
+    </section>
+
+    <!-- ═══ 04 动效 ═══ -->
+    <section class="sec" id="motion">
+      <h2>动效 <span>Motion</span></h2>
+      <p class="lead">动效只服务于两件事：<strong>告诉用户发生了什么</strong>（状态变化）与<strong>把注意力引到下一步</strong>（焦点引导）。不做装饰性动画。</p>
+      <table class="t">
+        <thead><tr><th style="width:150px">Token</th><th style="width:110px">时长</th><th>用在哪儿</th></tr></thead>
+        <tbody>
+          <tr><td><code>--t-fast</code></td><td class="mono">120ms</td><td>按钮按下、hover 变色、图标旋转 —— 必须「无感」</td></tr>
+          <tr><td><code>--t-base</code></td><td class="mono">180ms</td><td>输入框聚焦环、折叠面板展开、徽章切换 —— 默认时长</td></tr>
+          <tr><td><code>--t-slow</code></td><td class="mono">300ms</td><td>抽屉 / 浮层进出、成功态接管 —— 需要被感知的转场</td></tr>
+          <tr><td><code>--ease</code></td><td class="mono">cubic-bezier(.2,.7,.3,1)</td><td>全局唯一缓动曲线。快进慢出，符合物理直觉</td></tr>
+        </tbody>
+      </table>
+      <div class="callout ok">
+        <strong>强制要求：</strong>所有动效必须包在 <code>@media (prefers-reduced-motion: no-preference)</code> 内，或在 <code>reduce</code> 时降为 0.01ms。前庭功能敏感的用户会因成功页的「打勾放大 + 上浮」动画产生不适。
+      </div>
+    </section>
+
+    <!-- ═══ 05 组件 ═══ -->
+    <section class="sec" id="comp">
+      <h2>组件 <span>Components</span></h2>
+      <p class="lead">下面是两个原型页面实际使用的组件全集。每个组件都已内置 hover / focus-visible / disabled / 错误态。</p>
+
+      <div class="stage">
+        <div class="stage-label">按钮 · Button</div>
+        <div class="row">
+          <button class="btn btn-primary">Garantie jetzt aktivieren →</button>
+          <button class="btn btn-navy">Auf Amazon nachbestellen</button>
+          <button class="btn btn-ghost">Kopieren</button>
+          <button class="btn btn-quiet">Abbrechen</button>
+          <button class="btn btn-primary" disabled>Wird aktiviert…</button>
+        </div>
+        <p class="note" style="margin:var(--sp-4) 0 0">主行动按钮 = <strong>gold 底 + navy 文字</strong>。金色在深蓝页面上是最亮的元素，天然成为视觉焦点；用 navy 而非白色文字是因为 <code>#fff on #c8a84b</code> 只有 2.1:1，完全不可读 —— 原版用对了这一点，保留。</p>
+      </div>
+
+      <div class="stage">
+        <div class="stage-label">输入框 · Field（含四种状态）</div>
+        <div class="stack">
+          <div class="field">
+            <label>E-Mail-Adresse</label>
+            <div class="control">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="3"/><path d="M3 7l9 6 9-6"/></svg>
+              <input type="email" placeholder="name@beispiel.de" readonly>
+            </div>
+            <div class="hint">默认态：描边 + 前置图标</div>
+          </div>
+          <div class="field">
+            <label>E-Mail-Adresse</label>
+            <div class="control is-focus">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="3"/><path d="M3 7l9 6 9-6"/></svg>
+              <input type="email" value="kunde@beispiel.de" readonly>
+            </div>
+            <div class="hint">聚焦态：描边转 navy + 3px 外发光环</div>
+          </div>
+          <div class="field">
+            <label>E-Mail-Adresse</label>
+            <div class="control is-error">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="3"/><path d="M3 7l9 6 9-6"/></svg>
+              <input type="email" value="kunde@" readonly>
+            </div>
+            <div class="err-msg" role="alert">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.4v.1"/></svg>
+              Bitte gültige E-Mail-Adresse eingeben
+            </div>
+          </div>
+          <div class="field">
+            <label>E-Mail-Adresse</label>
+            <div class="control is-ok">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="3"/><path d="M3 7l9 6 9-6"/></svg>
+              <input type="email" value="kunde@beispiel.de" readonly>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2d7a4f" stroke-width="2.2" aria-hidden="true"><path d="M4 12.5l5.5 5.5L20 7"/></svg>
+            </div>
+            <div class="hint">通过态：绿描边 + 尾部对勾，即时正反馈</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stage">
+        <div class="stage-label">徽章 · Badge</div>
+        <div class="row">
+          <span class="badge badge-green">已同意</span>
+          <span class="badge badge-gray">未同意</span>
+          <span class="badge badge-blue">新客</span>
+          <span class="badge badge-gold">复购</span>
+          <span class="badge badge-red">失败</span>
+        </div>
+        <p class="note" style="margin:var(--sp-4) 0 0">原版把「未同意」也做成蓝色高亮徽章，视觉权重和「已同意」一样重，卖家扫一眼表格分不出重点。<strong>未同意 = 灰底弱化</strong>，只让需要行动的那一列跳出来。</p>
+      </div>
+
+      <div class="stage">
+        <div class="stage-label">卡片 · Card</div>
+        <div class="row" style="align-items:stretch">
+          <div class="card" style="flex:1;min-width:220px">
+            <div style="font-size:15px;font-weight:650;margin-bottom:6px">Bald neue Beutel nötig?</div>
+            <div style="font-size:13.5px;color:var(--text-muted)">Staubsaugerbeutel alle 4–8 Wochen wechseln.</div>
+          </div>
+          <div class="card card-elev" style="flex:1;min-width:220px">
+            <div style="font-size:15px;font-weight:650;margin-bottom:6px">Bald neue Beutel nötig?</div>
+            <div style="font-size:13.5px;color:var(--text-muted)">抬高一层，用于需要用户决策的区块。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stage">
+        <div class="stage-label">折叠面板 · Accordion（原生 details，零 JS）</div>
+        <details class="acc" open>
+          <summary>Wann muss ich den Beutel wechseln?</summary>
+          <div class="acc-body">Beutel spätestens wechseln, wenn die Saugleistung nachlässt — auch wenn er noch nicht voll ist.</div>
+        </details>
+        <details class="acc">
+          <summary>Wie entsorge ich volle Beutel?</summary>
+          <div class="acc-body">Volle Beutel verschlossen im Restmüll entsorgen.</div>
+        </details>
+      </div>
+
+      <div class="stage">
+        <div class="stage-label">数据表 · Table</div>
+        <table class="t">
+          <thead><tr><th>时间</th><th>邮箱</th><th>语言</th><th>营销同意</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">09-30 11:42</td><td class="mono">kunde@beispiel.de</td><td><span class="badge badge-gray">DE</span></td><td><span class="badge badge-green">已同意</span></td></tr>
+            <tr><td class="mono">09-30 10:07</td><td class="mono">marie@exemple.fr</td><td><span class="badge badge-gray">FR</span></td><td><span class="badge badge-gray">未同意</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ═══ 06 无障碍 ═══ -->
+    <section class="sec" id="a11y">
+      <h2>无障碍红线 <span>Accessibility Guardrails</span></h2>
+      <p class="lead">这几条是「不满足就不算交付」的硬性约束，两个原型都已实现。目标：<strong>WCAG 2.1 AA</strong>。</p>
+      <table class="t">
+        <thead><tr><th style="width:210px">规则</th><th style="width:110px">标准</th><th>原版问题 → 新版做法</th></tr></thead>
+        <tbody>
+          <tr><td>正文对比度</td><td class="mono">≥ 4.5:1</td><td>小字用了 <code>#9a958f</code>（2.7:1）→ 全部收到 <code>--text-muted</code>（5.3:1）</td></tr>
+          <tr><td>触摸目标</td><td class="mono">≥ 44×44px</td><td>语言按钮 <code>padding:5px 12px</code> 实际高度约 26px → 提到 44px</td></tr>
+          <tr><td>焦点可见</td><td class="mono">2.4.7</td><td>仅靠 <code>border-color</code> 变色，键盘用户几乎看不见 → 加 3px 外发光环 + <code>:focus-visible</code></td></tr>
+          <tr><td>错误播报</td><td class="mono">4.1.3</td><td>错误文字直接 <code>display:none</code>，屏幕阅读器读不到 → <code>role="alert"</code> + <code>aria-live</code></td></tr>
+          <tr><td>状态语义</td><td class="mono">4.1.2</td><td>语言按钮无选中语义 → <code>aria-pressed</code> / <code>aria-current</code></td></tr>
+          <tr><td>表单可辨识</td><td class="mono">1.3.1</td><td>标签用 <code>for</code> 关联是对的，保留；补充 <code>aria-describedby</code> 指向提示与错误文案</td></tr>
+          <tr><td>输入缩放</td><td class="mono">1.4.4</td><td>输入框 15px 触发 iOS 自动缩放 → 提到 16px</td></tr>
+          <tr><td>动效偏好</td><td class="mono">2.3.3</td><td>无处理 → 全部动效包进 <code>prefers-reduced-motion</code></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+  </main>
+</div>
+
+<script>
+// 实时计算色板对比度 —— 避免手写数值出错
+const RAMPS = {
+  navy: ['#0a1524','#0f1d30','#152942','#1a2e4a','#27405f','#3b5a7d','#5f7d9e','#93a9c1','#c3d0de','#e3eaf1','#f3f7fa'],
+  gold: ['#6f5716','#8f7220','#ad8d31','#c8a84b','#d9bd6d','#e8c96a','#f1e0ad','#f9f2dc','#fdfbf3'],
+  ink:  ['#171614','#2e2b28','#4a4641','#6b6560','#8a837c','#a9a29a','#c9c3ba','#e2ddd3','#f0ece4','#f9f7f3']
+};
+const STEPS = {
+  navy: [950,900,800,700,600,500,400,300,200,100,50],
+  gold: [800,700,600,500,400,300,200,100,50],
+  ink:  [900,800,700,600,500,400,300,200,100,50]
+};
+
+const hex2rgb = h => [1,3,5].map(i => parseInt(h.slice(i, i + 2), 16) / 255);
+const lin = c => c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+const lum = h => { const [r,g,b] = hex2rgb(h).map(lin); return 0.2126*r + 0.7152*g + 0.0722*b; };
+const ratio = (a, b) => { const [x,y] = [lum(a), lum(b)].sort((m,n) => n - m); return (x + 0.05) / (y + 0.05); };
+
+document.querySelectorAll('[data-ramp]').forEach(box => {
+  const key = box.dataset.ramp;
+  box.innerHTML = RAMPS[key].map((hex, i) => {
+    const cr = ratio(hex, '#ffffff');
+    const ok = cr >= 4.5;
+    return `<div class="sw">
+      <div class="chip" style="background:${hex}"></div>
+      <div class="meta">
+        <div class="name">${key}-${STEPS[key][i]}</div>
+        <div class="hex">${hex}</div>
+        <div class="cr ${ok ? 'pass' : 'fail'}">白底 ${cr.toFixed(2)}:1 ${ok ? 'AA' : '✕'}</div>
+      </div>
+    </div>`;
+  }).join('');
+});
+
+// 侧栏高亮跟随滚动
+const links = [...document.querySelectorAll('.side nav a')];
+const secs = links.map(a => document.querySelector(a.getAttribute('href')));
+const io = new IntersectionObserver(es => {
+  es.forEach(e => {
+    if (!e.isIntersecting) return;
+    links.forEach(l => l.classList.toggle('on', l.getAttribute('href') === '#' + e.target.id));
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+secs.forEach(s => s && io.observe(s));
+</script>
+</body>
+</html>
